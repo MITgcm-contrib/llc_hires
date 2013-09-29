@@ -1,10 +1,11 @@
 For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00
 qsub -I -q long -l select=24:ncpus=20:model=ivy,walltime=120:00:00
+qsub -I -q long -l select=:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
 
 For batch submission:
 qsub -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00 runscript
-qsub qsub_llc1080_468.csh 
+qsub qsub_llc1080_468.csh
 
 These will give you 24 x 20 = 480 cores. Launch 468 ranks with
 
