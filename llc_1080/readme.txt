@@ -1,33 +1,39 @@
 For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00
-qsub -I -q long -l select=24:ncpus=20:model=ivy,walltime=120:00:00
+qsub -I -q long -l select=80:ncpus=20:model=ivy,walltime=120:00:00
 qsub -I -q long -l select=:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
 
 For batch submission:
 qsub -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00 runscript
 qsub qsub_llc1080_468.csh
 
-These will give you 24 x 20 = 480 cores. Launch 468 ranks with
+These will give you 24 x 20 = 480 cores.
 
 ==============
 
+cd ~/llc_1080
 cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_1080
 cd MITgcm
 module purge
 module load comp-intel/2011.2 mpi-sgi/mpt.2.06a67 netcdf/4.0
-#module load comp-intel/2011.7.256 mpi-sgi/mpt.2.08r7 netcdf/4.0
 mkdir build run
+lfs setstripe -c -1 run
 cd build
-../tools/genmake2 -of ~/tarballs/llc_1080/code/linux_amd64_ifort+mpi_ice_nas -mpi -mods ~/tarballs/llc_1080/code
+cp ../../MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_90x90x1342 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_1080/code ../../MITgcm_contrib/llc_hires/llc_1080/code-async'
 make depend
-make -j 16
+make -j 30
 cd ../run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/era_interim/EIG_*_2* .
 ln -sf /nobackup/dmenemen/forcing/era_interim_corrected/EIG_dlw_sub5p_2* .
-cp /nobackup/dmenemen/tarballs/llc_1080/input/* .
-mpiexec -n 379 ./mitgcmuv
+cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
+mv data.exch2_90x90x1342 data.exch2
+mpiexec -n 1600 ./mitgcmuv
 
 ==============
 
