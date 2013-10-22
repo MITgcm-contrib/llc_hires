@@ -1,6 +1,6 @@
 For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00
-qsub -I -q long -l select=80:ncpus=20:model=ivy,walltime=120:00:00
+qsub -I -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M menemenlis@jpl.nasa.gov
+qsub -I -q long -l select=80:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@jpl.nasa.gov
 qsub -I -q long -l select=:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
 
 For batch submission:
@@ -39,15 +39,15 @@ mpiexec -n 1600 ./mitgcmuv
 
 look at output
 
-for ts=[1920:240:8880]
+for ts=[50760]
     fld=quikread_llc(['Eta.' myint2str(ts,10) '.data'],1080);
     clf,quikplot_llc(fld),caxis([-2.5 2]),thincolorbar
     title(ts)
     pause(.1)
 end
 
-ts=14040;
-for fld={'S','T','U','V','W','HEFF'}
+ts=50760;
+for fld={'S''T','U','V','W','HEFF'}
     tmp=quikread_llc([fld{1} '.' myint2str(ts,10) '.data'],1080);
     clf,quikplot_llc(tmp),thincolorbar
     title(fld{1})
