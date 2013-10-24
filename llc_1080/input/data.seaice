@@ -20,8 +20,7 @@
       HO_south                = 1.0697,
 #
       SEAICE_strength    = 1.64e+04,
-      Lsr_ERROR          = 2e-4,
-      SEAICEuseDYNAMICS  = .TRUE.,
+      LSR_ERROR          = 2.e-4,
       SEAICE_no_slip     = .TRUE.,
       SEAICEuseMetricTerms = .TRUE.,
       SEAICEadvScheme    = 7,
