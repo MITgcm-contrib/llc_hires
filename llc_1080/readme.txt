@@ -29,8 +29,9 @@ make -j 30
 cd ../run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
-ln -sf /nobackup/dmenemen/forcing/era_interim/EIG_*_2* .
-ln -sf /nobackup/dmenemen/forcing/era_interim_corrected/EIG_dlw_sub5p_2* .
+#ln -sf /nobackup/dmenemen/forcing/era_interim/EIG_*_2* .
+#ln -sf /nobackup/dmenemen/forcing/era_interim_corrected/EIG_dlw_sub5p_2* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
 mv data.exch2_90x90x1342 data.exch2
 mpiexec -n 1600 ./mitgcmuv
