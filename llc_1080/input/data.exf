@@ -13,7 +13,7 @@
  &
 #
  &EXF_NML_02
- apressurefile     = 'EOG_pres',
+ apressurefile     = 'EOG_pres_tide',
  aqhfile           = 'EOG_spfh2m',
  atempfile         = 'EOG_tmp2m_degC',
  uwindfile         = 'EOG_u10m',
