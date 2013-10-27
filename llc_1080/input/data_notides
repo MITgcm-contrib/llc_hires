@@ -68,8 +68,6 @@
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
- implicSurfPress = 0.6,
- implicSurfPress = 0.6,
  /
 
 # Elliptic solver parameters
@@ -80,9 +78,9 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=368640,
- endtime=63072000.,
- deltaT = 90.,
+ nIter0=42120,
+ nTimeSteps=28800,
+ deltaT = 240.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
