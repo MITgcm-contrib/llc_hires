@@ -18,7 +18,7 @@
 #                :: =1 : no duplicated print ; =2 : all processes do print
 #--------------------
  &W2_EXCH2_PARM01
-# W2_printMsg= 1,
+  W2_printMsg= 1,
   W2_mapIO   = 1,
 #
 #-- 5 facets llc_540 topology (drop facet 6 and its connection):
