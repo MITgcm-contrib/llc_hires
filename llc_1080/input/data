@@ -61,7 +61,7 @@
  implicitFreeSurface=.TRUE.,
  exactConserv=.TRUE.,
  debuglevel=-1,
- convertFW2Salt=-1
+ convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
  useSingleCPUio=.TRUE.,
  globalFiles=.TRUE.,
@@ -69,7 +69,7 @@
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
- implicSurfPress = 0.6,
+ implicDiv2DFlow = 0.6,
  /
 
 # Elliptic solver parameters
@@ -80,7 +80,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=368640,
+ nIter0=354240,
  endtime=63072000.,
  deltaT = 90.,
  abEps = 0.1,
