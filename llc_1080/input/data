@@ -86,11 +86,10 @@
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- pChkptFreq  = 2592000.0,
  chkptFreq   = 259200.0,
  dumpfreq = 86400.,
  monitorFreq = 3600.,
- dumpInitAndLast=.TRUE.,
+ dumpInitAndLast=.FALSE.,
  /
 
 # Gridding parameters

@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/CPP_OPTIONS.h,v 1.1 2013/09/20 12:38:03 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/CPP_OPTIONS.h,v 1.2 2013/10/28 08:36:00 dimitri Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -32,7 +32,7 @@ C o Include/exclude call to S/R CALC_DIFFUSIVITY
 #define INCLUDE_CALC_DIFFUSIVITY_CALL
 
 C o Allow full 3D specification of vertical diffusivity
-#define ALLOW_3D_DIFFKR
+#undef ALLOW_3D_DIFFKR
 
 C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 #undef ALLOW_BL79_LAT_VARY
