@@ -13,20 +13,20 @@ qsub qsub_llc2160.csh
 cvs co MITgcm_code
 cd MITgcm
 module purge
-module load comp-intel/2011.7.256 mpi-sgi/mpt.2.06r6 netcdf/4.0
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06r6 netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 /nobackupp5/dmenemen/llc_4320/MITgcm/run
 cd build
-../tools/genmake2 -of ~/tarballs/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '/nobackup/dmenemen/tarballs/llc_4320/code /nobackup/dmenemen/tarballs/llc_4320/code-async'
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_180x180x5015 SIZE.h
+../tools/genmake2 -of ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
 make -j 16
 cd ../run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
-ln -sf /nobackup/dmenemen/forcing/era_interim/EIG_*_2* .
-ln -sf /nobackup/dmenemen/forcing/era_interim_corrected/EIG_dlw_sub5p_2* .
-cp /nobackup/dmenemen/tarballs/llc_4320/input/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
 mpiexec -n 6000 ./mitgcmuv
 
 ==============
