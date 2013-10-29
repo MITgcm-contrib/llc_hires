@@ -4,7 +4,7 @@
 # *******************
  &CAL_NML
  TheCalendar='gregorian',
- startDate_1=20100101,
+ startDate_1=20110117,
  startDate_2=000000,
  calendarDumps = .TRUE.,
  &

@@ -80,15 +80,15 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=354240,
+ nIter0=0,
  endtime=63072000.,
- deltaT = 90.,
+ deltaT = 30.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
  dumpfreq = 86400.,
- monitorFreq = 3600.,
+ monitorFreq = 360.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -118,6 +118,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='bathy2160_g5_r4',
- hydrogThetaFile='Jan2010_THETA_2160x28080x90_r4',
- hydrogSaltFile ='Jan2010_SALT_2160x28080x90_r4',
+ hydrogThetaFile='THETA_llc1080_14jan2011_2160x28080x90_r4',
+ hydrogSaltFile ='SALT_llc1080_14jan2011_2160x28080x90_r4',
+ uVelInitFile   ='UVEL_llc1080_14jan2011_2160x28080x90_r4',
+ vVelInitFile   ='VVEL_llc1080_14jan2011_2160x28080x90_r4',
+ pSurfInitFile  ='ETAN_llc1080_14jan2011_2160x28080_r4',
  /

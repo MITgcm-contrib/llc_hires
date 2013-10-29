@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/eeboot_minimal.F,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/eeboot_minimal.F,v 1.2 2013/10/29 09:40:37 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -159,16 +159,16 @@ C--    Get my process number
         GOTO 999
        ENDIF
        myProcId = mpiMyId
-       WRITE(myProcessStr,'(I4.4)') myProcId
+       WRITE(myProcessStr,'(I5.5)') myProcId
        mpiPidIo = myProcId
        pidIO    = mpiPidIo
        IF ( mpiPidIo .EQ. myProcId ) THEN
 #ifdef SINGLE_DISK_IO
         IF( myProcId .EQ. 0 ) THEN
 #endif
-         WRITE(fNam,'(A,A)') 'STDERR.', myProcessStr(1:4)
+         WRITE(fNam,'(A,A)') 'STDERR.', myProcessStr(1:5)
          OPEN(errorMessageUnit,FILE=fNam,STATUS='unknown')
-         WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:4)
+         WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:5)
          OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
 #ifdef SINGLE_DISK_IO
         ELSE

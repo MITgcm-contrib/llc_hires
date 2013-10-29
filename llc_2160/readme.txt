@@ -20,7 +20,7 @@ module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06rp16  netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 run
 cd build
-cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_90x90x7488 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_90x90_5004 SIZE.h
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
@@ -31,7 +31,7 @@ ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
-mv data.exch2_90x90x7488 data.exch2
+mv data.exch2_90x90x5004 data.exch2
 mpiexec -n 8000 ./mitgcmuv
 
 ==============
