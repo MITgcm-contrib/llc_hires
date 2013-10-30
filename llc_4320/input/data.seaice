@@ -52,8 +52,10 @@
       SEAICE_frazilFrac  = 0.1,
       SEAICE_saltFrac    = 0.3548,
 #
-      AreaFile           = 'Jan2010_SIarea_4320x56160_r4',
-      HsnowFile          = 'Jan2010_SIhsnow_4320x56160_r4',
-      HsaltFile          = 'Jan2010_SIhsalt_4320x56160_r4',
-      HeffFile           = 'Jan2010_SIheff_4320x56160_r4',
+      AreaFile           = 'AREA_llc1080_14jan2011_4320x56160_r4',
+      HsnowFile          = 'HSNOW_llc1080_14jan2011_4320x56160_r4',
+      HsaltFile          = 'HSALT_llc1080_14jan2011_4320x56160_r4',
+      HeffFile           = 'HEFF_llc1080_14jan2011_4320x56160_r4',
+      UiceFile           = 'UICE_llc1080_14jan2011_4320x56160_r4',
+      ViceFile           = 'VICE_llc1080_14jan2011_4320x56160_r4',
  &

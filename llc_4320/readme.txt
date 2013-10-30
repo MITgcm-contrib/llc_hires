@@ -3,10 +3,37 @@ qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00
 qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00
 qsub -I -q long -l select=300:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
 qsub -I -q normal -l select=300:ncpus=20:model=ivy,walltime=8:00:00
+qsub -q ecco -I -W group_list=g26209 -l select=1000:ncpus=20:aoe=sles11,walltime=100:00:00 -m abe -M menemenlis@jpl.nasa.gov
+
 
 For batch submission:
 qsub -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 runscript
 qsub qsub_llc2160.csh 
+
+==============
+
+cd ~/llc_4320
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+cd MITgcm
+module purge
+module load comp-intel/11.1.072 mpi-sgi/mpt.2.08r7 netcdf/4.0
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_72x72x29297 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 8
+cd ../run
+ln -sf ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_72x72x29297 data.exch2
+mpiexec -n 35000 ./mitgcmuv
 
 ==============
 
@@ -15,9 +42,10 @@ cd MITgcm
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06r6 netcdf/4.0
 mkdir build run
-lfs setstripe -c -1 /nobackupp5/dmenemen/llc_4320/MITgcm/run
+lfs setstripe -c -1 run
 cd build
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_180x180x5015 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h
+_180x180x5015 SIZE.h
 ../tools/genmake2 -of ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
@@ -27,7 +55,8 @@ ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
-mpiexec -n 6000 ./mitgcmuv
+mv data.exch2_72x72x29297 data.exch2
+mpiexec -n 32000 ./mitgcmuv
 
 ==============
 

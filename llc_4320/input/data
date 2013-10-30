@@ -63,7 +63,7 @@
  debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.TRUE.,
+ useSingleCPUio=.FALSE.,
  globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
@@ -81,14 +81,14 @@
 # Time stepping parameters
  &PARM03
  nIter0=0,
- nTimeSteps=240,
- deltaT = 15.,
+ endtime=86400.,
+ deltaT = 20.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- chkptFreq   = 259200.0,
- dumpfreq = 86400.,
- monitorFreq = 3600.,
+ chkptFreq   = 86400.,
+ dumpfreq = 3600.,
+ monitorFreq = 360.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -118,6 +118,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='bathy4320_g5_r4',
- hydrogThetaFile='Jan2010_THETA_4320x56160x90_r4',
- hydrogSaltFile ='Jan2010_SALT_4320x56160x90_r4',
+ hydrogThetaFile='THETA_llc1080_14jan2011_4320x56160x90_r4',
+ hydrogSaltFile ='SALT_llc1080_14jan2011_4320x56160x90_r4',
+ uVelInitFile   ='UVEL_llc1080_14jan2011_4320x56160x90_r4',
+ vVelInitFile   ='VVEL_llc1080_14jan2011_4320x56160x90_r4',
+ pSurfInitFile  ='ETAN_llc1080_14jan2011_4320x56160_r4',
  /
