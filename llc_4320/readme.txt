@@ -17,7 +17,7 @@ cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
 cd MITgcm
 module purge
-module load comp-intel/11.1.072 mpi-sgi/mpt.2.08r7 netcdf/4.0
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 run
 cd build
