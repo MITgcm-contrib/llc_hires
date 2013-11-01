@@ -21,6 +21,33 @@ module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 run
 cd build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 8
+cd ../run
+ln -sf ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_90x90x19023 data.exch2
+ln -sf pickup_llc1080_14jan2011_4320x56160x543_r4 pickup.0000060480.data
+ln -sf pickup_seaice_llc1080_14jan2011_4320x56160x543_r4 pickup_seaice.0000060480.data
+mpiexec -n 35000 ./mitgcmuv
+
+==============
+
+cd ~/llc_4320
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+cd MITgcm
+module purge
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
+mkdir build run
+lfs setstripe -c -1 run
+cd build
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_72x72x29297 SIZE.h
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
