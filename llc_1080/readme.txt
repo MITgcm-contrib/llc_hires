@@ -1,21 +1,17 @@
 For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M menemenlis@jpl.nasa.gov
-qsub -I -q long -l select=80:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@jpl.nasa.gov
-qsub -I -q long -l select=:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
-qsub -q ecco -I -W group_list=g26209 -l select=170:ncpus=20:aoe=sles11,walltime=100:00:00 -m abe -M menemenlis@jpl.nasa.gov
-
-For batch submission:
-qsub -q devel -l select=24:ncpus=20:model=ivy,walltime=02:00:00 runscript
-qsub qsub_llc1080_468.csh
+qsub -I -q devel -l select=170:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
+qsub -I -q long  -l select=170:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
+qsub -I -q long  -l select=170:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
 
 ==============
+# 60x60x2872 tile configuration
 
 cd ~/llc_1080
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_1080
 cd MITgcm
 module purge
-module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06rp16  netcdf/4.0
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 run
 cd build
@@ -34,6 +30,7 @@ mv data.exch2_60x60x2872 data.exch2
 mpiexec -n 3400 ./mitgcmuv
 
 ==============
+# 90x90x1342 tile configuration
 
 cd ~/llc_1080
 cvs co MITgcm_code
