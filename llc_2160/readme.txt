@@ -1,13 +1,8 @@
 For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=103:ncpus=20:model=ivy,walltime=02:00:00
-qsub -I -q long -l select=103:ncpus=20:model=ivy,walltime=120:00:00
-qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00
-qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00
-qsub -q ecco -I -W group_list=g26209 -l select=400:ncpus=20:aoe=sles11,walltime=100:00:00 -m abe -M menemenlis@jpl.nasa.gov
-
-For batch submission:
-qsub -q devel -l select=103:ncpus=20:model=ivy,walltime=02:00:00 runscript
-qsub qsub_llc2160.csh 
+qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
+qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
+qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
+qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
 
 ==============
 
@@ -16,7 +11,7 @@ cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_2160
 cd MITgcm
 module purge
-module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06rp16  netcdf/4.0
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
 mkdir build run
 lfs setstripe -c -1 run
 cd build
@@ -26,13 +21,13 @@ cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_90x90_5004 SIZE.h
  '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
 make depend
 make -j 16
-cd ../run
+cd ~/llc_2160/MITgcm/run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
 mv data.exch2_90x90x5004 data.exch2
-mpiexec -n 8000 ./mitgcmuv
+mpiexec -n 6600 ./mitgcmuv
 
 ==============
 

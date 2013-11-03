@@ -2,8 +2,8 @@ Right now some sizes need to be configured manually:
 
 recvTask.c   lines 79-82
 
-#define NUM_X   4320
-#define NUM_Y   56160L                     // get rid of this someday
+#define NUM_X   2160
+#define NUM_Y   28080L                     // get rid of this someday
 #define NUM_Z   90
 #define MULTDIM  7
 
@@ -12,11 +12,11 @@ and
 
 readtile_mpiio.c    lines 115-119
 
-   facetElements1D = 4320;
-   tileSizeX = 180;
-   tileSizeY = 180;
-   xGhosts = 8;
-   yGhosts = 8;
+    facetElements1D = 2160;
+    tileSizeX = 90;
+    tileSizeY = 90;
+    xGhosts = 8;
+    yGhosts = 8;
 
 One tile per rank is recommended, mostly for pickup input performance,
 but it is not strictly necessary.

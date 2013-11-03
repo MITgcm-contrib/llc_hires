@@ -3,4 +3,5 @@
  useEXF         = .TRUE.,
  useSEAICE      = .TRUE.,
  useKPP         = .TRUE.,
+ useFRAZIL      = .TRUE.,
  /
