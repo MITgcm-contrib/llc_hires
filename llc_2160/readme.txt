@@ -27,6 +27,7 @@ ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
 mv data.exch2_90x90x5004 data.exch2
+export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 6600 ./mitgcmuv
 
 ==============

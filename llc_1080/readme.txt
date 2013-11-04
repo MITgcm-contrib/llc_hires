@@ -27,6 +27,7 @@ ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
 mv data.exch2_60x60x2872 data.exch2
+export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 3400 ./mitgcmuv
 
 ==============
@@ -55,6 +56,7 @@ ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
 mv data.exch2_90x90x1342 data.exch2
+export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 1600 ./mitgcmuv
 
 ==============
