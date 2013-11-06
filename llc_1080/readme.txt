@@ -21,7 +21,7 @@ cp ../../MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_60x60x2872 SIZE.h
  '../../MITgcm_contrib/llc_hires/llc_1080/code ../../MITgcm_contrib/llc_hires/llc_1080/code-async'
 make depend
 make -j 16
-cd ../run
+cd ~/llc_1080/MITgcm/run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
