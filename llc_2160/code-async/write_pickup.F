@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_pickup.F,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_pickup.F,v 1.2 2013/12/30 03:47:38 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -127,7 +127,7 @@ chenze
       CALL ASYNCIO_WRITE_FLD_XYZ_RL( 'X.',suff,gunm1,iCounter,myThid)
       CALL ASYNCIO_WRITE_FLD_XYZ_RL( 'Y.',suff,gvnm1,iCounter,myThid)
       CALL ASYNCIO_WRITE_FLD_XY_RL( 'N.',suff,etan,iCounter,myThid)
-      CALL ASYNCIO_WRITE_FLD_XY_RL( 'D.',suff,detahdt,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL( 'R.',suff,detahdt,iCounter,myThid)
       CALL ASYNCIO_WRITE_FLD_XY_RL( 'H.',suff,etahnm1,iCounter,myThid)
       call timer_stop('asyncio_pickup   ',myThid)
 

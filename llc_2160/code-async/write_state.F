@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_state.F,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_state.F,v 1.2 2013/12/30 03:47:38 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -57,6 +57,17 @@ C     !USES:
 #ifdef ALLOW_MNC
 #include "MNC_PARAMS.h"
 #endif
+
+#include "FFIELDS.h"
+#include "KPP.h"
+#include "SURFACE.h"
+
+! Define this as a special temp hack
+#define SEAICE_VARIABLE_SALINITY
+
+#include "SEAICE_SIZE.h"
+#include "SEAICE.h"
+
 
       LOGICAL  DIFFERENT_MULTIPLE
       EXTERNAL DIFFERENT_MULTIPLE
@@ -145,14 +156,35 @@ C         easier to transfer analyse a particular snap-shots
 #else
 
           
-         call timer_start('asyncio   ',myThid)
-         ICOUNTER = ICOUNTER+1
-         CALL beginNewEpoch(icounter,myIter,0)
-         CALL ASYNCIO_WRITE_FLD_XYZ_RL( 'U.',suff,uVel,iCounter,myThid)
-         CALL ASYNCIO_WRITE_FLD_XYZ_RL( 'V.',suff,vVel,iCounter,myThid)
-         CALL ASYNCIO_WRITE_FLD_XYZ_RL( 'T.',suff,theta,iCounter,myThid)
-         CALL ASYNCIO_WRITE_FLD_XY_RL( 'N.',suff,etaN,iCounter,myThid)
-         call timer_stop('asyncio   ',myThid)
+        call timer_start('asyncio   ',myThid)
+        ICOUNTER = ICOUNTER+1
+        CALL beginNewEpoch(icounter,myIter,0)
+        CALL ASYNCIO_WRITE_FLD_XYZ_RL('U',suff,uVel,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XYZ_RL('V',suff,vVel,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XYZ_RL('W',suff,wVel,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XYZ_RL('S',suff,salt,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XYZ_RL('T',suff,theta,iCounter,myThid)
+
+        CALL ASYNCIO_WRITE_FLD_XY_RL('N',suff,etaN,iCounter,myThid)
+
+        CALL ASYNCIO_WRITE_FLD_XY_RL('B',suff,AREA,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('C',suff,HEFF,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('D',suff,HSNOW,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('E',suff,UICE,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('F',suff,VICE,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('G',suff,HSALT,iCounter,myThid)
+
+      !!CALL ASYNCIO_WRITE_FLD_XY_RL('H',suff,etaHnm1,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('I',suff,fu,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('J',suff,fv,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('K',suff,KPPhbl,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('L',suff,saltFlux,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('M',suff,EmPmR,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('O',suff,Qnet,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('P',suff,phiHydLow,iCounter,myThid)
+        CALL ASYNCIO_WRITE_FLD_XY_RL('Q',suff,Qsw,iCounter,myThid)
+      !!CALL ASYNCIO_WRITE_FLD_XY_RL('R',suff,dEtaHdt,iCounter,myThid)
+        call timer_stop('asyncio   ',myThid)
 
 ch        call timer_start('as usual i/o',myThid)
 ch        CALL WRITE_FLD_XYZ_RL( 'U.',suff,uVel,myIter,myThid)

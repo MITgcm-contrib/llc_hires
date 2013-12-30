@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/asyncio_write_fld_xym_rl.F,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/asyncio_write_fld_xym_rl.F,v 1.2 2013/12/30 03:47:38 dimitri Exp $
 C $Name:  $
 
 #include "CPP_EEOPTIONS.h"
@@ -31,13 +31,16 @@ C Functions
 C Local
       INTEGER bi, bj, IFLD, tN
 
+      IFLD = ICHAR(pref)
+
 C      RETURN
 C
-      IF ( pref .EQ. 'A.' ) THEN
-         IFLD=10
-      ELSE
-         STOP 'ABNORMAL END: INVALID FIELD CODE'
-      ENDIF
+!      IF ( pref .EQ. 'A.' ) THEN
+!         IFLD=10
+!      ELSE
+!         STOP 'ABNORMAL END: INVALID FIELD CODE'
+!      ENDIF
+
       DO bj=myByLo(myThid),myByHi(myThid)
        DO bi=myBxLo(myThid),myBxHi(myThid)
 ch        tN = tileNo(bi,bj)
