@@ -64,6 +64,7 @@
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
  useSingleCPUio=.FALSE.,
+ useSingleCpuInput=.TRUE.,
  globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
