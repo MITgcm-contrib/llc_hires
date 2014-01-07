@@ -8,7 +8,7 @@
       SEAICE_wetSnowAlb  = 0.8085,
       SEAICE_waterDrag   = 5.5627,
       SEAICE_drag        = 0.00114,
-      HO                 = 0.1,
+      HO                 = 0.05,
 #
       SEAICE_dryIceAlb_south  = 0.8509,
       SEAICE_wetIceAlb_south  = 0.7284,
@@ -17,8 +17,6 @@
       SEAICE_waterDrag_south  = 5.6221,
       SEAICE_drag_south       = 0.0012114,
 #
-      SEAICE_strength    = 2.2640e+04,
-      LSR_ERROR          = 2.e-4,
       SEAICE_no_slip     = .TRUE.,
       SEAICEadvScheme    = 7,
 #
@@ -31,10 +29,7 @@
       SEAICE_doOpenWaterMelt = .TRUE.,
       SEAICE_areaLossFormula = 1,
       SEAICE_wetAlbTemp  = 0.0,
-      SEAICE_mcPheeTaper = 0.92,
-      SEAICE_mcPheePiston= 0.001
-      SEAICE_frazilFrac  = 0.1,
-      SEAICE_saltFrac    = 0.3548,
+      SEAICE_saltFrac    = 0.3,
 #
       AreaFile           = 'AREA_llc1080_14jan2011_2160x28080_r4',
       HsnowFile          = 'HSNOW_llc1080_14jan2011_2160x28080_r4',
