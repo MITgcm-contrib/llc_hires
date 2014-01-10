@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/Attic/SIZE.h_144x144x2047,v 1.1 2013/10/29 08:14:40 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/Attic/SIZE.h_144x144x2047,v 1.2 2014/01/10 16:01:25 dimitri Exp $
 C $Name:  $
 
 C
@@ -63,4 +63,3 @@ C                routine buffers.
       INTEGER MAX_OLY
       PARAMETER ( MAX_OLX = OLx,
      &            MAX_OLY = OLy )
-
