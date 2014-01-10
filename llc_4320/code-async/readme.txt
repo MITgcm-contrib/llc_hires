@@ -12,11 +12,11 @@ and
 
 readtile_mpiio.c    lines 115-119
 
-   facetElements1D = 4320;
-   tileSizeX = 72;
-   tileSizeY = 72;
-   xGhosts = 8;
-   yGhosts = 8;
+    facetElements1D = 4320;
+    tileSizeX = 72;
+    tileSizeY = 72;
+    xGhosts = 8;
+    yGhosts = 8;
 
 One tile per rank is recommended, mostly for pickup input performance,
 but it is not strictly necessary.

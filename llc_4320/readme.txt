@@ -20,7 +20,7 @@ cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_72x72x29297 SIZE.h
  ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
-make -j 8
+make -j 16
 cd ../run
 ln -sf ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .

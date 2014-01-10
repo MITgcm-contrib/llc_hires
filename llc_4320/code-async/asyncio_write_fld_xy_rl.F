@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/asyncio_write_fld_xy_rl.F,v 1.1 2013/09/20 12:38:03 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/asyncio_write_fld_xy_rl.F,v 1.2 2014/01/10 16:50:36 dimitri Exp $
 C $Name:  $
 
 #include "CPP_EEOPTIONS.h"
@@ -26,44 +26,47 @@ C Functions
 C Local
       INTEGER bi, bj, IFLD, tN
 
+      IFLD = ICHAR(pref)
+
 C      RETURN
 C
-      IF ( pref .EQ. 'U.' ) THEN
-         IFLD=1
-      ELSE IF (pref .EQ. 'V.' ) THEN
-         IFLD=2
-      ELSE IF (pref .EQ. 'T.' ) THEN
-         IFLD=3
-      ELSE IF (pref .EQ. 'S.' ) THEN
-         IFLD=4
-      ELSE IF (pref .EQ. 'X.' ) THEN
-         IFLD=5
-      ELSE IF (pref .EQ. 'Y.' ) THEN
-         IFLD=6
-      ELSE IF (pref .EQ. 'N.' ) THEN
-         IFLD=7
-      ELSE IF (pref .EQ. 'D.' ) THEN
-         IFLD=8
-      ELSE IF (pref .EQ. 'H.' ) THEN
-         IFLD=9
+!      IF ( pref .EQ. 'U.' ) THEN
+!         IFLD=1
+!      ELSE IF (pref .EQ. 'V.' ) THEN
+!         IFLD=2
+!      ELSE IF (pref .EQ. 'T.' ) THEN
+!         IFLD=3
+!      ELSE IF (pref .EQ. 'S.' ) THEN
+!         IFLD=4
+!      ELSE IF (pref .EQ. 'X.' ) THEN
+!         IFLD=5
+!      ELSE IF (pref .EQ. 'Y.' ) THEN
+!         IFLD=6
+!      ELSE IF (pref .EQ. 'N.' ) THEN
+!         IFLD=7
+!      ELSE IF (pref .EQ. 'D.' ) THEN
+!         IFLD=8
+!      ELSE IF (pref .EQ. 'H.' ) THEN
+!         IFLD=9
+!
+!      ELSE IF (pref .EQ. 'B.' ) THEN
+!         IFLD=11
+!      ELSE IF (pref .EQ. 'C.' ) THEN
+!         IFLD=12
+!      ELSE IF (pref .EQ. 'D.' ) THEN
+!         IFLD=13
+!      ELSE IF (pref .EQ. 'E.' ) THEN
+!         IFLD=14
+!      ELSE IF (pref .EQ. 'F.' ) THEN
+!         IFLD=15
+!      ELSE IF (pref .EQ. 'G.' ) THEN
+!         IFLD=16
+!         
+!
+!      ELSE
+!         STOP 'ABNORMAL END: INVALID FIELD CODE'
+!      ENDIF
 
-      ELSE IF (pref .EQ. 'B.' ) THEN
-         IFLD=11
-      ELSE IF (pref .EQ. 'C.' ) THEN
-         IFLD=12
-      ELSE IF (pref .EQ. 'D.' ) THEN
-         IFLD=13
-      ELSE IF (pref .EQ. 'E.' ) THEN
-         IFLD=14
-      ELSE IF (pref .EQ. 'F.' ) THEN
-         IFLD=15
-      ELSE IF (pref .EQ. 'G.' ) THEN
-         IFLD=16
-         
-
-      ELSE
-         STOP 'ABNORMAL END: INVALID FIELD CODE'
-      ENDIF
       DO bj=myByLo(myThid),myByHi(myThid)
        DO bi=myBxLo(myThid),myBxHi(myThid)
 ch        tN = tileNo(bi,bj)

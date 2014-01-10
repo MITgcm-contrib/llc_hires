@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas,v 1.3 2014/01/10 16:50:36 dimitri Exp $
+# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/Attic/linux_amd64_ifort+mpi_ice_nas,v 1.4 2014/01/10 16:50:36 dimitri Exp $
 # $Name:  $
 
 # Used to run the testreport on pleiades with:
@@ -9,7 +9,7 @@
 FC=ifort
 CC=icc
 
-DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DALLOW_ASYNCIO -DWORDLENGTH=4'
+DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
 CPP='/lib/cpp  -traditional -P'
 EXTENDED_SRC_FLAG='-132'
 OMPFLAG='-openmp'
@@ -19,9 +19,9 @@ LDADD='-shared-intel'
 LIBS='-L/nasa/sgi/mpt/2.08r7/lib -lmpi -L/nasa/netcdf/4.0/lib -lnetcdf'
 INCLUDES='-I/nasa/sgi/mpt/2.08r7/include -I/nasa/netcdf/4.0/include'
 INCLUDEDIRS='/nasa/sgi/mpt/2.08r7/include'
+#- used for parallel (MPI) DIVA
 MPIINCLUDEDIR='/nasa/sgi/mpt/2.08r7/include'
-MPI_HEADER_FILES='mpif.h mpiof.h mpif_parameters.h'
-MPI_HEADER_FILES_INC='./mpi_headers/mpif.h ./mpi_headers/mpiof.h ./mpi_headers/mpif_parameters.h'
+#MPI_HEADER_FILES='mpif.h mpiof.h mpif_parameters.h'
 
 NOOPTFLAGS='-O1 -fp-model precise'
 
