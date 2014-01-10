@@ -31,10 +31,10 @@
       SEAICE_wetAlbTemp  = 0.0,
       SEAICE_saltFrac    = 0.3,
 #
-      AreaFile           = 'AREA_llc1080_10sep2011_4320x56160_r4',
-      HsnowFile          = 'HSNOW_llc1080_10sep2011_4320x56160_r4',
-      HsaltFile          = 'HSALT_llc1080_10sep2011_4320x56160_r4',
-      HeffFile           = 'HEFF_llc1080_10sep2011_4320x56160_r4',
-      UiceFile           = 'UICE_llc1080_10sep2011_4320x56160_r4',
-      ViceFile           = 'VICE_llc1080_10sep2011_4320x56160_r4',
+      AreaFile           = 'AREA_llc2160_10sep2011_4320x56160_r4',
+      HsnowFile          = 'HSNOW_llc2160_10sep2011_4320x56160_r4',
+      HsaltFile          = 'HSALT_llc2160_10sep2011_4320x56160_r4',
+      HeffFile           = 'HEFF_llc2160_10sep2011_4320x56160_r4',
+      UiceFile           = 'UICE_llc2160_10sep2011_4320x56160_r4',
+      ViceFile           = 'VICE_llc2160_10sep2011_4320x56160_r4',
  &
