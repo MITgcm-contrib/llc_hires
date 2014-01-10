@@ -1,11 +1,10 @@
 #!/bin/bash
 #
-# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas,v 1.2 2014/01/10 16:50:59 dimitri Exp $
 # $Name:  $
 
 # Used to run the testreport on pleiades with:
-# module load comp-intel/2012.0.032 mpi-sgi/mpt.2.06rp16  netcdf/4.0
-# works on all types of nodes 
+# module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
 
 FC=ifort
 CC=icc
@@ -17,10 +16,10 @@ OMPFLAG='-openmp'
 CFLAGS='-fPIC'
 LDADD='-shared-intel'
 
-LIBS='-L/nasa/sgi/mpt/2.06rp16/lib -lmpi -L/nasa/netcdf/4.0/lib -lnetcdf'
-INCLUDES='-I/nasa/sgi/mpt/2.06rp16/include -I/nasa/netcdf/4.0/include'
-INCLUDEDIRS='/nasa/sgi/mpt/2.06rp16/include'
-MPIINCLUDEDIR='/nasa/sgi/mpt/2.06rp16/include'
+LIBS='-L/nasa/sgi/mpt/2.08r7/lib -lmpi -L/nasa/netcdf/4.0/lib -lnetcdf'
+INCLUDES='-I/nasa/sgi/mpt/2.08r7/include -I/nasa/netcdf/4.0/include'
+INCLUDEDIRS='/nasa/sgi/mpt/2.08r7/include'
+MPIINCLUDEDIR='/nasa/sgi/mpt/2.08r7/include'
 MPI_HEADER_FILES='mpif.h mpiof.h mpif_parameters.h'
 MPI_HEADER_FILES_INC='./mpi_headers/mpif.h ./mpi_headers/mpiof.h ./mpi_headers/mpif_parameters.h'
 
