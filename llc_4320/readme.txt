@@ -9,6 +9,7 @@ qsub -I -q long -l select=300:ncpus=20:model=ivy,min_walltime=30:00,max_walltime
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
+# set correct tileSizeX and tileSizeY in MITgcm_contrib/llc_hires/llc_4320/cpde-asyn/readtile_mpiio.c
 cd MITgcm
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
@@ -22,13 +23,40 @@ cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_72x72x29297 SIZE.h
 make depend
 make -j 16
 cd ../run
-ln -sf ../build/mitgcmuv .
+cp ../build/mitgcmuv mitgcmuv_72x72x29297
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
 mv data.exch2_72x72x29297 data.exch2
 export MPI_NUM_MEMORY_REGIONS=256
-mpiexec -n 35000 ./mitgcmuv
+mpiexec -n 35000 ./mitgcmuv_72x72x29297
+
+==============
+
+cd ~/llc_4320
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+# set correct tileSizeX and tileSizeY in MITgcm_contrib/llc_hires/llc_4320/cpde-asyn/readtile_mpiio.c
+cd MITgcm
+module purge
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
+mkdir build run_180x180x5015
+lfs setstripe -c -1 run_180x180x5015
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_180x180x5015 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 16
+cd ../run_180x180x5015
+cp ../build/mitgcmuv mitgcmuv_180x180x5015
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_72x72x29297 data.exch2
+export MPI_NUM_MEMORY_REGIONS=256
+mpiexec -n 6000 ./mitgcmuv_180x180x5015
 
 ==============
 
