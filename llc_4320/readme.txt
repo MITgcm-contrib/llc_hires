@@ -6,6 +6,40 @@ qsub -I -q long -l select=300:ncpus=20:model=ivy,min_walltime=30:00,max_walltime
 
 ==============
 
+qsub -I -q R3089666 -l select=1750:model=ivy:aoe=sles11,walltime=04:00:00
+tcsh
+cd ~/llc_4320/MITgcm
+mkdir run
+lfs setstripe -c -1 run
+cd run
+cat $PBS_NODEFILE | awk '{for (i=0;i<20;++i) print $0}' > mynodes
+setenv PBS_NODEFILE mynodes
+cp /nobackupp8/chenze/run/mitgcmuv_72x72x29297 .
+ln -sf /nobackupp8/chenze/run/pickup_seaice_0000000360.meta pickup_seaice.0000000180.meta
+ln -sf /nobackupp8/chenze/run/pickup_seaice_0000000360.data pickup_seaice.0000000180.data
+ln -sf /nobackupp8/chenze/run/pickup_0000000360.meta pickup.0000000180.meta
+ln -sf /nobackupp8/chenze/run/pickup_0000000360.data pickup.0000000180.data
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_72x72x29297 data.exch2
+module purge
+module load  comp-intel/2012.0.032 netcdf/4.0
+module use -a ~kjtaylor/modulefiles
+module load sles11sp3/mpt-2.10-nasa201311271217
+setenv MPI_BUFS_PER_PROC 512
+setenv MPI_REQUEST_MAX 65536
+setenv MPI_GROUP_MAX 1024
+setenv MPI_NUM_MEMORY_REGIONS 8
+setenv MPI_UNBUFFERED_STDIO 1
+setenv MPI_MEMMAP_OFF 1
+
+mpiexec -n 35000 ./mitgcmuv_72x72x29297
+
+tail -f STDOUT.00000 | grep advcfl_w
+
+==============
+
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
@@ -30,6 +64,8 @@ cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
 mv data.exch2_72x72x29297 data.exch2
 export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 35000 ./mitgcmuv_72x72x29297
+
+tail -f STDOUT.00000 | grep advcfl_w
 
 ==============
 
