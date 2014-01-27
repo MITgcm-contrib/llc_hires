@@ -4,6 +4,50 @@ qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M em
 qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
 qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
 
+#############################
+# 60x60x10882 configuration
+
+qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
+module purge
+module load  comp-intel/2012.0.032 netcdf/4.0
+module use -a ~kjtaylor/modulefiles
+module load sles11sp3/mpt-2.10-nasa201311271217
+cd ~/llc_2160
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+cd MITgcm
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_60x60_10882 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 60;
+    tileSizeY = 60;
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
+make depend
+make -j 16
+
+cd ~/llc_2160/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_60x60x10882
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
+mv ../../MITgcm_contrib/llc_hires/llc_2160/input/data.exch2_60x60x10882 data.exch2
+emacs data
+
+export MPI_BUFS_PER_PROC=1024
+export MPI_REQUEST_MAX=65536
+export MPI_GROUP_MAX=1024
+export MPI_NUM_MEMORY_REGIONS=8
+export MPI_UNBUFFERED_STDIO=1
+export MPI_MEMMAP_OFF=1
+mpiexec -n 12000 ./mitgcmuv_60x60x10882
+
+tail -f STDOUT.00000 | grep advcfl_W
+
 ==============
 
 cd ~/llc_2160
