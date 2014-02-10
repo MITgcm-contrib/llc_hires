@@ -2,11 +2,54 @@ For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
 qsub -I -q normal -l select=300:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
 qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
+
+#############################
+# 90x90x19023 configuration
+
 qsub -I -q long -l select=1020:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
+module purge
+module load  comp-intel/2012.0.032 netcdf/4.0
+module use -a ~kjtaylor/modulefiles
+module load sles11sp3/mpt-2.10-nasa201311271217
+cd ~/llc_4320
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+cd MITgcm
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 90;
+    tileSizeY = 90;
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 16
+
+cd ~/llc_4320/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_90x90x19023
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_90x90x19023 data.exch2
+emacs data
+
+export MPI_BUFS_PER_PROC=1024
+export MPI_REQUEST_MAX=65536
+export MPI_GROUP_MAX=1024
+export MPI_NUM_MEMORY_REGIONS=8
+export MPI_UNBUFFERED_STDIO=1
+export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
+mpiexec -n 20400 ./mitgcmuv_90x90x19023
+
+tail -f STDOUT.00000 | grep advcfl_W
 
 #############################
 # generate 60x60 blank tiles
-
 qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
 module purge
 module load  comp-intel/2012.0.032 netcdf/4.0
@@ -15,7 +58,6 @@ module load sles11sp3/mpt-2.10-nasa201311271217
 cd ~/llc_4320/MITgcm
 mkdir run_60x60
 lfs setstripe -c -1 run_60x60
-
 cd build
 rm *
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
@@ -34,20 +76,17 @@ emacs eeboot_minimal.F
 C         standardMessageUnit=errorMessageUnit
          WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:5)
          OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
-
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
 make -j 16
-
 cd ~/llc_4320/MITgcm/run_60x60
 cp ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
 mv data.exch2_120x120x10901 data.exch2
-
 emacs data
  tRef =  18.89, 18.89,
  sRef =  34.84, 34.84,
@@ -58,21 +97,19 @@ emacs data
 # uVelInitFile   ='UVEL_llc2160_10sep2011_4320x56160x90_r4',
 # vVelInitFile   ='VVEL_llc2160_10sep2011_4320x56160x90_r4',
 # pSurfInitFile  ='ETAN_llc2160_10sep2011_4320x56160_r4',
-
 emacs data.exch2
 # remove the blank tile list
-
 export MPI_BUFS_PER_PROC=1024
 export MPI_REQUEST_MAX=65536
 export MPI_GROUP_MAX=1024
 export MPI_NUM_MEMORY_REGIONS=8
 export MPI_UNBUFFERED_STDIO=1
 export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
 #############################
 # generate 45x45 blank tiles
-
 qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
 module purge
 module load  comp-intel/2012.0.032 netcdf/4.0
@@ -81,7 +118,6 @@ module load sles11sp3/mpt-2.10-nasa201311271217
 cd ~/llc_4320/MITgcm
 mkdir run_45x45
 lfs setstripe -c -1 run_45x45
-
 cd build
 rm *
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
@@ -100,20 +136,17 @@ emacs eeboot_minimal.F
 C         standardMessageUnit=errorMessageUnit
          WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:5)
          OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
-
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
 make -j 16
-
 cd ~/llc_4320/MITgcm/run_45x45
 cp ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
 mv data.exch2_120x120x10901 data.exch2
-
 emacs data
  tRef =  18.89, 18.89,
  sRef =  34.84, 34.84,
@@ -124,18 +157,76 @@ emacs data
 # uVelInitFile   ='UVEL_llc2160_10sep2011_4320x56160x90_r4',
 # vVelInitFile   ='VVEL_llc2160_10sep2011_4320x56160x90_r4',
 # pSurfInitFile  ='ETAN_llc2160_10sep2011_4320x56160_r4',
-
 emacs data.exch2
 # remove the blank tile list
-
 export MPI_BUFS_PER_PROC=1024
 export MPI_REQUEST_MAX=65536
 export MPI_GROUP_MAX=1024
 export MPI_NUM_MEMORY_REGIONS=8
 export MPI_UNBUFFERED_STDIO=1
 export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
+#############################
+# generate 48x48 blank tiles
+qsub -I -q devel -l select=600:ncpus=20:model=ivy,walltime=2:00:00 -m abe -M menemenlis@me.com
+module purge
+module load  comp-intel/2012.0.032 netcdf/4.0
+module use -a ~kjtaylor/modulefiles
+module load sles11sp3/mpt-2.10-nasa201311271217
+cd ~/llc_4320/MITgcm
+mkdir run_48x48
+lfs setstripe -c -1 run_48x48
+cd build
+rm *
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 48;
+    tileSizeY = 48;
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_120x120x10901 SIZE.h
+emacs SIZE.h
+     &           sNx =  48,
+     &           sNy =  48,
+     &           nSx =  10,
+     &           nPx = 10530,
+     &           Nr  =  2 )
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/eeboot_minimal.F .
+emacs eeboot_minimal.F
+C         standardMessageUnit=errorMessageUnit
+         WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:5)
+         OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 16
+cd ~/llc_4320/MITgcm/run_48x48
+cp ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+mv data.exch2_120x120x10901 data.exch2
+emacs data.exch2
+# remove blankList
+emacs data
+ tRef =  18.89, 18.89,
+ sRef =  34.84, 34.84,
+ endtime=20.,
+ delR =   1.00,    1.14,
+# hydrogThetaFile='THETA_llc2160_10sep2011_4320x56160x90_r4',
+# hydrogSaltFile ='SALT_llc2160_10sep2011_4320x56160x90_r4',
+# uVelInitFile   ='UVEL_llc2160_10sep2011_4320x56160x90_r4',
+# vVelInitFile   ='VVEL_llc2160_10sep2011_4320x56160x90_r4',
+# pSurfInitFile  ='ETAN_llc2160_10sep2011_4320x56160_r4',
+export MPI_BUFS_PER_PROC=1024
+export MPI_REQUEST_MAX=65536
+export MPI_GROUP_MAX=1024
+export MPI_NUM_MEMORY_REGIONS=8
+export MPI_UNBUFFERED_STDIO=1
+export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
+mpiexec -n 12000 ./mitgcmuv
 
 #############################
 # 120x120x10901 configuration
@@ -177,6 +268,7 @@ export MPI_GROUP_MAX=1024
 export MPI_NUM_MEMORY_REGIONS=8
 export MPI_UNBUFFERED_STDIO=1
 export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv_120x120x10901
 
 tail -f STDOUT.00000 | grep advcfl_W
@@ -210,6 +302,7 @@ setenv MPI_GROUP_MAX 1024
 setenv MPI_NUM_MEMORY_REGIONS 8
 setenv MPI_UNBUFFERED_STDIO 1
 setenv MPI_MEMMAP_OFF 1
+export MPI_UD_TIMEOUT=100
 
 mpiexec -n 35000 ./mitgcmuv_72x72x29297
 
