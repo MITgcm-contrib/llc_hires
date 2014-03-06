@@ -7,9 +7,7 @@
  tRef               = 3*23.,3*22.,21.,2*20.,19.,2*18.,17.,2*16.,15.,14.,13.,
                       12.,11.,2*9.,8.,7.,2*6.,2*5.,3*4.,3*3.,4*2.,12*1.,
  sRef               = 50*34.5,
- viscAr= 5.6614e-04,
- diffKrT=1.4022e-05,
- diffKrS=1.4022e-05,
+ viscAr=5.6614e-04,
  no_slip_sides=.FALSE.,
  rhonil=1027.5,
  rhoConstFresh=999.8,
@@ -84,4 +82,5 @@
  pSurfInitFile  = 'ETA_ECCOv4_jan2001_270x3510x50_r4',
  hydrogThetaFile= 'THETa_ECCOv4_jan2001_270x3510x50_r4',
  hydrogSaltFile = 'SALT_ECCOv4_jan2001_270x3510x50_r4',
+ diffKrFile     = 'DIFFKR_2_20_1_lat6070_cube81_270x3510x50_r4',
  /
