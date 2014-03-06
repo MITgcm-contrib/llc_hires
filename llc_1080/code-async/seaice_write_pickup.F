@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/seaice_write_pickup.F,v 1.1 2013/09/29 22:43:01 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/seaice_write_pickup.F,v 1.2 2014/03/06 02:45:05 dimitri Exp $
 C $Name:  $
 
 #include "SEAICE_OPTIONS.h"
@@ -186,7 +186,7 @@ C--    write Sea-Ice Dynamics variables (all 2-D fields):
        CALL WRITE_REC_3D_RL( fn, fp,  1, VICE , nj, myIter, myThid )
        IF (j.LE.listDim)  wrFldList(j) = 'siVICE  '
 
-       IF ( SEAICEuseAB2 ) THEN
+       IF ( SEAICEuseBDF2 ) THEN
         j = j + 1
         nj = nj-1
         CALL WRITE_REC_3D_RL( fn, fp,  1, uIceNm1 , nj, myIter, myThid )

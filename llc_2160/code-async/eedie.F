@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/eedie.F,v 1.1 2013/10/29 08:14:41 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/eedie.F,v 1.2 2014/03/06 02:45:05 dimitri Exp $
 C $Name:  $
 
 #include "CPP_EEOPTIONS.h"
@@ -77,6 +77,12 @@ C--   end if/else eebootError
       CALL F_HPMTERMINATE(myProcId)
 #endif
 
+C--   Flush IO-unit before MPI termination
+      CALL MDS_FLUSH( errorMessageUnit, 1 )
+c#ifdef ALLOW_USE_MPI
+      CALL MDS_FLUSH( standardMessageUnit, 1 )
+c#endif /* ALLOW_USE_MPI */
+
 #ifdef ALLOW_USE_MPI
 C- Note: since MPI_INIT is always called, better to also always terminate MPI
 C        (even if usingMPI=F) --> comment out test on usingMPI
@@ -97,7 +103,6 @@ C!     CALL MPI_BARRIER( MPI_COMM_WORLD, mpiRC )
 #ifdef ALLOW_OASIS
        IF ( useOASIS ) CALL OASIS_FINALIZE
 #endif
-       PRINT *, ' EEDIE BEFORE FINALIZE'
        CALL MPI_FINALIZE  ( mpiRC )
        IF ( mpiRC .NE. MPI_SUCCESS ) THEN
         eeEndError = .TRUE.

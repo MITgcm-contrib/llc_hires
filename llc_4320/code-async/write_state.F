@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/write_state.F,v 1.2 2014/01/10 16:50:36 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/write_state.F,v 1.3 2014/03/06 02:45:05 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -57,17 +57,6 @@ C     !USES:
 #ifdef ALLOW_MNC
 #include "MNC_PARAMS.h"
 #endif
-
-#include "FFIELDS.h"
-#include "KPP.h"
-#include "SURFACE.h"
-
-! Define this as a special temp hack
-#define SEAICE_VARIABLE_SALINITY
-
-#include "SEAICE_SIZE.h"
-#include "SEAICE.h"
-
 
       LOGICAL  DIFFERENT_MULTIPLE
       EXTERNAL DIFFERENT_MULTIPLE
@@ -144,6 +133,7 @@ C         easier to transfer analyse a particular snap-shots
           WRITE(suff,'(I10.10)') myIter
 
 #ifdef ALLOW_AUTODIFF_OPENAD
+# ifndef ALLOW_STREAMICE
           CALL WRITE_FLD_XYZ_RL( 'U.',suff,uVel%v,myIter,myThid)
           CALL WRITE_FLD_XYZ_RL( 'V.',suff,vVel%v,myIter,myThid)
           CALL WRITE_FLD_XYZ_RL( 'T.',suff,theta%v,myIter,myThid)
@@ -153,6 +143,7 @@ C         easier to transfer analyse a particular snap-shots
           IF ( useDynP_inEos_Zc .OR. myIter.NE.nIter0 ) THEN
             CALL WRITE_FLD_XYZ_RL('PH.',suff,totPhiHyd%v,myIter,myThid)
           ENDIF
+# endif
 #else
 
           
