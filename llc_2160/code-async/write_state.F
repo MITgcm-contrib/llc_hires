@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_state.F,v 1.3 2014/03/06 02:45:05 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_state.F,v 1.4 2014/03/06 03:00:39 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -57,6 +57,17 @@ C     !USES:
 #ifdef ALLOW_MNC
 #include "MNC_PARAMS.h"
 #endif
+
+#include "FFIELDS.h"
+#include "KPP.h"
+#include "SURFACE.h"
+
+! Define this as a special temp hack
+#define SEAICE_VARIABLE_SALINITY
+
+#include "SEAICE_SIZE.h"
+#include "SEAICE.h"
+
 
       LOGICAL  DIFFERENT_MULTIPLE
       EXTERNAL DIFFERENT_MULTIPLE
