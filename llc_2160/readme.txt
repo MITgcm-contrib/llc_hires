@@ -1,7 +1,7 @@
 For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
 qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
-qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
+qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@me.com
 qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
 
 #############################
@@ -14,7 +14,7 @@ module use -a ~kjtaylor/modulefiles
 module load sles11sp3/mpt-2.10-nasa201311271217
 cd ~/llc_2160
 cvs co MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_4320
+cvs co MITgcm_contrib/llc_hires/llc_2160
 cd MITgcm
 mkdir build run
 lfs setstripe -c -1 run
@@ -30,7 +30,7 @@ emacs readtile_mpiio.c
 make depend
 make -j 16
 
-cd ~/llc_2160/MITgcm/run
+cd ~/llc_2160/MITgcm/run_day49_on
 cp ../build/mitgcmuv mitgcmuv_60x60x10882
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
@@ -44,6 +44,7 @@ export MPI_GROUP_MAX=1024
 export MPI_NUM_MEMORY_REGIONS=8
 export MPI_UNBUFFERED_STDIO=1
 export MPI_MEMMAP_OFF=1
+export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv_60x60x10882
 
 tail -f STDOUT.00000 | grep advcfl_W
