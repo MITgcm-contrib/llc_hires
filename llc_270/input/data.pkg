@@ -1,0 +1,11 @@
+# Packages
+ &PACKAGES
+ useBBL         = .TRUE.,
+ useDiagnostics = .TRUE.,
+ useEXF         = .TRUE.,
+ useFRAZIL      = .TRUE.,
+ useGMREDI      = .TRUE.,
+ useKPP         = .TRUE.,
+ useSALT_PLUME  = .TRUE.,
+ useSEAICE      = .TRUE.,
+ /
