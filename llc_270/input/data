@@ -12,8 +12,8 @@
  rhonil=1027.5,
  rhoConstFresh=999.8,
  eosType='JMD95Z',
- hFacMinDr=5.,
- hFacMin=0.2,
+ hFacMinDr=50.,
+ hFacMin=0.3,
  hFacInf=0.1,
  hFacSup=5.,
  select_rStar=2,
@@ -76,7 +76,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='SandS14p1_ibcao_270x3510_cap6000_smooth.bin',
+ bathyFile      = 'bathy270_r4',
  uVelInitFile   = 'UVEL_ECCOv4_jan2001_270x3510x50_r4',
  vVelInitFile   = 'VVEL_ECCOv4_jan2001_270x3510x50_r4',
  pSurfInitFile  = 'ETA_ECCOv4_jan2001_270x3510x50_r4',
