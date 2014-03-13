@@ -30,7 +30,7 @@ emacs readtile_mpiio.c
 make depend
 make -j 16
 
-cd ~/llc_2160/MITgcm/run_day49_on
+cd ~/llc_2160/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_60x60x10882
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
