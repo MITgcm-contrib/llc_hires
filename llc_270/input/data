@@ -51,11 +51,11 @@
 # Time stepping parameters
  &PARM03
  nIter0=0,
- nTimeSteps=720,
+ nTimeSteps=345600,
  abEps = 0.1,
- deltaT = 1800.,
+ deltaT = 900.,
  pChkptFreq  =2635200.0,
- chkptFreq   =2635200.0,
+ chkptFreq   =864000.0,
  monitorFreq = 43200.0,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
@@ -77,10 +77,10 @@
 # Input datasets
  &PARM05
  bathyFile      = 'bathy270_r4',
- uVelInitFile   = 'UVEL_ECCOv4_jan2001_270x3510x50_r4',
- vVelInitFile   = 'VVEL_ECCOv4_jan2001_270x3510x50_r4',
- pSurfInitFile  = 'ETA_ECCOv4_jan2001_270x3510x50_r4',
- hydrogThetaFile= 'THETa_ECCOv4_jan2001_270x3510x50_r4',
- hydrogSaltFile = 'SALT_ECCOv4_jan2001_270x3510x50_r4',
+# uVelInitFile   = 'UVEL_ECCOv4_jan2001_270x3510x50_r4',
+# vVelInitFile   = 'VVEL_ECCOv4_jan2001_270x3510x50_r4',
+ pSurfInitFile  = 'eta_ecco_v4_to_llc270_at_0000078900.data',
+ hydrogThetaFile= 'theta_ecco_v4_to_llc270_at_0000078900.data',
+ hydrogSaltFile = 'salt_ecco_v4_to_llc270_at_0000078900.data',
  diffKrFile     = 'DIFFKR_2_20_1_lat6070_cube81_270x3510x50_r4',
  /

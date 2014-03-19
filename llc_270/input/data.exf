@@ -13,13 +13,13 @@
  &
 #
  &EXF_NML_02
- precipfile        = 'jra55/jra55_rain',
- atempfile         = 'jra55/jra55_tmp2m_degC',
- aqhfile           = 'jra55/jra55_spfh2m',
- swdownfile        = 'jra55/jra55_dsw',
- lwdownfile        = 'jra55/jra55_dlw',
- uwindfile         = 'jra55/jra55_u10m',
- vwindfile         = 'ra55/jra55_v10m',
+ precipfile        = 'jra55_rain',
+ atempfile         = 'jra55_tmp2m_degC',
+ aqhfile           = 'jra55_spfh2m',
+ swdownfile        = 'jra55_dsw',
+ lwdownfile        = 'jra55_dlw',
+ uwindfile         = 'jra55_u10m',
+ vwindfile         = 'jra55_v10m',
  runofffile        = 'runoffp6615-360x180x12.bin',
 #
  precipstartdate1  = 19790101,

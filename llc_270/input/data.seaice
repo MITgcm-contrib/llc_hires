@@ -33,10 +33,10 @@
       SEAICE_wetAlbTemp  = 0.0,
       SEAICE_saltFrac    = 0.3548,
 #
-      AreaFile           = 'AREA_ECCOv4_jan2001_270x3510_r4',
-      HsnowFile          = 'HSNOW_ECCOv4_jan2001_270x3510_r4',
-      HsaltFile          = 'HSALT_ECCOv4_jan2001_270x3510_r4',
-      HeffFile           = 'HEFF_ECCOv4_jan2001_270x3510_r4',
-      UiceFile           = 'UICE_ECCOv4_jan2001_270x3510_r4',
-      ViceFile           = 'VICE_ECCOv4_jan2001_270x3510_r4',
+      AreaFile           = 'SIharea_ecco_v4_to_llc270_at_0000078900.data',
+      HsnowFile          = 'SIhsnow_ecco_v4_to_llc270_at_0000078900.data',
+#      HsaltFile          = 'HSALT_ECCOv4_jan2001_270x3510_r4',
+      HeffFile           = 'SIheff_ecco_v4_to_llc270_at_0000078900.data',
+#      UiceFile           = 'UICE_ECCOv4_jan2001_270x3510_r4',
+#      ViceFile           = 'VICE_ECCOv4_jan2001_270x3510_r4',
  &
