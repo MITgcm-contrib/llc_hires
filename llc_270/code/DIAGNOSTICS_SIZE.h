@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/DIAGNOSTICS_SIZE.h,v 1.2 2014/03/20 21:44:25 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/DIAGNOSTICS_SIZE.h,v 1.3 2014/03/21 17:26:17 zhc Exp $
 C $Name:  $
 
 
@@ -22,7 +22,7 @@ C  and "diagSt_size" (statistics-diags) since values here are deliberately small
       INTEGER    diagSt_size
       PARAMETER( ndiagMax = 700 )
       PARAMETER( numlists = 70, numperlist = 30, numLevels=2*Nr )
-      PARAMETER( numDiags = 900 )
+      PARAMETER( numDiags = 2000 )
       PARAMETER( nRegions = 0 , sizRegMsk = 1 , nStats = 4 )
       PARAMETER( diagSt_size = 10*Nr )
 
