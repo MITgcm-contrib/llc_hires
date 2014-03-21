@@ -1,0 +1,36 @@
+#
+# ******************
+# PROFILES cost function
+# ******************
+ &PROFILES_NML
+#
+ profilesDir='profiles',
+ profilesDoGenGrid=.TRUE.,
+#
+ profilesfiles(1)= 'argo_feb2013_1992_to_2007_4mygrid',
+ profilesfiles(2)= 'argo_feb2013_2008_to_2010_4mygrid',
+ profilesfiles(3)= 'argo_feb2013_2011_to_2012_4mygrid',
+ profilesfiles(4)= 'xbt_feb2013_4mygrid',
+ profilesfiles(5)= 'ctd_feb2013_4mygrid',
+ profilesfiles(6)= 'seals_feb2013_4mygrid',
+ profilesfiles(7)= 'itp_feb2013_4mygrid',
+ profilesfiles(8)= 'climode_feb2013_4mygrid',
+#
+ mult_profiles(1,1)   = 2.,
+ mult_profiles(1,2)   = 2.,
+ mult_profiles(2,1)   = 2.,
+ mult_profiles(2,2)   = 2.,
+ mult_profiles(3,1)   = 2.,
+ mult_profiles(3,2)   = 2.,
+ mult_profiles(4,1)   = 2.,
+ mult_profiles(4,2)   = 0.,
+ mult_profiles(5,1)   = 2.,
+ mult_profiles(5,2)   = 2.,
+ mult_profiles(6,1)   = 2.,
+ mult_profiles(6,2)   = 2.,
+ mult_profiles(7,1)   = 2.,
+ mult_profiles(7,2)   = 2.,
+ mult_profiles(8,1)   = 2.,
+ mult_profiles(8,2)   = 2.,
+#
+ /

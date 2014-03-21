@@ -1,0 +1,14 @@
+#!/bin/csh
+#PBS -l select=31:ncpus=12:model=wes
+#PBS -l walltime=100:00:00
+##PBS -l walltime=2:00:00
+#PBS -j oe
+#PBS -m abe
+
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
+
+umask 027
+cd $PBS_O_WORKDIR
+limit stacksize unlimited
+#./modpickup
+mpiexec -np 366 ./mitgcmuv_45x45x366
