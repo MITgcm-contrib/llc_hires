@@ -76,7 +76,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      = 'bathy270_r4',
+ bathyFile      = 'bathy270_filled_r4',
  pSurfInitFile  = 'eta_ecco_v4_to_llc270_at_0000078900.data',
  hydrogThetaFile= 'theta_ecco_v4_to_llc270_at_0000078900.data',
  hydrogSaltFile = 'salt_ecco_v4_to_llc270_at_0000078900.data',
