@@ -18,8 +18,7 @@ make -j 16
 cd ~/llc_270/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x90x102
 ln -sf /nobackupp8/dmenemen/tarballs/llc_270/run_template/* .
-ln -sf /nobackupp8/dmenemen/forcing/ncep_rgau/runoffp6615-360x180x12.bin .
-ln -sf /nobackup/ifenty/ECCO_v4/release_01_replication/model_forcing/* .
+ln -sf /nobackup/hzhang1/forcing/era-interim .
 
 rm data.exf
 cp ../../MITgcm_contrib/llc_hires/llc_270/input/* .
@@ -50,8 +49,8 @@ make -j 16
 cd ~/llc_270/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_45x45x366
 ln -sf /nobackupp8/dmenemen/tarballs/llc_270/run_template/* .
-ln -sf /nobackup/ifenty/ECCO_v4/release_01_replication/model_forcing/* .
-rm data.exf
+ln -sf /nobackup/hzhang1/forcing/era-interim .
+
 ln -sf /nobackup/hzhang1/llc_1080/MITgcm/PH_270/input_file/*.nc .
 cp ../../MITgcm_contrib/llc_hires/llc_270/input/* .
 ln -sf data.exch2_45x45x366 data.exch2
