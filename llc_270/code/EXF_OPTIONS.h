@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/EXF_OPTIONS.h,v 1.1 2014/03/06 01:09:24 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/EXF_OPTIONS.h,v 1.2 2014/04/11 00:47:19 zhc Exp $
 C $Name:  $
 
 CBOP
@@ -160,7 +160,8 @@ C   Bulk formulae related flags.
 
 C   Zenith Angle/Albedo related flags.
 #ifdef ALLOW_DOWNWARD_RADIATION
-# undef ALLOW_ZENITHANGLE
+# define ALLOW_ZENITHANGLE
+#  undef ALLOW_ZENITHANGLE_BOUNDSWDOWN
 #endif
 
 C   Use ocean_emissivity*lwdown in lwFlux. This flag should be defined
