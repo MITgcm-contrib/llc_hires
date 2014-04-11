@@ -67,7 +67,7 @@
  &EXF_NML_03
  exf_offset_atemp  = 273.15,
  exf_inscal_swdown = -1.0,
- exf_inscal_lwdown = -1.0,
+ exf_inscal_lwdown = -1.03,
  exf_inscal_ustress = -1.0,
  exf_inscal_vstress = -1.0,
  &
