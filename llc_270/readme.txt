@@ -50,7 +50,7 @@ cd ~/llc_270/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_45x45x366
 ln -sf /nobackupp8/dmenemen/tarballs/llc_270/run_template/* .
 ln -sf /nobackup/hzhang1/forcing/era-interim .
-
+ln -sf /nobackup/hzhang1/llc_1080/MITgcm/PH_270/input_file/runoff-2d-Fekete-1deg-mon-V4-SMOOTH.bin .
 ln -sf /nobackup/hzhang1/llc_1080/MITgcm/PH_270/input_file/*.nc .
 cp ../../MITgcm_contrib/llc_hires/llc_270/input/* .
 ln -sf data.exch2_45x45x366 data.exch2
