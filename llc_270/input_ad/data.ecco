@@ -1,0 +1,212 @@
+#
+#
+# ******************
+# ECCO cost function
+# ******************
+#
+ &ECCO_COST_NML
+#
+ data_errfile    = 'data.err',
+ tbarfile        = 'tbar',
+ sbarfile        = 'sbar',
+ psbarfile       = 'psbar',
+ ubarfile        = 'ubar',
+ vbarfile        = 'vbar',
+ hfluxmeanbarfile    = 'hfluxmeanbar',
+ sfluxmeanbarfile    = 'sfluxmeanbar',
+#
+# temp0errfile     = 'sigma_T_atlas2_eccollc.bin',
+# salt0errfile     = 'sigma_S_atlas2_eccollc.bin',
+#
+# atemp_errfile    = 'cap_sigma_tmp2m_degC_eccollc.bin',
+# aqh_errfile      = 'cap_sigma_spfh2m_eccollc.bin',
+# tauu_errfile    = 'cap_sigma_ustr_eccollc.bin',
+# tauv_errfile    = 'cap_sigma_vstr_eccollc.bin',
+# precip_errfile   = 'cap_sigma_rain_eccollc.bin',
+# swdown_errfile   = 'cap_sigma_dsw_eccollc.bin',
+# lwdown_errfile   = 'cap_sigma_dlw_eccollc.bin',
+#
+ whflux0              = 20.0,
+ wsflux0              = 3.0E-8,
+ wtau0                = 2.0E-2,
+#
+ watemp0              = 1.0,
+ waqh0                = 0.5E-3,
+ wprecip0             = 1.5E-8,
+ wswflux0             = 15.0,
+ wswdown0             = 15.0,
+ wwind0               = 1.0,
+#
+ wkapgm0              = 5.0E3,
+ wkapredi0            = 5.0E3,
+ wdiffkr0             = 1.0E-4,
+ wedtau0              = 1.0E0,
+ wbottomdrag0         = 1.0E-5,
+#
+ wmean_hflux          = 60.0,
+ wmean_sflux          = 3.2E-8,
+ wmean_tau            = 0.2,
+#
+ wmean_atemp          = 8.0,
+ wmean_aqh            = 4.0E-3,
+ wmean_precip         = 9.0E-8,
+ wmean_swflux         = 90.0,
+ wmean_swdown         = 90.0,
+ wmean_wind           = 8.0,
+#
+ mult_temp0  = 1.,
+ mult_salt0  = 1.,
+#
+ mult_hflux  = 1.,
+ mult_sflux  = 1.,
+ mult_tauu   = 1.,
+ mult_tauv   = 1.,
+#
+ mult_atemp  = 1.,
+ mult_aqh    = 1.,
+ mult_uwind  = 1.,
+ mult_vwind  = 1.,
+ mult_precip = 1.,
+ mult_swflux = 1.,
+ mult_swdown = 1.,
+ mult_lwflux = 1.,
+ mult_lwdown = 1.,
+#
+ mult_kapgm   = 1.,
+ mult_kapredi = 1.,
+ mult_diffkr  = 1.,
+ mult_edtau   = 1.,
+ mult_bottomdrag   = 1.,
+#
+# tdatfile        = 'T_OWPv1_M_eccollc_90x50.bin',
+# sdatfile        = 'S_OWPv1_M_eccollc_90x50.bin',
+# tdatfile        = 'g_wod05_ptmp50',
+# sdatfile        = 'g_wod05_salt50',
+# temperrfile     = 'sigma_T_atlas2_eccollc.bin',
+# salterrfile     = 'sigma_S_atlas2_eccollc.bin',
+#
+# topexmeanfile   = 'mdt_pak09.bin',
+# topexmeanfile   = 'mdt_max09.bin',
+# topexmeanfile   = 'mdt_rio09.bin',
+#revised version: geoid_errfile   = 'sigma_MDT_glob_eccollc.bin',
+# geoid_errfile   = 'g_TPJ_GRACE_r4.err',
+#
+ using_topex     = .TRUE.,
+ topexstartdate1 = 19920101,
+ topexstartdate2 = 00000,
+ topexperiod     = 86400.0,
+# topexfile       = 'RADS_TJ_v4_noice',
+#!!we need a file in cm!! tp_errfile     = 'sigma_SLA_PWS07r2_glob_eccollc.bin',
+# tp_errfile     = 'g_PODAAC_TPJ_sd_s_filled_11yr',
+#
+ using_ers       = .TRUE.,
+ ersstartdate1   = 19920101,
+ ersstartdate2   = 00000,
+ ersperiod       = 86400.0,
+# ersfile         = 'RADS_ERS_ENV_v4_noice',
+#!!we need a file in cm!! ers_errfile     = 'sigma_SLA_PWS07r2_glob_eccollc.bin',
+# ers_errfile     = 'g_PODAAC_TPJ_sd_s_filled_11yr',
+#
+ using_gfo       = .TRUE.,
+ gfostartdate1   = 19920101,
+ gfostartdate2   = 00000,
+ gfoperiod       = 86400.0,
+# gfofile         = 'RADS_GFO_v4_noice',
+#!!we need a file in cm!!  gfo_errfile     = 'sigma_SLA_PWS07r2_glob_eccollc.bin',
+# gfo_errfile     = 'g_PODAAC_TPJ_sd_s_filled_11yr',
+#
+ sststartdate1   = 19920101,
+ sststartdate2   = 00000,
+#sstdatfile      = 'g_SST_monthly_r2',
+# sstdatfile      = 'reynolds_oiv2_r1',
+#
+ tmistartdate1   = 19980101,
+ tmistartdate2   = 00000,
+# tmidatfile      = 'tmi_amsre_oisst_r1',
+#
+ ssterrfile      = 'sigma_half.bin',
+#
+ bpstartdate1   = 19920101,
+ bpstartdate2   = 00000,
+# bpdatfile      = 'GRACE_CSR_withland',
+# bperrfile      = 'GRACE_CSR_withland_err',
+#
+ scatstartdate1   = 19990101,
+ scatstartdate2   = 00000,
+# scatxdatfile      = 'QSCAT_Large_u_r2',
+# scatx_errfile     = 'QSCAT_Large_u_r2.rms',
+# scatydatfile      = 'QSCAT_Large_v_r2',
+# scaty_errfile     = 'QSCAT_Large_v_r2.rms',
+#
+ mult_temp   = 0.15,
+ mult_salt   = 0.15,
+ mult_sst    = 1.,
+ mult_tmi    = 0.,
+ mult_scatx  = 0.,
+ mult_scaty  = 0.,
+ mult_bp     = 0.,
+#
+ cost_iprec  = 32,
+ cost_yftype = 'RL',
+#
+ /
+#
+ &ECCO_GENCOST_NML
+#
+#  gencost_avgperiod(1)  = 'month',
+#  gencost_barfile(1) = 'gbar_area',
+#  gencost_datafile(1) = 'nsidc79_monthly',
+#  gencost_errfile(1) = 'sigma_iceconc_eccollc.bin',
+#  gencost_name(1) = 'siv4-conc',
+#  gencost_spmin(1) = -999.,
+#  gencost_spmax(1) = 999.,
+#  gencost_spzero(1) = -9999.,
+#  mult_gencost(1) = 0.,
+##
+#  gencost_avgperiod(2)  = 'month',
+#  gencost_barfile(2) = 'gbar_sst',  
+#  gencost_name(2) = 'siv4-sst',
+#  mult_gencost(2) = 1.,
+#  gencost_datafile(2) = 'nsidc79_monthly',
+#  gencost_spmin(2) = -999.,
+#  gencost_spmax(2) = 999.,
+#  gencost_spzero(2) = -9999.,  
+##
+#  gencost_avgperiod(3)  = 'month',
+#  gencost_barfile(3) = 'gbar_heff',
+#  gencost_name(3) = 'siv4-vol',
+#  mult_gencost(3) = 0.,
+#  gencost_datafile(3) = 'nsidc79_monthly',
+#  gencost_spmin(3) = -999.,
+#  gencost_spmax(3) = 999.,
+#  gencost_spzero(3) = -9999.,
+##
+# gencost_errfile(11) = 'sigma_MDT_glob_eccollc.bin',
+# gencost_name(11) = 'sshv4-mdt',
+# gencost_scalefile(11) = 'sshv4_scale_1p5points.bin',
+# mult_gencost(11) = 1.,
+# gencost_errfile(12) = 'slaerr_gridscale_r1.err',
+# gencost_name(12) = 'sshv4-tp',
+# mult_gencost(12) = 1.,
+# gencost_errfile(13) = 'slaerr_gridscale_r1.err',
+# gencost_name(13) = 'sshv4-ers',
+# mult_gencost(13) = 1.,
+# gencost_errfile(14) = 'slaerr_gridscale_r1.err',
+# gencost_name(14) = 'sshv4-gfo',
+# mult_gencost(14) = 1.,
+# gencost_errfile(15) = 'slaerr_largescale_r1.err',
+# gencost_name(15) = 'sshv4-lsc',
+# gencost_scalefile(15) = 'sshv4_scale_3points.bin',
+# mult_gencost(15) = 1.,
+# 
+#gencost_errfile(16) = 'sigma_half.bin',
+#gencost_name(16) = 'sstv4-amsre-lsc',
+#gencost_scalefile(16) = 'sshv4_scale_3points.bin',
+#mult_gencost(16) = 0.,
+#gencost_errfile(17) = 'sigma_half.bin',
+#gencost_name(17) = 'sstv4-amsre',
+#gencost_datafile(17) = 'tmi_amsre_l2p_r1',
+#mult_gencost(17) = 0.,
+#
+ /
+#
