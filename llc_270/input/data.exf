@@ -8,9 +8,9 @@
  useExfZenIncoming = .TRUE., 
  select_ZenAlbedo  = 1,
 #
- ocean_emissivity = 0.97,
- ice_emissivity = 0.95,
- snow_emissivity = 0.95,
+ ocean_emissivity  = 0.97,
+ ice_emissivity    = 0.95,
+ snow_emissivity   = 0.95,
  exf_iprec         = 32,
  exf_yftype        = 'RL',
  useExfYearlyFields= .TRUE.,
@@ -24,16 +24,15 @@
  precipfile        = 'era-interim/EIG_rain',
  uwindfile         = 'era-interim/EIG_u10m',
  vwindfile         = 'era-interim/EIG_v10m',
- wspeedfile        = 'era-interim/EIG_wspeed',
  swdownfile        = 'era-interim/EIG_dsw',
  lwdownfile        = 'era-interim/EIG_dlw',
 #
  atempstartdate1   = 19920101,
- atempstartdate2   = 030000,
+ atempstartdate2   = 000000,
  atempperiod       = 21600.0,
 #
  aqhstartdate1     = 19920101,
- aqhstartdate2     = 030000,
+ aqhstartdate2     = 000000,
  aqhperiod         = 21600.0,
 #
  precipstartdate1  = 19920101,
@@ -44,16 +43,12 @@
  runoffperiod      = -12,
 #
  uwindstartdate1   = 19920101,
- uwindstartdate2   = 030000,
+ uwindstartdate2   = 000000,
  uwindperiod       = 21600.0,
 #
  vwindstartdate1   = 19920101,
- vwindstartdate2   = 030000,
+ vwindstartdate2   = 000000,
  vwindperiod       = 21600.0,
-#
- wspeedstartdate1   = 19920101,
- wspeedstartdate2   = 030000,
- wspeedperiod       = 21600.0,
 #
  swdownstartdate1  = 19920101,
  swdownstartdate2  = 030000,
@@ -65,11 +60,9 @@
  &
 #
  &EXF_NML_03
- exf_offset_atemp  = 273.15,
- exf_inscal_swdown = -1.0,
- exf_inscal_lwdown = -1.03,
- exf_inscal_ustress = -1.0,
- exf_inscal_vstress = -1.0,
+ exf_offset_atemp   = 273.15,
+ exf_inscal_swdown  = -1.0,
+ exf_inscal_lwdown  = -1.0,
  &
 #
  &EXF_NML_04
@@ -119,15 +112,6 @@
                      0.7014313,0.7012634,0.7009048,0.6999817,0.6958694
  vwind_nlon        = 512,
  vwind_nlat        = 256,
-#
- wspeed_lon0        =   0.0000000D0,
- wspeed_lon_inc     =   0.7031250D0,
- wspeed_lat0        = -89.4628220D0,
- wspeed_lat_inc     = 0.6958694,0.6999817,0.7009048,0.7012634,0.7014313,
-                     245*0.7017418,
-                     0.7014313,0.7012634,0.7009048,0.6999817,0.6958694
- wspeed_nlon        = 512,
- wspeed_nlat        = 256,
 #
  swdown_lon0        =   0.0000000D0,
  swdown_lon_inc     =   0.7031250D0,
