@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/SEAICE_OPTIONS.h,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/SEAICE_OPTIONS.h,v 1.2 2014/04/17 00:13:10 ifenty Exp $
 C $Name:  $
 
 C     *==========================================================*
@@ -34,16 +34,14 @@ C     in a separate external package, for example, pkg/exf, and then
 C     modified for sea-ice effects by pkg/seaice.
 #define SEAICE_EXTERNAL_FLUXES
 
-C--   This CPP flag has been retired.  The number of ice categories
-C     used to solve for seaice flux is now specified by run-time
-C     parameter SEAICE_multDim.
-C     Note: be aware of pickup_seaice.* compatibility issues when
-C     restarting a simulation with a different number of categories.
+C--   The actual number of ice categories used to solve for seaice flux is
+C     now a run-time parameter (SEAICE_multDim).
+C     This CPP-flag will be completely removed soon (no longer in main code);
+C     it is just used to set default number of categories, i.e., =1 if undef,
+C     or =MULTDIM if defined (MULTDIM=7 in default SEAICE_SIZE.h).
+C     Note: be aware of pickup_seaice.* compatibility issues when restarting
+C     a simulation with a different number of categories.
 c#define SEAICE_MULTICATEGORY
-
-C--   run with sea Ice Thickness Distribution (ITD);
-C     set number of categories (nITD) in SEAICE_SIZE.h
-#undef SEAICE_ITD
 
 C--   Since the missing sublimation term is now included
 C     this flag is needed for backward compatibility
@@ -56,7 +54,7 @@ C--   Default is constant seaice salinity (SEAICE_salt0); Define the following
 C     flag to consider (space & time) variable salinity: advected and forming
 C     seaice with a fraction (=SEAICE_saltFrac) of freezing seawater salinity.
 C- Note: SItracer also offers an alternative way to handle variable salinity.
-#define SEAICE_VARIABLE_SALINITY
+#undef SEAICE_VARIABLE_SALINITY
 
 C--   Tracers of ice and/or ice cover.
 #undef ALLOW_SITRACER
@@ -72,37 +70,15 @@ C     (not thoroughly) test version on a C-grid
 
 C--   Only for the C-grid version it is possible to
 #ifdef SEAICE_CGRID
-C     enable JFNK code by defining the following flag
-# define SEAICE_ALLOW_JFNK
-C     enable LSR to use global (multi-tile) tri-diagonal solver
-# undef SEAICE_GLOBAL_3DIAG_SOLVER
 C     enable EVP code by defining the following flag
-# undef SEAICE_ALLOW_EVP
+# define SEAICE_ALLOW_EVP
 # ifdef SEAICE_ALLOW_EVP
 C--   When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
 #  undef SEAICE_ALLOW_CLIPZETA
 # endif /* SEAICE_ALLOW_EVP */
-C     regularize zeta to zmax with a smooth tanh-function instead
-C     of a min(zeta,zmax). This improves convergence of iterative
-C     solvers (Lemieux and Tremblay 2009, JGR). No effect on EVP
-# undef SEAICE_ZETA_SMOOTHREG
 C     allow the truncated ellipse rheology (runtime flag SEAICEuseTEM)
 # undef SEAICE_ALLOW_TEM
-C     Use LSR vector code; not useful on non-vector machines, because it
-C     slows down convergence considerably, but the extra iterations are
-C     more than made up by the much faster code on vector machines. For
-C     the only regularly test vector machine these flags a specified
-C     in the build options file SUPER-UX_SX-8_sxf90_awi, so that we comment
-C     them out here.
-C# define SEAICE_VECTORIZE_LSR
-C# ifdef SEAICE_VECTORIZE_LSR
-C     Use modified LSR vector code that splits vector loop into two with
-C     step size 2. This modification improves the convergence of the vector
-C     code dramatically, so that is may actually be useful in general, but
-C     that needs to be tested.
-C#  define SEAICE_VECTORIZE_LSR_ZEBRA
-C# endif
 #else /* not SEAICE_CGRID, but old B-grid */
 C--   By default for B-grid dynamics solver wind stress under sea-ice is
 C     set to the same value as it would be if there was no sea-ice.
@@ -123,7 +99,7 @@ C--   When set limit the Ice-Loading to mass of 1/5 of Surface ocean grid-box
 #undef SEAICE_CAP_ICELOAD
 C--   When set use SEAICE_clipVelocties = .true., to clip U/VICE at 40cm/s,
 C     not recommended
-#undef SEAICE_ALLOW_CLIPVELS
+#define SEAICE_ALLOW_CLIPVELS
 C--   When set cap the sublimation latent heat flux in solve4temp according
 C     to the available amount of ice+snow. Otherwise this term is treated
 C     like all of the others -- residuals heat and fw stocks are passed to
@@ -132,7 +108,16 @@ C     SEAICE_CAP_SUBLIM is not needed as of now, but kept just in case.
 #undef SEAICE_CAP_SUBLIM
 
 C--   Enable free drift code
-#undef SEAICE_ALLOW_FREEDRIFT
+#define SEAICE_ALLOW_FREEDRIFT
+
+C--   enforce cfl condition without cuting sensitivity flow
+c#define ALLOW_CFL_FIX
+
+C--   cut the adjoint dependency to hactual, etc.
+c# undef SEAICE_SIMPLIFY_GROWTH_ADJ
+
+C--   go through heff and open ocean
+c#define SEAICE_MODIFY_GROWTH_ADJ
 
 #endif /* ALLOW_SEAICE */
 #endif /* SEAICE_OPTIONS_H */
