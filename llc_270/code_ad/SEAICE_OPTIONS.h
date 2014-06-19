@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/SEAICE_OPTIONS.h,v 1.2 2014/04/17 00:13:10 ifenty Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/SEAICE_OPTIONS.h,v 1.3 2014/06/19 21:58:17 zhc Exp $
 C $Name:  $
 
 C     *==========================================================*

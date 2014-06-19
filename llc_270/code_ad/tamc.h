@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/tamc.h,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/tamc.h,v 1.2 2014/06/19 21:58:17 zhc Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -61,11 +61,14 @@ c     nthreads_chkpt - Number of threads to be used; nth_chkpt .eq. nTx*nTy
 #ifdef ALLOW_TAMC_CHECKPOINTING
 
       integer    nchklev_1
-      parameter( nchklev_1      =   50 )
+c prof=1      
+      parameter( nchklev_1      =   55 )
+c prof=4      
+c     parameter( nchklev_1      =   50 )
       integer    nchklev_2
-      parameter( nchklev_2      =   92 )
+      parameter( nchklev_2      =   80 )
       integer    nchklev_3
-      parameter( nchklev_3      =   92 )
+      parameter( nchklev_3      =   80 )
 
 c--   Note always check for the correct sizes of the common blocks!
 
@@ -107,7 +110,7 @@ c     and writing data.
       PARAMETER( maximpl     = 6 )
 #ifndef ALLOW_PTRACERS
       INTEGER    maxpass
-      PARAMETER( maxpass     = 4 )
+      PARAMETER( maxpass     = 3 )
 #endif
       INTEGER    maxcube
       PARAMETER( maxcube     = 3 )
@@ -115,7 +118,7 @@ c     and writing data.
       INTEGER act0, act1, act2, act3, act4
       INTEGER max0, max1, max2, max3
       INTEGER iikey, kkey, passkey, igadkey, 
-     &        itdkey, idynkey, igmkey
+     &        itdkey, idynkey, igmkey, iptrkey
 
 c     ================================================================
 c     END OF HEADER TAMC

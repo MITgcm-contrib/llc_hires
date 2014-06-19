@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/mom_calc_visc.F,v 1.1 2014/04/16 23:00:56 zhc Exp $ 
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/mom_calc_visc.F,v 1.2 2014/06/19 21:58:16 zhc Exp $ 
 C $Name:  $
 
 #include "MOM_COMMON_OPTIONS.h"

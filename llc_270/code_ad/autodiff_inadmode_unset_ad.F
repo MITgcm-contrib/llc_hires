@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/autodiff_inadmode_unset_ad.F,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/autodiff_inadmode_unset_ad.F,v 1.2 2014/06/19 21:58:16 zhc Exp $
 C $Name:  $
 
 #include "AUTODIFF_OPTIONS.h"
@@ -23,6 +23,7 @@ C     == Routine arguments ==
 C     myThid :: my Thread Id number
       INTEGER myThid
       CHARACTER*(MAX_LEN_MBUF) msgBuf
+      INTEGER k
 
       inAdMode  = inAdFalse
 
@@ -42,6 +43,20 @@ C     myThid :: my Thread Id number
 #endif /* ALLOW_SEAICE */
 
       viscFacAdj=1. _d 0
+C hzh>>      
+      viscAhGrid=1.E-2 !1x "data"
+      diffKhS=1.E1     !
+      diffKhT=1.E1     !
+cc     viscAr=0.5E-4    !
+cc     diffKrS=1.E-5    !
+cc     diffKrT=1.E-5    !
+      do k=1,Nr
+         viscArNr(k)  = 0.5E-4
+c         diffKrNrT(k) = 1.E-5
+c         diffKrNrS(k) = 1.E-5
+      enddo
+C hzh<<      
+
 
       IF ( debugLevel.GE.debLevC ) THEN
        WRITE(msgBuf,'(A,L5)')

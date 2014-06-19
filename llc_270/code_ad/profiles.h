@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/profiles.h,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/profiles.h,v 1.2 2014/06/19 21:58:17 zhc Exp $
 C $Name:  $
 
 C============================================================
@@ -13,7 +13,7 @@ C============================================================
       INTEGER NLEVELMAX
       PARAMETER ( NLEVELMAX=100 )
       INTEGER NUM_INTERP_POINTS
-      PARAMETER (NUM_INTERP_POINTS = 4)
+      PARAMETER (NUM_INTERP_POINTS = 1)
 
 C===========================================================
 C variables

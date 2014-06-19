@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/CPP_OPTIONS.h,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/CPP_OPTIONS.h,v 1.2 2014/06/19 21:58:16 zhc Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -29,7 +29,7 @@ C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE
 
 C o Include/exclude AdamsBashforth-3rd-Order code
-#undef ALLOW_ADAMSBASHFORTH_3
+#define ALLOW_ADAMSBASHFORTH_3
 
 C o Include/exclude code for single reduction cg-solver
 #undef ALLOW_SRCG
@@ -46,10 +46,10 @@ C   forcing fields, if no specific pkg (e.g., EXF) is used to compute them.
 #undef EXCLUDE_FFIELDS_LOAD
 
 C o Include/exclude balancing surface forcing fluxes code
-#undef ALLOW_BALANCE_FLUXES
+#define ALLOW_BALANCE_FLUXES
 
 C o Include/exclude balancing surface forcing relaxation code
-#undef ALLOW_BALANCE_RELAX
+#define ALLOW_BALANCE_RELAX
 
 C o Include/exclude GM-like eddy stress in momentum code
 #undef ALLOW_EDDYPSI
@@ -72,7 +72,7 @@ C o Choices for implicit solver routines solve_*diagonal.F
 C   The following has low memory footprint, but not suitable for AD
 #undef SOLVE_DIAGONAL_LOWMEMORY
 C   The following one suitable for AD but does not vectorize
-#undef SOLVE_DIAGONAL_KINNER
+#define SOLVE_DIAGONAL_KINNER
 
 C o ALLOW isotropic scaling of harmonic and bi-harmonic terms when
 C   using an locally isotropic spherical grid with (dlambda) x (dphi*cos(phi))

@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/CPP_EEOPTIONS.h_mpi,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/CPP_EEOPTIONS.h_mpi,v 1.2 2014/06/19 21:58:16 zhc Exp $
 C $Name:  $
 
 CBOP
@@ -131,7 +131,7 @@ C     assuming locally periodic subdomain)
 
 C--   Alternative way of doing global sum without MPI allreduce call
 C     but instead, explicit MPI send & recv calls.
-#undef  GLOBAL_SUM_SEND_RECV
+#define GLOBAL_SUM_SEND_RECV
 
 C--   Alternative way of doing global sum on a single CPU
 C     to eliminate tiling-dependent roundoff errors.

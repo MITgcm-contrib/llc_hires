@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/EXF_OPTIONS.h,v 1.1 2014/04/16 23:00:56 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/EXF_OPTIONS.h,v 1.2 2014/06/19 21:58:16 zhc Exp $
 C $Name:  $
 
 #ifndef EXF_OPTIONS_H
@@ -134,7 +134,7 @@ C   Bulk formulae related flags.
 #define  ALLOW_RUNOFF
 #if (defined (ALLOW_ATM_TEMP) || defined (ALLOW_ATM_WIND))
 # define ALLOW_BULKFORMULAE
-# undef ALLOW_BULK_LARGEYEAGER04
+# define ALLOW_BULK_LARGEYEAGER04
 #endif
 
 C   Zenith Angle/Albedo related flags.
