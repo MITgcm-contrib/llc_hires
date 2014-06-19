@@ -3,29 +3,35 @@
 # *********************
 #
  &EXF_NML_01
+#
+ useAtmWind        = .TRUE.,
+#NCEP VALUES:
+# exf_albedo        = 0.15,
+# exf_scal_BulkCdn  = 1.015,
+#
 #TO COMBINE WITH ALLOW_ZENITH_ANGLE:
  exf_albedo        = 0.1,
  useExfZenIncoming = .TRUE., 
  select_ZenAlbedo  = 1,
 #
- ocean_emissivity  = 0.97,
- ice_emissivity    = 0.95,
- snow_emissivity   = 0.95,
+ ocean_emissivity = 0.97,
+ ice_emissivity = 0.95,
+ snow_emissivity = 0.95,
+#
  exf_iprec         = 32,
  exf_yftype        = 'RL',
  useExfYearlyFields= .TRUE.,
  useExfCheckRange  = .FALSE.,
- useRelativeWind   = .FALSE.,
- &
+ /
 #
  &EXF_NML_02
- atempfile         = 'era-interim/EIG_tmp2m_degC',
- aqhfile           = 'era-interim/EIG_spfh2m',
- precipfile        = 'era-interim/EIG_rain',
- uwindfile         = 'era-interim/EIG_u10m',
- vwindfile         = 'era-interim/EIG_v10m',
- swdownfile        = 'era-interim/EIG_dsw',
- lwdownfile        = 'era-interim/EIG_dlw',
+ atempfile         = 'era_xx/EIG_tmp2m_degC_plus_ECCO_v4r1_ctrl',
+ aqhfile           = 'era_xx/EIG_spfh2m_plus_ECCO_v4r1_ctrl',
+ precipfile        = 'era_xx/EIG_rain_plus_ECCO_v4r1_ctrl',
+ uwindfile         = 'era_xx/EIG_u10m',
+ vwindfile         = 'era_xx/EIG_v10m',
+ swdownfile        = 'era_xx/EIG_dsw_plus_ECCO_v4r1_ctrl',
+ lwdownfile        = 'era_xx/EIG_dlw_plus_ECCO_v4r1_ctrl',
 #
  atempstartdate1   = 19920101,
  atempstartdate2   = 000000,
@@ -57,13 +63,19 @@
  lwdownstartdate1  = 19920101,
  lwdownstartdate2  = 030000,
  lwdownperiod      = 21600.0,
- &
+#
+ /
 #
  &EXF_NML_03
- exf_offset_atemp   = 273.15,
- exf_inscal_swdown  = -1.0,
- exf_inscal_lwdown  = -1.0,
- &
+#NOT FOR EIG exf_offset_atemp  = 273.3971,
+ exf_offset_atemp  = 273.15,
+#NOT FOR NEW RUNOFF FIELD exf_inscal_runoff = 3.1710e-08,
+ exf_inscal_swdown = -1.0,
+ exf_inscal_lwdown = -1.0,
+# to compensate for sea level rise for nlfs/realFWF
+#precip_exfremo_intercept = 1.073E-9,
+#precip_exfremo_slope = -3.340E-18,
+ /
 #
  &EXF_NML_04
  runoff_interpMethod = 0,
@@ -130,4 +142,4 @@
                      0.7014313,0.7012634,0.7009048,0.6999817,0.6958694
  lwdown_nlon        = 512,
  lwdown_nlat        = 256,
- &
+ /

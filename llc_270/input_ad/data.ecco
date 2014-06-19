@@ -18,13 +18,15 @@
 # temp0errfile     = 'sigma_T_atlas2_eccollc.bin',
 # salt0errfile     = 'sigma_S_atlas2_eccollc.bin',
 #
-# atemp_errfile    = 'cap_sigma_tmp2m_degC_eccollc.bin',
-# aqh_errfile      = 'cap_sigma_spfh2m_eccollc.bin',
+ atemp_errfile    = 'cap_sigma_tmp2m_degC_eccollc.bin',
+ aqh_errfile      = 'cap_sigma_spfh2m_eccollc.bin',
 # tauu_errfile    = 'cap_sigma_ustr_eccollc.bin',
 # tauv_errfile    = 'cap_sigma_vstr_eccollc.bin',
-# precip_errfile   = 'cap_sigma_rain_eccollc.bin',
-# swdown_errfile   = 'cap_sigma_dsw_eccollc.bin',
-# lwdown_errfile   = 'cap_sigma_dlw_eccollc.bin',
+ uwind_errfile    = 'cap_sigma_uwind_eccollc.bin',
+ vwind_errfile    = 'cap_sigma_vwind_eccollc.bin',
+ precip_errfile   = 'cap_sigma_rain_eccollc.bin',
+ swdown_errfile   = 'cap_sigma_dsw_eccollc.bin',
+ lwdown_errfile   = 'cap_sigma_dlw_eccollc.bin',
 #
  whflux0              = 20.0,
  wsflux0              = 3.0E-8,
@@ -78,10 +80,8 @@
  mult_edtau   = 1.,
  mult_bottomdrag   = 1.,
 #
-# tdatfile        = 'T_OWPv1_M_eccollc_90x50.bin',
-# sdatfile        = 'S_OWPv1_M_eccollc_90x50.bin',
-# tdatfile        = 'g_wod05_ptmp50',
-# sdatfile        = 'g_wod05_salt50',
+ tdatfile        = 'T_OWPv1_M_eccollc_90x50.bin',
+ sdatfile        = 'S_OWPv1_M_eccollc_90x50.bin',
 # temperrfile     = 'sigma_T_atlas2_eccollc.bin',
 # salterrfile     = 'sigma_S_atlas2_eccollc.bin',
 #

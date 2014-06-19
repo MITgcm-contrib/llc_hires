@@ -147,14 +147,14 @@
         'oceQsw  ','oceSPflx','SIsnPrcp','SIacSubl',
    filename(17) = 'diags/state_2d_set2',
 #---
-  frequency(18) = 604800.0,
-   fields(1:2,18) = 'VISCA4D ',
-   filename(18) = 'diags/visc_3d_set1',
+#  frequency(18) = 604800.0,
+#   fields(1:2,18) = 'VISCA4D ',
+#   filename(18) = 'diags/visc_3d_set1',
 #---
-  frequency(19) = -604800.0,
-   fields(1:2,19) = 'VISCA4D ',
-   filename(19) = 'diags/visc_3d_set2',
-   timePhase(19)= 0.,
+#  frequency(19) = -604800.0,
+#   fields(1:2,19) = 'VISCA4D ',
+#   filename(19) = 'diags/visc_3d_set2',
+#   timePhase(19)= 0.,
  /
 #
 #
