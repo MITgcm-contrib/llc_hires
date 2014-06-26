@@ -8,6 +8,7 @@
                       12.,11.,2*9.,8.,7.,2*6.,2*5.,3*4.,3*3.,4*2.,12*1.,
  sRef               = 50*34.5,
  viscAr=5.6614e-04,
+ viscAhGrid=5.E-2,
  no_slip_sides=.FALSE.,
  rhonil=1027.5,
  rhoConstFresh=999.8,
@@ -76,7 +77,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      = 'bathy270_filled_r4',
+ bathyFile      = 'bathy270_filled_noCaspian_r4',
  pSurfInitFile  = 'eta_ecco_v4_to_llc270_at_0000078900.data',
  hydrogThetaFile= 'theta_ecco_v4_to_llc270_at_0000078900.data',
  hydrogSaltFile = 'salt_ecco_v4_to_llc270_at_0000078900.data',
