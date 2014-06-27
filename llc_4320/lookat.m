@@ -1,6 +1,22 @@
 nx=4320;
 pn='/nobackupp8/dmenemen/llc/llc_4320/MITgcm/run/';
 
+%%%%%%%%%%%%%%
+% SST of San Pedro basin
+ts=279360;
+fn=[pn 'Theta.' myint2str(ts,10) '.data'];
+f=11;
+ix=3800:4100;
+iy=3100:3300;
+T=quikread_llc(fn,nx,1,'real*4',f);
+clf reset
+mypcolor(rot90(T(ix,iy),2)')
+colormap(cmap)
+caxis([13.7 16.8])
+thincolorbar
+set(gca,'xtick',[],'ytick',[])
+print -dpsc LA
+
 %%%%%%%%%%%%
 % compare SST off Peru on November 1, 2011
 cx=[15 20];
