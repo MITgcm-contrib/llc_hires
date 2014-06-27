@@ -1,17 +1,15 @@
 For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
-qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
-qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@me.com
-qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
+qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M YOUR_EMAIL_HERE
+qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M YOUR_EMAIL_HERE
+qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
+qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
 
 #############################
 # 60x60x10882 configuration
 
-qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
+qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
 module purge
-module load  comp-intel/2012.0.032 netcdf/4.0
-module use -a ~kjtaylor/modulefiles
-module load sles11sp3/mpt-2.10-nasa201311271217
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
 cd ~/llc_2160
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_2160
@@ -35,7 +33,7 @@ cp ../build/mitgcmuv mitgcmuv_60x60x10882
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
-mv ../../MITgcm_contrib/llc_hires/llc_2160/input/data.exch2_60x60x10882 data.exch2
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/data.exch2_60x60x10882 data.exch2
 emacs data
 
 export MPI_BUFS_PER_PROC=1024
@@ -48,6 +46,41 @@ export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv_60x60x10882
 
 tail -f STDOUT.00000 | grep advcfl_W
+
+################################################
+# 144x144x2047 configuration for grid generation
+
+qsub -I -q devel -l select=103:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M YOUR_EMAIL_HERE
+module purge
+module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
+cd ~/llc_2160
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_2160
+cd MITgcm
+mkdir build run_grid
+lfs setstripe -c -1 run_grid
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_144x144x2047 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas \
+ -mpi  -mods ../../MITgcm_contrib/llc_hires/llc_2160/code
+make depend
+make -j 16
+
+cd ~/llc_2160/MITgcm/run_grid
+cp ../build/mitgcmuv mitgcmuv_144x144x2047
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/data.exch2_144x144x2047 data.exch2
+
+emacs data
+ debuglevel=3,
+ useSingleCPUio=.TRUE.,
+ endtime=0.,
+ deltaT = 1.,
+
+mpiexec -n 2047 ./mitgcmuv_144x144x2047
 
 ==============
 
