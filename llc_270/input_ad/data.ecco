@@ -20,15 +20,11 @@
 #
  atemp_errfile    = 'ATEMP_sigma_AER_270.bin',
  aqh_errfile      = 'AQH_sigma_AER_270.bin',
- uwind_errfile    = 'era_interim_u10m_std.data',
- vwind_errfile    = 'era_interim_v10m_std.data',
- precip_errfile   = 'PRECIP_sigma_AER_270.bin',
+ uwind_errfile    = 'UWIND_sigma_AER_270.bin',
+ vwind_errfile    = 'VWIND_sigma_AER_270.bin',
+ precip_errfile   = 'PRECIP_sigma_AER_270_201503_0p5.bin',
  swdown_errfile   = 'SWDOWN_sigma_AER_270.bin',
  lwdown_errfile   = 'LWDOWN_sigma_AER_270.bin',
-#
- whflux0              = 20.0,
- wsflux0              = 3.0E-8,
- wtau0                = 2.0E-2,
 #
  watemp0              = 0,
  waqh0                = 0,
@@ -43,10 +39,6 @@
  wedtau0              = 1.0E0,
  wbottomdrag0         = 1.0E-5,
 #
- wmean_hflux          = 60.0,
- wmean_sflux          = 3.2E-8,
- wmean_tau            = 0.2,
-#
  wmean_atemp          = 0,
  wmean_aqh            = 0,
  wmean_precip         = 0,
@@ -56,11 +48,6 @@
 #
  mult_temp0  = 0.,
  mult_salt0  = 0.,
-#
- mult_hflux  = 0.,
- mult_sflux  = 0.,
- mult_tauu   = 0.,
- mult_tauv   = 0.,
 #
  mult_atemp  = 0.,
  mult_aqh    = 0.,
@@ -168,7 +155,7 @@
   gencost_avgperiod(2)  = 'day',
   gencost_barfile(2) = 'gbar_deconc',
   gencost_name(2) = 'siv4-deconc',
-  mult_gencost(2) = 0.2104,
+  mult_gencost(2) = 0.02,
   gencost_datafile(2) = 'NOAA_NSIDC_DAILY_MAPPED_TO_LLC270',
   gencost_errfile(2) = 'SI_proxy_sigma_100km_coast_mask.bin',
   gencost_spmin(2) = -999.,
@@ -178,7 +165,7 @@
   gencost_avgperiod(3)  = 'day',
   gencost_barfile(3) = 'gbar_exconc',
   gencost_name(3) = 'siv4-exconc',
-  mult_gencost(3) = 0.0359,
+  mult_gencost(3) = 0.03,
   gencost_datafile(3) = 'NOAA_NSIDC_DAILY_MAPPED_TO_LLC270',
   gencost_errfile(3) = 'SI_proxy_sigma_100km_coast_mask.bin',
   gencost_spmin(3) = -999.,
@@ -188,7 +175,7 @@
  gencost_errfile(11) = 'sigma_MDT_glob_eccollc_llc270.bin',
  gencost_name(11) = 'sshv4-mdt',
  gencost_scalefile(11) = 'sshv4_scale_1p5points.bin',
- mult_gencost(11) = 10.1738,
+ mult_gencost(11) = 0,
  gencost_smooth2Ddiffnbt(11) = 1000,
  gencost_errfile(12) = 'slaerr_gridscale_r1_llc270.err',
  gencost_name(12) = 'sshv4-tp',
