@@ -1,0 +1,15 @@
+#
+# ******************
+# PROFILES cost function
+# ******************
+ &PROFILES_NML
+#
+# profilesDir='profiles',
+# profilesDoGenGrid=.TRUE.,
+#
+# profilesfiles(1)= 'CTDdata_all',
+#
+# mult_profiles(1,1)   = 2.,
+# mult_profiles(1,2)   = 2.,
+#
+ /
