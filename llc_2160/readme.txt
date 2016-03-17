@@ -15,7 +15,6 @@ cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_2160
 cd MITgcm
 mkdir build run
-lfs setstripe -c -1 run
 cd build
 cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_60x60_10882 SIZE.h
 cp ../../MITgcm_contrib/llc_hires/llc_2160/code-async/readtile_mpiio.c .
