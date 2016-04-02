@@ -6,7 +6,13 @@ qsub -I -q alphatst -l select=850:ncpus=24:model=has,walltime=8:00:00 -m abe -M 
 module purge
 module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
 
-cd ~/llc_4320/MITgcm/build
+cd ~/llc_4320
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_4320
+cd MITgcm
+mkdir build run
+lfs setstripe -c -1 run
+cd build
 rm *
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
