@@ -1,5 +1,17 @@
 nx=4320;
-pn='/nobackupp8/dmenemen/llc/llc_4320/MITgcm/run/';
+pn='~dmenemen/llc_4320/MITgcm/run/';
+
+%%%%%%%%%%%%
+nx=4320;
+pn='~dmenemen/llc_4320/MITgcm/run/';
+nm='U';
+ts=468432;
+fn=[pn nm '.' myint2str(ts,10) '.data'];
+fld=read_llc_fkij(fn,nx,3);
+clf
+quikpcolor(rot90(fld)');
+caxis([-1 1]/4)
+thincolorbar
 
 %%%%%%%%%%%%%%
 % SST of San Pedro basin
@@ -68,19 +80,20 @@ n=1;
 clf reset
 colormap(cmap)
 for ts=10368:144:138384;
- mydisp(ts)
- fn=[pn nm '.' myint2str(ts,10) '.data'];
- if exist(fn)
-  fld=[rot90(quikread_llc(fn,nx,1,'real*4',7),1) quikread_llc(fn,nx,1,'real*4',8)];
-  clf
-  quikpcolor(rot90(fld(:,1:5000),1)');
-  caxis([0.9 1])
-  title('llc4320 fractional sea ice concentration')
-  thincolorbar
-  text(3400,760,ts2dte(ts,25,2011,9,10),'color','w')
-  eval(['print -dtiff -r135 ' pn 'figs/' nm myint2str(n,4)]);
-  n=n+1;
- end
+    mydisp(ts)
+    fn=[pn nm '.' myint2str(ts,10) '.data'];
+    if exist(fn)
+        % fld=[rot90(quikread_llc(fn,nx,1,'real*4',7),1) quikread_llc(fn,nx,1,'real*4',8)];
+        fld=[ rot90(read_llc_fkij(fn,nx,3),1) read_llc_fkij(fn,nx,4,1,1:nx,(2*nx+1):(3*nx))];
+        clf
+        quikpcolor(rot90(fld(:,1:5000),1)');
+        caxis([0.9 1])
+        title('llc4320 fractional sea ice concentration')
+        thincolorbar
+        text(3400,760,ts2dte(ts,25,2011,9,10),'color','w')
+        eval(['print -dtiff -r135 ' pn 'figs/' nm myint2str(n,4)]);
+        n=n+1;
+    end
 end
 
 %%%%%%%%%%%%

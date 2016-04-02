@@ -1,3 +1,89 @@
+#############################
+# 90x90x19023 configuration
+
+qsub -I -q alphatst -l select=850:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
+
+module purge
+module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
+
+cd ~/llc_4320/MITgcm/build
+rm *
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 90;
+    tileSizeY = 90;
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 16
+
+cd ~/llc_4320/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_90x90x19023_intel.2015.0.090
+cp data.exch2_90x90x19023 data.exch2
+
+cd ~/llc_4320/MITgcm/run
+mv STDOUT.00000 STDOUT.409536
+emacs data
+ nIter0=409536,
+mv pickup_0000409536.data pickup.0000409536.data
+mv pickup_0000409536.meta pickup.0000409536.meta
+mv pickup_seaice_0000409536.data pickup_seaice.0000409536.data
+mv pickup_seaice_0000409536.meta pickup_seaice.0000409536.meta
+
+cd ~/llc_4320/MITgcm/run
+module purge
+module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
+cp data.exch2_90x90x19023 data.exch2
+mpiexec -n 20400 ./mitgcmuv_90x90x19023_intel.2015.0.090
+
+tail -f STDOUT.00000 | grep advcfl_W
+
+
+#############################
+qsub -I -q alphatst -l select=850:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
+qsub -I -q alphatst -l select=497:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
+
+qsub -I -q alphatst -l select=497:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
+module purge
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.10r6 netcdf/4.0
+
+module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
+
+cd ~/llc_4320/MITgcm/build
+rm *
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_120x120x19023 SIZE.h
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 120;
+    tileSizeY = 120;
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas .
+emacs linux_amd64_ifort+mpi_ice_nas
+    FOPTIM='-O3 -ipo -axCORE-AVX2,AVX -xSSE4.1 -ip -fp-model precise -traceback -ftz'
+../tools/genmake2 -of linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
+make depend
+make -j 16
+
+cd ~/llc_4320/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_120x120x10901_AVX2
+
+mv STDOUT.00000 STDOUT.428544
+emacs data
+ nIter0=428544,
+mv pickup_0000428544.data pickup.0000428544.data
+mv pickup_0000428544.meta pickup.0000428544.meta
+mv pickup_seaice_0000428544.data pickup_seaice.0000428544.data
+mv pickup_seaice_0000428544.meta pickup_seaice.0000428544.meta
+
+cd ~/llc_4320/MITgcm/run
+module purge
+module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
+cp data.exch2_120x120x10901 data.exch2
+mpiexec -n 12000 ./mitgcmuv_120x120x10901_Avx2
+
+
 For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
 qsub -I -q normal -l select=300:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
@@ -32,7 +118,7 @@ cp ../build/mitgcmuv mitgcmuv_90x90x19023
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
-mv data.exch2_90x90x19023 data.exch2
+cp data.exch2_90x90x19023 data.exch2
 emacs data
 
 export MPI_BUFS_PER_PROC=1024
@@ -51,7 +137,7 @@ tail -f STDOUT.00000 | grep advcfl_W
 
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
-cd /nobackupp8/dmenemen/llc/llc_4320_new
+cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
 cd MITgcm
