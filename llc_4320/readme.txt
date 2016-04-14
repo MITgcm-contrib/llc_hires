@@ -1,17 +1,13 @@
 #############################
 # 90x90x19023 configuration
-
-qsub -I -q alphatst -l select=850:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
-
 module purge
-module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
-
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
 cd MITgcm
-mkdir build run
-lfs setstripe -c -1 run
+mkdir build run485568
+lfs setstripe -c -1 run_485568
 cd build
 rm *
 cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
@@ -25,118 +21,67 @@ emacs readtile_mpiio.c
 make depend
 make -j 16
 
-cd ~/llc_4320/MITgcm/run
+cd ~/llc_4320/MITgcm/run_485568
 cp ../build/mitgcmuv mitgcmuv_90x90x19023_intel.2015.0.090
-cp data.exch2_90x90x19023 data.exch2
-
-cd ~/llc_4320/MITgcm/run
-mv STDOUT.00000 STDOUT.409536
-emacs data
- nIter0=409536,
-mv pickup_0000409536.data pickup.0000409536.data
-mv pickup_0000409536.meta pickup.0000409536.meta
-mv pickup_seaice_0000409536.data pickup_seaice.0000409536.data
-mv pickup_seaice_0000409536.meta pickup_seaice.0000409536.meta
-
-cd ~/llc_4320/MITgcm/run
-module purge
-module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
-cp data.exch2_90x90x19023 data.exch2
-mpiexec -n 20400 ./mitgcmuv_90x90x19023_intel.2015.0.090
-
-tail -f STDOUT.00000 | grep advcfl_W
-
-
-#############################
-qsub -I -q alphatst -l select=850:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
-qsub -I -q alphatst -l select=497:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
-
-qsub -I -q alphatst -l select=497:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
-module purge
-module load comp-intel/2015.0.090 mpi-sgi/mpt.2.10r6 netcdf/4.0
-
-module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
-
-cd ~/llc_4320/MITgcm/build
-rm *
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_120x120x19023 SIZE.h
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
-emacs readtile_mpiio.c
-    tileSizeX = 120;
-    tileSizeY = 120;
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas .
-emacs linux_amd64_ifort+mpi_ice_nas
-    FOPTIM='-O3 -ipo -axCORE-AVX2,AVX -xSSE4.1 -ip -fp-model precise -traceback -ftz'
-../tools/genmake2 -of linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
-make depend
-make -j 16
-
-cd ~/llc_4320/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_120x120x10901_AVX2
-
-mv STDOUT.00000 STDOUT.428544
-emacs data
- nIter0=428544,
-mv pickup_0000428544.data pickup.0000428544.data
-mv pickup_0000428544.meta pickup.0000428544.meta
-mv pickup_seaice_0000428544.data pickup_seaice.0000428544.data
-mv pickup_seaice_0000428544.meta pickup_seaice.0000428544.meta
-
-cd ~/llc_4320/MITgcm/run
-module purge
-module load comp-intel/2015.0.090 test/mpt.2.11r8 netcdf/4.0
-cp data.exch2_120x120x10901 data.exch2
-mpiexec -n 12000 ./mitgcmuv_120x120x10901_Avx2
-
-
-For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
-qsub -I -q normal -l select=300:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M email
-qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
-
-#############################
-# 90x90x19023 configuration
-
-qsub -I -q long -l select=1020:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
-module purge
-module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
-cd ~/llc_4320
-cvs co MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_4320
-cd MITgcm
-mkdir build run
-lfs setstripe -c -1 run
-cd build
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_90x90x19023 SIZE.h
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
-emacs readtile_mpiio.c
-    tileSizeX = 90;
-    tileSizeY = 90;
-../tools/genmake2 -of \
- ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
-make depend
-make -j 16
-
-cd ~/llc_4320/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_90x90x19023
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
-cp data.exch2_90x90x19023 data.exch2
 emacs data
+ nIter0=485568,
+ln -sf ../run/pickup_0000485568.data pickup.0000485568.data
+ln -sf ../run/pickup_0000485568.meta pickup.0000485568.meta
+ln -sf ../run/pickup_seaice_0000485568.data pickup_seaice.0000485568.data
+ln -sf ../run/pickup_seaice_0000485568.meta pickup_seaice.0000485568.meta
 
-export MPI_BUFS_PER_PROC=1024
-export MPI_REQUEST_MAX=65536
-export MPI_GROUP_MAX=1024
-export MPI_NUM_MEMORY_REGIONS=8
-export MPI_UNBUFFERED_STDIO=1
-export MPI_MEMMAP_OFF=1
-export MPI_UD_TIMEOUT=100
-mpiexec -n 20400 ./mitgcmuv_90x90x19023
-
+qsub -I -q long -l select=850:ncpus=24:model=has,walltime=120:00:00 -m abe -M menemenlis@me.com
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/run_485568
+cp data.exch2_90x90x19023 data.exch2
+mpiexec -n 20400 ./mitgcmuv_90x90x19023_intel.2015.0.090
 tail -f STDOUT.00000 | grep advcfl_W
+
+
+#############################
+# 120x120x10901 configuration
+module purge
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_120x120x10901 SIZE.h
+emacs readtile_mpiio.c
+    tileSizeX = 120;
+    tileSizeY = 120;
+make -j 16
+cd ~/llc_4320/MITgcm/run_485568
+cp ../build/mitgcmuv mitgcmuv_120x120x10901_intel.2015.0.090
+
+qsub -I -q testing_free -l select=428:ncpus=28:model=bro,walltime=8:00:00 -m abe -M menemenlis@me.com
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/run_485568
+cp data.exch2_120x120x10901 data.exch2
+mpiexec -n 11984 ./mitgcmuv_120x120x10901_intel.2015.0.090
+tail -f STDOUT.00000 | grep advcfl_W
+
+
+#############################
+# 180x180x5015 configuration
+module purge
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_180x180x5015 SIZE.h
+emacs readtile_mpiio.c
+    tileSizeX = 180;
+    tileSizeY = 180;
+make -j 16
+cd ~/llc_4320/MITgcm/run_485568
+cp ../build/mitgcmuv mitgcmuv_180x180x5015_intel.2015.0.090
+
+qsub -I -q testing_free -l select=214:ncpus=28:model=bro,walltime=8:00:00 -m abe -M menemenlis@me.com
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/run_485568
+cp data.exch2_180x180x5015 data.exch2
+mpiexec -n 5992 ./mitgcmuv_180x180x5015_intel.2015.0.090
+tail -f STDOUT.00000 | grep advcfl_W
+
 
 #############################
 # 48x48x64670 configuration
@@ -164,6 +109,7 @@ make -j 16
 cd ~/llc_4320/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_48x48x64670
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/data.exch2_90x90x19023 data.exch2
+
 
 #############################
 # generate 60x60 blank tiles
@@ -225,6 +171,7 @@ export MPI_MEMMAP_OFF=1
 export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
+
 #############################
 # generate 45x45 blank tiles
 qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
@@ -285,6 +232,7 @@ export MPI_MEMMAP_OFF=1
 export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
+
 #############################
 # generate 48x48 blank tiles
 qsub -I -q devel -l select=600:ncpus=20:model=ivy,walltime=2:00:00 -m abe -M menemenlis@me.com
@@ -343,53 +291,8 @@ export MPI_MEMMAP_OFF=1
 export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
-#############################
-# 120x120x10901 configuration
-
-qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M menemenlis@me.com
-module purge
-module load  comp-intel/2012.0.032 netcdf/4.0
-module use -a ~kjtaylor/modulefiles
-module load sles11sp3/mpt-2.10-nasa201311271217
-cd ~/llc_4320
-cvs co MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_4320
-cd MITgcm
-mkdir build run
-lfs setstripe -c -1 run
-cd build
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_120x120x10901 SIZE.h
-cp ../../MITgcm_contrib/llc_hires/llc_4320/code-async/readtile_mpiio.c .
-emacs readtile_mpiio.c
-    tileSizeX = 120;
-    tileSizeY = 120;
-../tools/genmake2 -of \
- ../../MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
-make depend
-make -j 16
-
-cd ~/llc_4320/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_120x120x10901
-ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
-ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
-cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
-mv data.exch2_120x120x10901 data.exch2
-emacs data
-
-export MPI_BUFS_PER_PROC=1024
-export MPI_REQUEST_MAX=65536
-export MPI_GROUP_MAX=1024
-export MPI_NUM_MEMORY_REGIONS=8
-export MPI_UNBUFFERED_STDIO=1
-export MPI_MEMMAP_OFF=1
-export MPI_UD_TIMEOUT=100
-mpiexec -n 12000 ./mitgcmuv_120x120x10901
-
-tail -f STDOUT.00000 | grep advcfl_W
 
 ==============
-
 qsub -I -q R3089666 -l select=1750:model=ivy:aoe=sles11,walltime=04:00:00
 tcsh
 cd ~/llc_4320/MITgcm
@@ -423,8 +326,8 @@ mpiexec -n 35000 ./mitgcmuv_72x72x29297
 
 tail -f STDOUT.00000 | grep advcfl_w
 
-==============
 
+==============
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
@@ -453,7 +356,6 @@ mpiexec -n 35000 ./mitgcmuv_72x72x29297
 tail -f STDOUT.00000 | grep advcfl_w
 
 ==============
-
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
@@ -480,7 +382,6 @@ export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 6000 ./mitgcmuv_180x180x5015
 
 ==============
-
 look at output
 
 for ts=[0 120 600:10:980 1080:120:2280]
@@ -490,13 +391,12 @@ for ts=[0 120 600:10:980 1080:120:2280]
     pause(.1)
 end
 
-==============
 
+==============
 to determine empty tiles:
 grep Empty STDOUT.*
 
 =============
-
 memory requirements:
 nPx  sNx sNy nSx cpu node0        total
 3744 180 180   2 san 22,106,128kb 5,195,641,224kb - node ran out of memory and crashed
@@ -504,7 +404,6 @@ nPx  sNx sNy nSx cpu node0        total
 7488 180 180   1 san 
 
 =============
-
 2               =    2
 3               =    3
 2*2             =    4

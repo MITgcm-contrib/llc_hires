@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/CPP_EEOPTIONS.h,v 1.1 2013/10/29 03:06:49 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/CPP_EEOPTIONS.h,v 1.2 2016/04/14 03:51:44 dimitri Exp $
 C $Name:  $
 
 CBOP
@@ -86,8 +86,10 @@ C--   Alternative formulation of BYTESWAP, faster than
 C     compiler flag -byteswapio on the Altix.
 #undef FAST_BYTESWAP
 
-C--   Flag defined for eeset_parms.F and open_copy_data_file.F
-C     to write scratch files from process 0 only
+C--   Flag defined for eeboot_minimal.F, eeset_parms.F and open_copy_data_file.F
+C     to write STDOUT, STDERR and scratch files from process 0 only.
+C WARNING: to use only when absolutely confident that the setup is working
+C     since any message (error/warning/print) from any proc <> 0 will be lost.
 #define SINGLE_DISK_IO
 
 C=== MPI, EXCH and GLOBAL_SUM related options ===
@@ -111,13 +113,6 @@ C     Under MPI selects/deselects "blocking" sends and receives.
 #define ALLOW_SYNC_COMMUNICATION
 #undef  ALWAYS_USE_SYNC_COMMUNICATION
 
-C--   Control use of JAM routines for Artic network
-C     These invoke optimized versions of "exchange" and "sum" that
-C     utilize the programmable aspect of Artic cards.
-CXXX No longer supported ; started to remove JAM routines.
-CXXX #undef  LETS_MAKE_JAM
-CXXX #undef  JAM_WITH_TWO_PROCS_PER_NODE
-
 C--   Control XY periodicity in processor to grid mappings
 C     Note: Model code does not need to know whether a domain is
 C           periodic because it has overlap regions for every box.
@@ -132,13 +127,16 @@ C--   disconnect tiles (no exchange between tiles, just fill-in edges
 C     assuming locally periodic subdomain)
 #undef DISCONNECTED_TILES
 
+C--   Always cumulate tile local-sum in the same order by applying MPI allreduce
+C     to array of tiles ; can get slower with large number of tiles (big set-up)
+#undef GLOBAL_SUM_ORDER_TILES
+
 C--   Alternative way of doing global sum without MPI allreduce call
-C     but instead, explicit MPI send & recv calls.
+C     but instead, explicit MPI send & recv calls. Expected to be slower.
 #undef GLOBAL_SUM_SEND_RECV
 
 C--   Alternative way of doing global sum on a single CPU
-C     to eliminate tiling-dependent roundoff errors.
-C     Note: This is slow.
+C     to eliminate tiling-dependent roundoff errors. Note: This is slow.
 #undef  CG2D_SINGLECPU_SUM
 
 C=== Other options (to add/remove pieces of code) ===

@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/EXF_OPTIONS.h,v 1.2 2013/10/28 08:36:00 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/EXF_OPTIONS.h,v 1.3 2016/04/14 03:51:44 dimitri Exp $
 C $Name:  $
 
 CBOP
@@ -83,6 +83,10 @@ C
 C   >>> USE_EXF_INTERPOLATION <<<
 C       Allows specification of arbitrary Cartesian input grids.
 C
+C   >>> EXF_CALC_ATMRHO
+C       Calculate the local atm density as function of temp, humidity
+C       and pressure
+C
 C   ====================================================================
 C
 C       The following CPP options:
@@ -157,6 +161,9 @@ C   Bulk formulae related flags.
 # define ALLOW_BULKFORMULAE
 # undef  ALLOW_BULK_LARGEYEAGER04
 #endif
+#if (defined (ALLOW_ATM_TEMP) && defined (ATMOSPHERIC_LOADING))
+# undef  EXF_CALC_ATMRHO
+#endif
 
 C   Zenith Angle/Albedo related flags.
 #ifdef ALLOW_DOWNWARD_RADIATION
@@ -185,6 +192,10 @@ C   using old rotation formulae (instead of grid-angles)
 C   for interpolation around N & S pole, use the old formulation
 C   (no pole symmetry, single vector-comp interp, reset to 0 zonal-comp @ N.pole)
 #undef EXF_USE_OLD_INTERP_POLE
+C   when interpolation is used, output the interpolation result 
+C   before any other operation is done (e.g. rescaling) with 
+C   the same organization of records as in the input files 
+#undef ALLOW_EXF_OUTPUT_INTERP
 
 #define EXF_INTERP_USE_DYNALLOC
 #if ( defined (EXF_INTERP_USE_DYNALLOC) && defined (USING_THREADS) )
