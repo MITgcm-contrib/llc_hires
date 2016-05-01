@@ -20,26 +20,26 @@ emacs readtile_mpiio.c
  '../../MITgcm_contrib/llc_hires/llc_4320/code ../../MITgcm_contrib/llc_hires/llc_4320/code-async'
 make depend
 make -j 16
+cp mitgcmuv ../run_485568/mitgcmuv_90x90x19023_intel.2015.0.090
 
-cd ~/llc_4320/MITgcm/run_485568
-cp ../build/mitgcmuv mitgcmuv_90x90x19023_intel.2015.0.090
+qsub -I -q long -l select=850:ncpus=24:model=has,walltime=120:00:00 -m abe -M menemenlis@me.com
+qsub -I -q long -l select=1020:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@me.com
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../MITgcm_contrib/llc_hires/llc_4320/input/* .
+cp data.exch2_90x90x19023 data.exch2
+mv STDOUT.00000 STDOUT.485568
 emacs data
  nIter0=485568,
 ln -sf ../run/pickup_0000485568.data pickup.0000485568.data
 ln -sf ../run/pickup_0000485568.meta pickup.0000485568.meta
 ln -sf ../run/pickup_seaice_0000485568.data pickup_seaice.0000485568.data
 ln -sf ../run/pickup_seaice_0000485568.meta pickup_seaice.0000485568.meta
-
-qsub -I -q long -l select=850:ncpus=24:model=has,walltime=120:00:00 -m abe -M menemenlis@me.com
-module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
-cd ~/llc_4320/MITgcm/run_485568
-cp data.exch2_90x90x19023 data.exch2
 mpiexec -n 20400 ./mitgcmuv_90x90x19023_intel.2015.0.090
-tail -f STDOUT.00000 | grep advcfl_W
 
+cd ~/llc_4320/MITgcm/run_485568
+tail -f STDOUT.00000 | grep advcfl_W
 
 #############################
 # 120x120x10901 configuration
@@ -51,14 +51,22 @@ emacs readtile_mpiio.c
     tileSizeX = 120;
     tileSizeY = 120;
 make -j 16
-cd ~/llc_4320/MITgcm/run_485568
-cp ../build/mitgcmuv mitgcmuv_120x120x10901_intel.2015.0.090
+cp mitgcmuv ../run_485568/mitgcmuv_120x120x10901_intel.2015.0.090
 
 qsub -I -q testing_free -l select=428:ncpus=28:model=bro,walltime=8:00:00 -m abe -M menemenlis@me.com
 module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 cd ~/llc_4320/MITgcm/run_485568
 cp data.exch2_120x120x10901 data.exch2
+mv STDOUT.00000 STDOUT.489024
+emacs -nw data
+ nIter0=489024,
+ln -sf pickup_0000489024.data pickup.0000489024.data
+ln -sf pickup_0000489024.meta pickup.0000489024.meta
+ln -sf pickup_seaice_0000489024.data pickup_seaice.0000489024.data
+ln -sf pickup_seaice_0000489024.meta pickup_seaice.0000489024.meta
 mpiexec -n 11984 ./mitgcmuv_120x120x10901_intel.2015.0.090
+
+cd ~/llc_4320/MITgcm/run_485568
 tail -f STDOUT.00000 | grep advcfl_W
 
 
@@ -72,20 +80,60 @@ emacs readtile_mpiio.c
     tileSizeX = 180;
     tileSizeY = 180;
 make -j 16
-cd ~/llc_4320/MITgcm/run_485568
-cp ../build/mitgcmuv mitgcmuv_180x180x5015_intel.2015.0.090
+cp mitgcmuv ../run_485568/mitgcmuv_180x180x5015_intel.2015.0.090
 
 qsub -I -q testing_free -l select=214:ncpus=28:model=bro,walltime=8:00:00 -m abe -M menemenlis@me.com
 module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 cd ~/llc_4320/MITgcm/run_485568
 cp data.exch2_180x180x5015 data.exch2
+mv STDOUT.00000 STDOUT.489024
+emacs -nw data
+ nIter0=489024,
+ln -sf pickup_0000489024.data pickup.0000489024.data
+ln -sf pickup_0000489024.meta pickup.0000489024.meta
+ln -sf pickup_seaice_0000489024.data pickup_seaice.0000489024.data
+ln -sf pickup_seaice_0000489024.meta pickup_seaice.0000489024.meta
 mpiexec -n 5992 ./mitgcmuv_180x180x5015_intel.2015.0.090
+
+cd ~/llc_4320/MITgcm/run_485568
+tail -f STDOUT.00000 | grep advcfl_W
+
+
+#############################
+# 72x72x29297 configuration
+module purge
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/build
+cp ../../MITgcm_contrib/llc_hires/llc_4320/code/SIZE.h_72x72x29297 SIZE.h
+emacs readtile_mpiio.c
+    tileSizeX = 72;
+    tileSizeY = 72;
+make -j 16
+cd ~/llc_4320/MITgcm/run_485568
+cp mitgcmuv ../run_485568/mitgcmuv_72x72x29297_intel.2015.0.090
+
+qsub -I -q normal -l select=1333:ncpus=24:model=has,walltime=8:00:00 -m abe -M menemenlis@me.com
+qsub -I -q normal -l select=1600:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M menemenlis@me.com
+qsub -I -q wide -l select=1600:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M menemenlis@me.com
+qsub -I -q ldsd -l select=1600:ncpus=20:model=ivy,walltime=240:00:00 -m abe -M menemenlis@me.com
+module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
+cd ~/llc_4320/MITgcm/run_485568
+cp data.exch2_72x72x29297 data.exch2
+mv STDOUT.00000 STDOUT.888192
+emacs -nw data
+ nIter0=888192,
+ln -sf pickup_0000888192.data pickup.0000888192.data
+ln -sf pickup_0000888192.meta pickup.0000888192.meta
+ln -sf pickup_seaice_0000888192.data pickup_seaice.0000888192.data
+ln -sf pickup_seaice_0000888192.meta pickup_seaice.0000888192.meta
+mpiexec -n 32000 ./mitgcmuv_72x72x29297_intel.2015.0.090
+
+cd ~/llc_4320/MITgcm/run_485568
 tail -f STDOUT.00000 | grep advcfl_W
 
 
 #############################
 # 48x48x64670 configuration
-
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
 cd ~/llc_4320
@@ -292,7 +340,7 @@ export MPI_UD_TIMEOUT=100
 mpiexec -n 12000 ./mitgcmuv
 
 
-==============
+#############################
 qsub -I -q R3089666 -l select=1750:model=ivy:aoe=sles11,walltime=04:00:00
 tcsh
 cd ~/llc_4320/MITgcm
@@ -327,7 +375,7 @@ mpiexec -n 35000 ./mitgcmuv_72x72x29297
 tail -f STDOUT.00000 | grep advcfl_w
 
 
-==============
+#############################
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
@@ -355,7 +403,8 @@ mpiexec -n 35000 ./mitgcmuv_72x72x29297
 
 tail -f STDOUT.00000 | grep advcfl_w
 
-==============
+
+#############################
 cd ~/llc_4320
 cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
@@ -381,9 +430,9 @@ mv data.exch2_72x72x29297 data.exch2
 export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 6000 ./mitgcmuv_180x180x5015
 
-==============
-look at output
 
+#############################
+# look at output
 for ts=[0 120 600:10:980 1080:120:2280]
     fld=quikread_llc(['Eta.' myint2str(ts,10) '.data'],4320);
     clf,quikplot_llc(fld),caxis([-2.5 2]),thincolorbar
@@ -392,18 +441,20 @@ for ts=[0 120 600:10:980 1080:120:2280]
 end
 
 
-==============
-to determine empty tiles:
+#############################
+# to determine empty tiles:
 grep Empty STDOUT.*
 
-=============
-memory requirements:
-nPx  sNx sNy nSx cpu node0        total
-3744 180 180   2 san 22,106,128kb 5,195,641,224kb - node ran out of memory and crashed
-5616 120 120   3 san - node ran out of memory and crashed
-7488 180 180   1 san 
 
-=============
+#############################
+# memory requirements:
+# nPx  sNx sNy nSx cpu node0        total
+# 3744 180 180   2 san 22,106,128kb 5,195,641,224kb - node ran out of memory and crashed
+# 5616 120 120   3 san - node ran out of memory and crashed
+# 7488 180 180   1 san 
+
+
+#############################
 2               =    2
 3               =    3
 2*2             =    4
