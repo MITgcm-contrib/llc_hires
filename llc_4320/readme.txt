@@ -119,13 +119,16 @@ qsub -I -q ldsd -l select=1600:ncpus=20:model=ivy,walltime=240:00:00 -m abe -M m
 module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 cd ~/llc_4320/MITgcm/run_485568
 cp data.exch2_72x72x29297 data.exch2
-mv STDOUT.00000 STDOUT.888192
+mv STDOUT.00000 STDOUT.1354752
 emacs -nw data
- nIter0=888192,
-ln -sf pickup_0000888192.data pickup.0000888192.data
-ln -sf pickup_0000888192.meta pickup.0000888192.meta
-ln -sf pickup_seaice_0000888192.data pickup_seaice.0000888192.data
-ln -sf pickup_seaice_0000888192.meta pickup_seaice.0000888192.meta
+ nIter0=1354752,
+#cp $PBS_NODEFILE mynodes
+# >>> skip 1 then delete 20
+#export PBS_NODEFILE="mynodes"
+ln -sf pickup_0001354752.data pickup.0001354752.data
+ln -sf pickup_0001354752.meta pickup.0001354752.meta
+ln -sf pickup_seaice_0001354752.data pickup_seaice.0001354752.data
+ln -sf pickup_seaice_0001354752.meta pickup_seaice.0001354752.meta
 mpiexec -n 32000 ./mitgcmuv_72x72x29297_intel.2015.0.090
 
 cd ~/llc_4320/MITgcm/run_485568

@@ -4,6 +4,7 @@ fld={'Eta','KPPhbl','PhiBot','SIarea','SIheff','SIhsalt', ...
      'oceQsw','oceSflux','oceTAUX','oceTAUY', ...
      'Salt','Theta','U','V','W'};
 ts=485568:144:976320;
+ts=976320:144:1037376;
 for t=ts, disp(t)
     for f=1:length(fld)
         fnm=[pn fld{f} '.' myint2str(t,10) '.data'];
