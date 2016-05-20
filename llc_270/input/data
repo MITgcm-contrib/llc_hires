@@ -70,7 +70,7 @@
  useJamartWetPoints=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
- debugLevel=-1,
+# debugLevel=-1,
  /
 
 # Elliptic solver parameters
