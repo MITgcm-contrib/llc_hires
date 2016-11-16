@@ -11,7 +11,7 @@ qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
 cd ~/llc_2160
-cvs co MITgcm_code
+cvs co -r checkpoint64t MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_2160
 cd MITgcm
 mkdir build run
