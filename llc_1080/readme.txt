@@ -7,7 +7,7 @@ qsub -I -q long  -l select=170:ncpus=20:model=ivy,min_walltime=30:00,max_walltim
 # 60x60x2872 tile configuration
 
 cd ~/llc_1080
-cvs co MITgcm_code
+cvs co -r checkpoint64p MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_1080
 cd MITgcm
 module purge
