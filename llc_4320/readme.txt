@@ -3,7 +3,7 @@
 module purge
 module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 cd ~/llc_4320
-cvs co MITgcm_code
+cvs co -r checkpoint65v MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_4320
 cd MITgcm
 mkdir build run485568
