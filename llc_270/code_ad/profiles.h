@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/profiles.h,v 1.2 2014/06/19 21:58:17 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/profiles.h,v 1.3 2017/03/02 20:09:11 zhc Exp $
 C $Name:  $
 
 C============================================================
@@ -7,7 +7,7 @@ C============================================================
       INTEGER  NOBSGLOB
       PARAMETER ( NOBSGLOB = 200000  )
       INTEGER NFILESPROFMAX
-      PARAMETER ( NFILESPROFMAX=20 )
+      PARAMETER ( NFILESPROFMAX=40 )
       INTEGER NVARMAX
       PARAMETER ( NVARMAX=6 )
       INTEGER NLEVELMAX

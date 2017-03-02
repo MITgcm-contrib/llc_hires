@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/tamc.h,v 1.2 2014/06/19 21:58:17 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/tamc.h,v 1.3 2017/03/02 20:09:11 zhc Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -62,13 +62,15 @@ c     nthreads_chkpt - Number of threads to be used; nth_chkpt .eq. nTx*nTy
 
       integer    nchklev_1
 c prof=1      
-      parameter( nchklev_1      =   55 )
+c      parameter( nchklev_1      =   55 ) !OOM!
+      parameter( nchklev_1      =   50 ) !50*88*88 for W/S/I
+c      parameter( nchklev_1      =   65 ) !65*77*77 for HAS
 c prof=4      
 c     parameter( nchklev_1      =   50 )
       integer    nchklev_2
-      parameter( nchklev_2      =   80 )
+      parameter( nchklev_2      =   98 )
       integer    nchklev_3
-      parameter( nchklev_3      =   80 )
+      parameter( nchklev_3      =   98 )
 
 c--   Note always check for the correct sizes of the common blocks!
 

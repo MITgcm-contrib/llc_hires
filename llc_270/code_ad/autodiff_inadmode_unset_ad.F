@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/autodiff_inadmode_unset_ad.F,v 1.3 2014/10/01 00:20:25 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/autodiff_inadmode_unset_ad.F,v 1.4 2017/03/02 20:09:11 zhc Exp $
 C $Name:  $
 
 #include "AUTODIFF_OPTIONS.h"
@@ -42,8 +42,11 @@ C     myThid :: my Thread Id number
       ENDIF
 #endif /* ALLOW_SEAICE */
 
+      viscFacAdj=1. _d 0
+c      viscFacAdj=0. _d 0
 C hzh>>      
       viscAhGrid=1.E-2 !1x "data"
+c viscAhGrid default to 0
       diffKhS=1.E1     !
       diffKhT=1.E1     !
 cc     viscAr=0.5E-4    !
