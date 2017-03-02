@@ -60,3 +60,58 @@ qsub job_366_onW
 
 tail -f STDOUT.0000|grep -E 'advcfl_W|time_tsnumber'
 
+
+#########################
+# 30x30x767 configuration
+# FWD + ADJ
+#########################
+
+module load comp-intel/2012.0.032 mpi-sgi/mpt netcdf/4.0 
+
+#1 code
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_270
+cd MITgcm
+
+mkdir build run
+
+#2 build
+cd build
+#FWD
+../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code_ad
+  make depend
+  make -j 16
+make Clean
+#ADJ
+../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code_ad
+  make depend
+  make adtaf
+  make -j 16 adall
+
+#3 run:
+cd ../run
+mkdir diags tapes profiles
+ln -s ../build/mitgcmuv* .
+
+dirs="pri_err ts grace sst ssh si_IAN insitu optim33 nul"
+for i in $dirs
+do
+	ln -s /nobackup/hzhang1/obs/$i .
+done	
+ln -s /nobackup/hzhang1/forcing/era_xx .
+
+dirs="pri_err ts grace sst ssh si_IAN insitu optim33"
+for i in $dirs
+do
+	ln -sf $i/* .
+done	
+cp -p /nobackup/hzhang1/obs/input/* .
+#change data* as needed
+qsub llc270_fwdHas
+qsub -q vlong llc270_adjHas
+
+
+
+
