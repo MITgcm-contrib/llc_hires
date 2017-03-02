@@ -82,14 +82,18 @@
 # Time stepping parameters
  &PARM03
  nIter0=1,
+#datenum(2016,1,1)-datenum(2001,1,1) *86400 
+ endtime=473299200,
 #datenum(2013,1,1)-datenum(2001,1,1) *86400 
 # endtime=378691200,
+#datenum(2013,1,1)-datenum(2002,1,1) *86400 
+# endtime=347155200,
 ##2 hrs for FWD:
 #datenum(2001,9,1,12,0,0)-datenum(2001,1,1,12,0,0) *86400 
 # endtime=20995200.,
 ##2 hrs for ADJ:
 #datenum(2001,3,1,12,0,0)-datenum(2001,1,1,12,0,0) *86400 
- endtime=5097600.,
+# endtime=5097600.,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
 #when using the cd scheme:
