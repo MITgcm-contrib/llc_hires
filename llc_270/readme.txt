@@ -69,7 +69,7 @@ tail -f STDOUT.0000|grep -E 'advcfl_W|time_tsnumber'
 module load comp-intel/2012.0.032 mpi-sgi/mpt netcdf/4.0 
 
 #1 code
-cvs co MITgcm_code
+cvs co -r checkpoint64x MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_270
 cd MITgcm
 
