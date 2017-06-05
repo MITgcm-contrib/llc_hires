@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas,v 1.4 2017/03/27 05:35:47 dimitri Exp $
+# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas,v 1.5 2017/06/05 06:54:43 dimitri Exp $
 # $Name:  $
 
 # Used to run the testreport on pleiades with:
@@ -10,7 +10,7 @@
 FC=ifort
 CC=icc
 
-DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
+DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4 -DINTEL_COMMITQQ'
 CPP='/lib/cpp  -traditional -P'
 EXTENDED_SRC_FLAG='-132'
 OMPFLAG='-openmp'
@@ -21,16 +21,17 @@ LIBS='-L/nasa/sgi/mpt/2.15r20/lib -lmpi'
 INCLUDES='-I/nasa/sgi/mpt/2.15r20/include'
 INCLUDEDIRS='/nasa/sgi/mpt/2.15r20/include'
 #- used for parallel (MPI) DIVA
-MPIINCLUDEDIR='/nasa/sgi/mpt/2.06rp16/include'
+#MPIINCLUDEDIR='/nasa/sgi/mpt/2.11r13/include'
 #MPI_HEADER_FILES='mpif.h mpiof.h mpif_parameters.h'
 
-NOOPTFLAGS='-O0 -fPIC'
+#NOOPTFLAGS='-O1 -fp-model precise'
+NOOPTFLAGS='-O0'
 
 if test "x$IEEE" = x ; then
     #  No need for IEEE-754
     FFLAGS="$FFLAGS -fPIC -W0 -WB -convert big_endian -assume byterecl -align"
-    FOPTIM='-O2 -ip -fp-model precise -axAVX -xSSE4.1 -traceback -ftz'
-    NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
+    FOPTIM='-O2 -ipo -fp-model precise -axCORE-AVX2 -xSSE4.2 -traceback -ftz'
+    NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
 else
     #  Try to follow IEEE-754
     FFLAGS="$FFLAGS -fPIC -W0 -WB -convert big_endian -assume byterecl -noalign"
