@@ -1,4 +1,31 @@
 ==============
+# interactive 90x90x1342 tile configuration with newer MITgcm code
+cd ~/llc_1080
+cvs co MITgcm_contrib/llc_hires/llc_1080
+cvs co -r checkpoint66h MITgcm_code
+qsub -I -q long -l select=48:ncpus=28:model=bro,walltime=120:00:00 -m abe
+module purge
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.15r20
+cd ~/llc_1080/MITgcm
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_90x90x1342 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas \
+ -mpi -mods ../../MITgcm_contrib/llc_hires/llc_1080/code
+make depend
+make -j 56
+cd ../run
+ln -sf ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+ln -sf ~dmenemen/llc_1080/MITgcm/run_2011/pick*354240* .
+cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
+mv data.exch2_90x90x1342 data.exch2
+mpiexec -n 1342 ./mitgcmuv &
+
+==============
 # interactive 90x90x1342 tile configuration from scratch
 cd ~/llc_1080
 cvs co MITgcm_contrib/llc_hires/llc_1080
