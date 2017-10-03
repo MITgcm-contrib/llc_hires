@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code/CPP_EEOPTIONS.h,v 1.1 2017/10/03 00:09:12 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code/CPP_EEOPTIONS.h,v 1.2 2017/10/03 04:20:38 dimitri Exp $
 C $Name:  $
 
 CBOP
@@ -86,6 +86,12 @@ C--   Alternative formulation of BYTESWAP, faster than
 C     compiler flag -byteswapio on the Altix.
 #undef FAST_BYTESWAP
 
+C--   Flag to turn on old default of opening scratch files with the
+C     STATUS='SCRATCH' option. This method, while perfectly FORTRAN-standard,
+C     caused filename conflicts on some multi-node/multi-processor platforms
+C     in the past and has been replace by something (hopefully) more robust.
+#undef USE_FORTRAN_SCRATCH_FILES
+
 C--   Flag defined for eeboot_minimal.F, eeset_parms.F and open_copy_data_file.F
 C     to write STDOUT, STDERR and scratch files from process 0 only.
 C WARNING: to use only when absolutely confident that the setup is working
@@ -147,6 +153,9 @@ C     (calling S/R STOP_IF_ERROR) before stopping.
 C--   Control use of communication with other component:
 C     allow to import and export from/to Coupler interface.
 #undef COMPONENT_MODULE
+
+C--   Activate some pieces of code for coupling to GEOS AGCM
+#undef HACK_FOR_GMAO_CPL
 
 #endif /* _CPP_EEOPTIONS_H_ */
 
