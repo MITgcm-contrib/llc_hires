@@ -33,7 +33,7 @@
  vectorInvariantMomentum=.TRUE.,
  implicitFreeSurface=.TRUE.,
  exactConserv=.TRUE.,
-# debuglevel=-1,
+ debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
  useSingleCPUio=.FALSE.,
@@ -54,8 +54,8 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=1,
- nTimeSteps=96,
+ nIter0=0,
+ nTimeSteps=12,
  deltaT=900.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
@@ -63,7 +63,7 @@
  chkptFreq   = 43200.0,
  dumpfreq = 3600.,
  dumpInitAndLast=.FALSE.,
- monitorFreq = 7200.0,
+ monitorFreq = 900.0,
  &
 
 # Gridding parameters

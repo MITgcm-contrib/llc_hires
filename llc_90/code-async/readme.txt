@@ -2,9 +2,9 @@ Right now some sizes need to be configured manually:
 
 recvTask.c   lines 79-82
 
-#define NUM_X   4320
-#define NUM_Y   56160L                     // get rid of this someday
-#define NUM_Z   90
+#define NUM_X   90
+#define NUM_Y   1170L                     // get rid of this someday
+#define NUM_Z   50
 #define MULTDIM  7
 
 
@@ -12,9 +12,9 @@ and
 
 readtile_mpiio.c    lines 115-119
 
-    facetElements1D = 4320;
-    tileSizeX = 72;
-    tileSizeY = 72;
+    facetElements1D = 90;
+    tileSizeX = 30;
+    tileSizeY = 30;
     xGhosts = 8;
     yGhosts = 8;
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/linux_amd64_ifort+mpi_ice_nas,v 1.2 2017/10/03 02:33:26 dimitri Exp $
+# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code/Attic/linux_amd64_ifort+mpi_ice_nas,v 1.1 2017/10/03 02:33:26 dimitri Exp $
 # $Name:  $
 
 # Used to run the testreport on pleiades with:
@@ -11,7 +11,7 @@ FC=ifort
 CC=icc
 
 CPP='/lib/cpp -traditional -P'
-DEFINES='-DALLOW_USE_MPI -DALLOW_ASYNCIO -DWORDLENGTH=4 -DINTEL_COMMITQQ'
+DEFINES='-DALLOW_USE_MPI -DWORDLENGTH=4 -DINTEL_COMMITQQ'
 F90FIXEDFORMAT='-fixed -Tf'
 EXTENDED_SRC_FLAG='-132'
 GET_FC_VERSION="--version"

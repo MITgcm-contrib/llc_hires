@@ -76,9 +76,9 @@ int numRanksPerNode = 0;
 // the following 3 values are required here. Could be sent over or read in
 // with some rearrangement in init routines
 //
-#define NUM_X   4320
-#define NUM_Y   56160L                     // get rid of this someday
-#define NUM_Z   90
+#define NUM_X   90
+#define NUM_Y   1170L                     // get rid of this someday
+#define NUM_Z   50
 #define MULTDIM  7
 #define twoDFieldSizeInBytes  (NUM_X * NUM_Y * 1 * datumSize)
 #define threeDFieldSizeInBytes  (twoDFieldSizeInBytes * NUM_Z)
