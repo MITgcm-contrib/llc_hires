@@ -44,7 +44,7 @@
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
- /
+ &
 
 # Elliptic solver parameters
  &PARM02

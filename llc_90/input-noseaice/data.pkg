@@ -3,4 +3,5 @@
  useCAL         = .TRUE.,
  useEXF         = .TRUE.,
  useKPP         = .TRUE.,
- /
+ useFRAZIL      = .TRUE.,
+ &
