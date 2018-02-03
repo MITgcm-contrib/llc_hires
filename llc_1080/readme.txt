@@ -54,6 +54,7 @@ mpiexec -n 1342 ./mitgcmuv &
 
 =====================
 For interactive session, Ivy Bridge nodes:
+qsub -I -q debug -l select=48:ncpus=28:model=bro,walltime=02:00:00 -m abe -M email
 qsub -I -q devel -l select=170:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M email
 qsub -I -q long  -l select=170:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M email
 qsub -I -q long  -l select=170:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M email
@@ -113,6 +114,33 @@ cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
 mv data.exch2_90x90x1342 data.exch2
 export MPI_NUM_MEMORY_REGIONS=256
 mpiexec -n 1600 ./mitgcmuv
+
+==============
+# 90x90x1342 tile test configuration
+
+cd ~/llc_1080_test
+cvs co MITgcm_code
+cvs co MITgcm_contrib/llc_hires/llc_1080
+cd MITgcm
+module purge
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.15r20
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_90x90x1342 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas \
+ -mpi -mods ../../MITgcm_contrib/llc_hires/llc_1080/code
+make depend
+make -j 16
+cd ../run
+ln -sf ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
+mv data.exch2_90x90x1342 data.exch2
+mpiexec -n 1342 ./mitgcmuv
+
 
 ==============
 
