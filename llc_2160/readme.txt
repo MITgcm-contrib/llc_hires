@@ -121,7 +121,59 @@ end
 ==============
 
 to determine empty tiles:
-grep Empty STDOUT.*
+grep Empty STDOUT.* > empty.txt
+
+==============
+
+# generate 30x30 blank tiles
+qsub -I -q normal -l select=339:ncpus=28:model=bro,walltime=2:00:00 -m abe
+module purge
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd ~/llc_2160/MITgcm
+mkdir run_30x30
+lfs setstripe -c -1 run_30x30
+cd build
+rm *
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code-async/readtile_mpiio.c .
+emacs readtile_mpiio.c
+    tileSizeX = 30;
+    tileSizeY = 30;
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_60x60_10882 SIZE.h
+emacs SIZE.h
+     &           sNx =  30,
+     &           sNy =  30,
+     &           nSx =   8,
+     &           nPx = 8424,
+     &           Nr  =  2 )
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code-async/eeboot_minimal.F .
+emacs eeboot_minimal.F
+C         standardMessageUnit=errorMessageUnit
+         WRITE(fNam,'(A,A)') 'STDOUT.', myProcessStr(1:5)
+         OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
+make depend
+make -j 16
+cd ~/llc_2160/MITgcm/run_30x30
+cp ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
+mv data.exch2_144x144x2047 data.exch2
+emacs data.exch2
+# remove the blank tile list
+emacs data
+ tRef =  18.89, 18.89,
+ sRef =  34.84, 34.84,
+ endtime=45.,
+ delR =   1.00,    1.14,
+# hydrogThetaFile='THETA_llc1080_14jan2011_2160x28080x90_r4',
+# hydrogSaltFile ='SALT_llc1080_14jan2011_2160x28080x90_r4',
+# uVelInitFile   ='UVEL_llc1080_14jan2011_2160x28080x90_r4',
+# vVelInitFile   ='VVEL_llc1080_14jan2011_2160x28080x90_r4',
+# pSurfInitFile  ='ETAN_llc1080_14jan2011_2160x28080_r4',
+mpiexec -n 9492 ./mitgcmuv
 
 ==============
 
