@@ -8,8 +8,7 @@ module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mp
 
 ########################################
 # 30x30x96 configuration without asyncio
-cd ~/geos5/asyncio
-cvs co MITgcm_code
+cvs co -D "2013/08/21 00:25:30" MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_90
 cd MITgcm
 mkdir build run1
@@ -29,7 +28,6 @@ mpiexec -n 96 ./mitgcmuv
 
 #####################################
 # 30x30x96 configuration with asyncio
-cd ~/geos5/asyncio/MITgcm
 mkdir run2
 cd build
 rm *
@@ -48,7 +46,6 @@ mpiexec -n 124 ./mitgcmuv
 
 ###################################################
 # 30x30x96 configuration with asyncio and no seaice
-cd ~/geos5/asyncio/MITgcm
 mkdir run3
 cd build
 rm *
