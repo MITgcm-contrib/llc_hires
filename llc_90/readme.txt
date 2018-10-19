@@ -8,7 +8,7 @@ module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mp
 
 ########################################
 # 30x30x96 configuration without asyncio
-cvs co -D "2013/08/21 00:25:30" MITgcm_code
+cvs co MITgcm_code
 cvs co MITgcm_contrib/llc_hires/llc_90
 cd MITgcm
 mkdir build run1
@@ -28,6 +28,7 @@ mpiexec -n 96 ./mitgcmuv
 
 #####################################
 # 30x30x96 configuration with asyncio
+cd ../../MITgcm
 mkdir run2
 cd build
 rm *
@@ -42,6 +43,7 @@ ln -sf /nobackup/dmenemen/GEOS5/experiments/llc90/data/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input/* .
+mv data_async data
 mpiexec -n 124 ./mitgcmuv
 
 ###################################################
