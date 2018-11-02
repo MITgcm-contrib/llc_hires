@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/asyncio_write_fld_xym_rl.F,v 1.2 2013/12/30 03:47:38 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/asyncio_write_fld_xym_rl.F,v 1.3 2018/11/02 14:00:07 dimitri Exp $
 C $Name:  $
 
 #include "CPP_EEOPTIONS.h"
@@ -23,7 +23,7 @@ C Global
 
 C Arguments
       CHARACTER*(*) pref,suff
-      _RL field(1-Olx:sNx+Olx,1-Oly:sNy+Oly,MULTDIM,nSx,nSy)
+      _RL field(1-Olx:sNx+Olx,1-Oly:sNy+Oly,SEAICE_multDim,nSx,nSy)
       INTEGER myIter
       INTEGER myThid
 C Functions

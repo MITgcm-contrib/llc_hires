@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_pickup.F,v 1.3 2014/03/06 02:45:05 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/write_pickup.F,v 1.4 2018/11/02 14:00:08 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -9,7 +9,7 @@ CBOP
 C     !ROUTINE: WRITE_PICKUP
 C     !INTERFACE:
       SUBROUTINE WRITE_PICKUP(
-     I                 permPickup,
+     I                 permPickup, suffix,
      I                 myTime, myIter, myThid )
 
 C     !DESCRIPTION:
@@ -27,14 +27,12 @@ C     !USES:
 #include "RESTART.h"
 #include "DYNVARS.h"
 #include "SURFACE.h"
+#include "FFIELDS.h"
 #ifdef ALLOW_GENERIC_ADVDIFF
 # include "GAD.h"
 #endif
 #ifdef ALLOW_NONHYDROSTATIC
 # include "NH_VARS.h"
-#endif
-#ifdef ALLOW_ADDFLUID
-# include "FFIELDS.h"
 #endif
 #ifdef ALLOW_MNC
 # include "MNC_PARAMS.h"
@@ -45,10 +43,12 @@ C     !USES:
 
 C     !INPUT PARAMETERS:
 C     permPickup      :: Is or is not a permanent pickup.
+C     suffix          :: pickup-name suffix
 C     myTime          :: Current time of simulation ( s )
 C     myIter          :: Iteration number
 C     myThid          :: Thread number for this instance of the routine.
       LOGICAL permPickup
+      CHARACTER*(*) suffix
       _RL     myTime
       INTEGER myIter
       INTEGER myThid
@@ -104,14 +104,6 @@ C-    Initialise:
       ENDDO
 
 C     Write model fields
-      DO j = 1,MAX_LEN_FNAM
-        fn(j:j) = ' '
-      ENDDO
-      IF ( permPickup ) THEN
-        WRITE(fn,'(A,I10.10)') 'pickup.',myIter
-      ELSE
-        WRITE(fn,'(A,A)') 'pickup.',checkPtSuff(nCheckLev)
-      ENDIF
 
 C     Going to really do some IO. Make everyone except master thread wait.
 C     this is done within IO routines => no longer needed
@@ -141,6 +133,7 @@ chenze
 
       IF (pickup_write_mdsio) THEN
 
+        WRITE(fn,'(A,A)') 'pickup.', suffix
         fp = precFloat64
         j  = 0
 C     record number < 0 : a hack not to write meta files now:
@@ -156,11 +149,13 @@ C---  write State 3-D fields for restart
 #if defined(ALLOW_EDDYPSI) && defined(ALLOW_GMREDI)
         IF (GM_InMomAsStress) THEN
           j = j + 1
-          CALL WRITE_REC_3D_RL( fn, fp, Nr, uMean,   -j, myIter, myThid)
-          IF (j.LE.listDim) wrFldList(j) = 'Umean   '
+          CALL WRITE_REC_3D_RL( fn, fp, Nr, uEulerMean,
+     &                                            -j, myIter, myThid )
+          IF (j.LE.listDim) wrFldList(j) = 'UEulerM '
           j = j + 1
-          CALL WRITE_REC_3D_RL( fn, fp, Nr, vMean,   -j, myIter, myThid)
-          IF (j.LE.listDim) wrFldList(j) = 'Vmean   '
+          CALL WRITE_REC_3D_RL( fn, fp, Nr, vEulerMean,
+     &                                            -j, myIter, myThid )
+          IF (j.LE.listDim) wrFldList(j) = 'VEulerM '
       ENDIF
 #endif
 
@@ -270,15 +265,21 @@ C--   W velocity:
         CALL WRITE_REC_3D_RL( fn, fp, Nr, gvNm1,  -j, myIter, myThid )
         IF (j.LE.listDim) wrFldList(j) = 'GvNm1   '
        ENDIF
-       IF ( AdamsBashforthGt ) THEN
+       IF ( AdamsBashforthGt.OR.AdamsBashforth_T ) THEN
         j = j + 1
         CALL WRITE_REC_3D_RL( fn, fp, Nr, gtNm1,  -j, myIter, myThid )
-        IF (j.LE.listDim) wrFldList(j) = 'GtNm1   '
+        IF (j.LE.listDim) THEN
+         IF ( AdamsBashforthGt ) wrFldList(j) = 'GtNm1   '
+         IF ( AdamsBashforth_T ) wrFldList(j) = 'TempNm1 '
+        ENDIF
        ENDIF
-       IF ( AdamsBashforthGs ) THEN
+       IF ( AdamsBashforthGs.OR.AdamsBashforth_S ) THEN
         j = j + 1
         CALL WRITE_REC_3D_RL( fn, fp, Nr, gsNm1,  -j, myIter, myThid )
-        IF (j.LE.listDim) wrFldList(j) = 'GsNm1   '
+        IF (j.LE.listDim) THEN
+         IF ( AdamsBashforthGs ) wrFldList(j) = 'GsNm1   '
+         IF ( AdamsBashforth_S ) wrFldList(j) = 'SaltNm1 '
+        ENDIF
        ENDIF
 #ifdef ALLOW_NONHYDROSTATIC
        IF ( nonHydrostatic ) THEN
@@ -290,7 +291,7 @@ C--   W velocity:
 #endif /*  ALLOW_ADAMSBASHFORTH_3 */
 
 C-    write Full Pressure for EOS in pressure:
-       IF ( useDynP_inEos_Zc ) THEN
+       IF ( storePhiHyd4Phys ) THEN
         j = j + 1
         CALL WRITE_REC_3D_RL( fn, fp, Nr,totPhiHyd,-j,myIter, myThid )
         IF (j.LE.listDim) wrFldList(j) = 'PhiHyd  '
@@ -306,10 +307,19 @@ C-    write Full Pressure for EOS in pressure:
 C-    write mass source/sink of fluid (but not needed if selectAddFluid=-1)
        IF ( selectAddFluid.NE.0 ) THEN
         j = j + 1
-        CALL WRITE_REC_3D_RL( fn, fp, Nr,addMass,-j,myIter, myThid )
+        CALL WRITE_REC_3D_RL( fn, fp, Nr, addMass,-j, myIter, myThid )
         IF (j.LE.listDim) wrFldList(j) = 'AddMass '
        ENDIF
 #endif /* ALLOW_ADDFLUID */
+#ifdef ALLOW_FRICTION_HEATING
+C-    needs frictional heating when using synchronous time-stepping
+       IF ( addFrictionHeating .AND. .NOT.staggerTimeStep ) THEN
+        j = j + 1
+        CALL WRITE_REC_3D_RS( fn, fp, Nr, frictionHeating,
+     &                                            -j, myIter, myThid )
+        IF (j.LE.listDim) wrFldList(j) = 'FricHeat'
+       ENDIF
+#endif /* ALLOW_FRICTION_HEATING */
 
         n3D = j
 C---  Write 2-D fields, starting with Eta:
@@ -390,8 +400,8 @@ C       Then set the actual unlimited dimension
         CALL MNC_CW_RL_W('D',fn,0,0,'V', vVel, myThid)
 #if defined(ALLOW_EDDYPSI) && defined(ALLOW_GMREDI)
         IF (GM_InMomAsStress) THEN
-          CALL MNC_CW_RL_W('D',fn,0,0,'Umean', uMean, myThid)
-          CALL MNC_CW_RL_W('D',fn,0,0,'Vmean', vMean, myThid)
+          CALL MNC_CW_RL_W('D',fn,0,0,'UEulerM', uEulerMean, myThid)
+          CALL MNC_CW_RL_W('D',fn,0,0,'VEulerM', vEulerMean, myThid)
         ENDIF
 #endif
         CALL MNC_CW_RL_W('D',fn,0,0,'Temp', theta, myThid)
@@ -416,7 +426,7 @@ c         CALL MNC_CW_RL_W('D',fn,0,0,'gW', gW, myThid)
 #endif
         ENDIF
 #endif
-        IF ( useDynP_inEos_Zc ) THEN
+        IF ( storePhiHyd4Phys ) THEN
           CALL MNC_CW_RL_W('D',fn,0,0,'phiHyd', totPhiHyd, myThid)
         ENDIF
         CALL MNC_FILE_CLOSE_ALL_MATCHING(fn, myThid)

@@ -4,6 +4,43 @@ qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M YO
 qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
 qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
 
+##########################################
+# 90x90_5004 configuration with newer code
+qsub -I -q electra -l select=200:ncpus=28:model=bro_ele:aoe=sles12 -l walltime=10:00:00
+module purge
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+
+mpt2.17r13
+stripe to 16 or 32
+7840
+12040
+
+cd ~/llc_2160
+git clone git@github.com:MITgcm/MITgcm.git
+cvs co MITgcm_contrib/llc_hires/llc_2160
+cd ~/llc_2160/MITgcm
+mkdir build run
+cd ~/llc_2160/MITgcm/build
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_90x90_5004 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
+make depend
+make -j 16
+
+cd ~/llc_2160/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_90x90_5004
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/data.exch2_90x90x5004 data.exch2
+emacs data
+
+mpiexec -n 5500 ./mitgcmuv_90x90_5004
+
+tail -f STDOUT.00000 | grep advcfl_W
+
 #############################
 # 60x60x10882 configuration
 
