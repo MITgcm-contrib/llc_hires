@@ -1,21 +1,44 @@
 For interactive session, Ivy Bridge nodes:
-qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe -M YOUR_EMAIL_HERE
-qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe -M YOUR_EMAIL_HERE
-qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
-qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
+qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe
+qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe
+qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe
+qsub -I -q long -l select=103:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe
 
-##########################################
-# 90x90_5004 configuration with newer code
+##########################
+# 72x72_7666 configuration
+qsub -I -q long -l select=400:ncpus=20:model=ivy,walltime=120:00:00 -m abe
+module purge
+module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd ~/llc_2160
+git clone git@github.com:MITgcm/MITgcm.git
+cvs co MITgcm_contrib/llc_hires/llc_2160
+cd ~/llc_2160/MITgcm
+mkdir build run
+cd ~/llc_2160/MITgcm/build
+cp ../../MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_72x72_7666 SIZE.h
+../tools/genmake2 -of \
+ ../../MITgcm_contrib/llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../MITgcm_contrib/llc_hires/llc_2160/code ../../MITgcm_contrib/llc_hires/llc_2160/code-async'
+make depend
+make -j 16
+
+cd ~/llc_2160/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_72x72_7666
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../MITgcm_contrib/llc_hires/llc_2160/input/* .
+cp data.exch2_72x72x7666 data.exch2
+emacs data
+
+mpiexec -n 8000 ./mitgcmuv_72x72_7666
+
+tail -f STDOUT.00000 | grep advcfl_W
+
+###################################################################
+# 90x90_5004 configuration with newer code on electra special queue
 qsub -I -q electra -l select=200:ncpus=28:model=bro_ele:aoe=sles12 -l walltime=10:00:00
 module purge
-module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
-
-mpt2.17r13
-stripe to 16 or 32
-7840
-12040
-
 cd ~/llc_2160
 git clone git@github.com:MITgcm/MITgcm.git
 cvs co MITgcm_contrib/llc_hires/llc_2160
@@ -44,7 +67,7 @@ tail -f STDOUT.00000 | grep advcfl_W
 #############################
 # 60x60x10882 configuration
 
-qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe -M YOUR_EMAIL_HERE
+qsub -I -q long -l select=600:ncpus=20:model=ivy,min_walltime=30:00,max_walltime=120:00:00 -m abe
 module purge
 module load comp-intel/2012.0.032 mpi-sgi/mpt.2.10r6 netcdf/4.0
 cd ~/llc_2160

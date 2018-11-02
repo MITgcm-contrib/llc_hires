@@ -6,7 +6,7 @@
       SEAICE_wetIceAlb   = 0.7060,
       SEAICE_drySnowAlb  = 0.8652,
       SEAICE_wetSnowAlb  = 0.8085,
-      SEAICE_waterDrag   = 0..0054138,
+      SEAICE_waterDrag   = 0.0054138,
       SEAICE_drag        = 0.00114,
       HO                 = 0.05,
 #
