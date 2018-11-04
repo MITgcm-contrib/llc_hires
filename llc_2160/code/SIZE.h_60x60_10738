@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/Attic/SIZE.h_60x60_10882,v 1.2 2014/01/10 16:01:25 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_60x60_10738,v 1.1 2018/11/04 20:18:36 dimitri Exp $
 C $Name:  $
 
 C
@@ -50,7 +50,7 @@ C     Nr  :: No. points in Z for full process domain.
      &           OLy =   8,
      &           nSx =   1,
      &           nSy =   1,
-     &           nPx = 16848-5966,
+     &           nPx = 16848-6110,
      &           nPy =   1,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,

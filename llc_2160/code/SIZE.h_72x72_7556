@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/Attic/SIZE.h_90x90_5004,v 1.2 2014/01/10 16:01:25 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/SIZE.h_72x72_7556,v 1.1 2018/11/04 20:18:36 dimitri Exp $
 C $Name:  $
 
 C
@@ -44,13 +44,13 @@ C     Nr  :: No. points in Z for full process domain.
       INTEGER Ny
       INTEGER Nr
       PARAMETER (
-     &           sNx =  90,
-     &           sNy =  90,
+     &           sNx =  72,
+     &           sNy =  72,
      &           OLx =   8,
      &           OLy =   8,
      &           nSx =   1,
      &           nSy =   1,
-     &           nPx = 7488-2484,
+     &           nPx = 11700-4144,
      &           nPy =   1,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,
