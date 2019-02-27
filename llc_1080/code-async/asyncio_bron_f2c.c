@@ -26,24 +26,24 @@ void asyncio_bron_f_f2_( int *tileID ) {
 // Fortran and C is a pain). epochID is timestep number.
 void asyncio_bron_f_f3_( int *fldNum, int *tileID, int *epochID, void *data){
  char fldCode;
- if ( *fldNum == 1 ) { fldCode='u'; }
- if ( *fldNum == 2 ) { fldCode='v'; }
- if ( *fldNum == 3 ) { fldCode='t'; }
- if ( *fldNum == 4 ) { fldCode='s'; }
- if ( *fldNum == 5 ) { fldCode='x'; }
- if ( *fldNum == 6 ) { fldCode='y'; }
- if ( *fldNum == 7 ) { fldCode='n'; }
- if ( *fldNum == 8 ) { fldCode='d'; }
- if ( *fldNum == 9 ) { fldCode='h'; }
+ //if ( *fldNum == 1 ) { fldCode='u'; }
+ //if ( *fldNum == 2 ) { fldCode='v'; }
+ //if ( *fldNum == 3 ) { fldCode='t'; }
+ //if ( *fldNum == 4 ) { fldCode='s'; }
+ //if ( *fldNum == 5 ) { fldCode='x'; }
+ //if ( *fldNum == 6 ) { fldCode='y'; }
+ //if ( *fldNum == 7 ) { fldCode='n'; }
+ //if ( *fldNum == 8 ) { fldCode='d'; }
+ //if ( *fldNum == 9 ) { fldCode='h'; }
 
- if ( *fldNum == 10 ) { fldCode='a'; }  // seaice fields
- if ( *fldNum == 11 ) { fldCode='b'; }
- if ( *fldNum == 12 ) { fldCode='c'; }
- if ( *fldNum == 13 ) { fldCode='d'; }
- if ( *fldNum == 14 ) { fldCode='e'; }
- if ( *fldNum == 15 ) { fldCode='f'; }
- if ( *fldNum == 16 ) { fldCode='g'; }
-
+ //if ( *fldNum == 10 ) { fldCode='a'; }  // seaice fields
+ //if ( *fldNum == 11 ) { fldCode='b'; }
+ //if ( *fldNum == 12 ) { fldCode='c'; }
+ //if ( *fldNum == 13 ) { fldCode='d'; }
+ //if ( *fldNum == 14 ) { fldCode='e'; }
+ //if ( *fldNum == 15 ) { fldCode='f'; }
+ //if ( *fldNum == 16 ) { fldCode='g'; }
+ fldCode = *fldNum;
  bron_f3(&fldCode, tileID, epochID, data);
 }
 

@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/asyncio_write_fld_xym_rl.F,v 1.1 2013/09/29 22:43:00 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/asyncio_write_fld_xym_rl.F,v 1.2 2019/02/27 20:56:33 dimitri Exp $
 C $Name:  $
 
 #include "CPP_EEOPTIONS.h"
@@ -23,7 +23,7 @@ C Global
 
 C Arguments
       CHARACTER*(*) pref,suff
-      _RL field(1-Olx:sNx+Olx,1-Oly:sNy+Oly,MULTDIM,nSx,nSy)
+      _RL field(1-Olx:sNx+Olx,1-Oly:sNy+Oly,SEAICE_multDim,nSx,nSy)
       INTEGER myIter
       INTEGER myThid
 C Functions
@@ -31,13 +31,16 @@ C Functions
 C Local
       INTEGER bi, bj, IFLD, tN
 
+      IFLD = ICHAR(pref)
+
 C      RETURN
 C
-      IF ( pref .EQ. 'A.' ) THEN
-         IFLD=10
-      ELSE
-         STOP 'ABNORMAL END: INVALID FIELD CODE'
-      ENDIF
+!      IF ( pref .EQ. 'A.' ) THEN
+!         IFLD=10
+!      ELSE
+!         STOP 'ABNORMAL END: INVALID FIELD CODE'
+!      ENDIF
+
       DO bj=myByLo(myThid),myByHi(myThid)
        DO bi=myBxLo(myThid),myBxHi(myThid)
 ch        tN = tileNo(bi,bj)

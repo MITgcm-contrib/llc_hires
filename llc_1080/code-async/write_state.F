@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/write_state.F,v 1.3 2014/03/06 03:00:39 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/write_state.F,v 1.4 2019/02/27 20:56:33 dimitri Exp $
 C $Name:  $
 
 #include "PACKAGES_CONFIG.h"
@@ -105,7 +105,7 @@ CEOP
         IF ( dumpFreq .EQ. 0.0 ) THEN
           iRec = 1
         ELSE
-          iRec = int ( (myTime-startTime) / dumpFreq +1.5 )
+          iRec = 1 + NINT( (myTime-startTime) / dumpFreq )
         ENDIF
 
 C       Going to really do some IO. Make everyone except master thread wait.
@@ -141,9 +141,13 @@ c         CALL WRITE_REC_XYZ_RS('hFacS.',hFacS,iRec,myIter,myThid)
 C         Write each snap-shot as a new file (original and default
 C         method) -- creates many files but for large configurations is
 C         easier to transfer analyse a particular snap-shots
-          WRITE(suff,'(I10.10)') myIter
+          IF ( rwSuffixType.EQ.0 ) THEN
+            WRITE(suff,'(I10.10)') myIter
+          ELSE
+            CALL RW_GET_SUFFIX( suff, myTime, myIter, myThid )
+          ENDIF
 
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
 # ifndef ALLOW_STREAMICE
           CALL WRITE_FLD_XYZ_RL( 'U.',suff,uVel%v,myIter,myThid)
           CALL WRITE_FLD_XYZ_RL( 'V.',suff,vVel%v,myIter,myThid)
@@ -151,7 +155,7 @@ C         easier to transfer analyse a particular snap-shots
           CALL WRITE_FLD_XYZ_RL( 'S.',suff,salt%v,myIter,myThid)
           CALL WRITE_FLD_XY_RL('Eta.',suff,etaN%v,myIter,myThid)
           CALL WRITE_FLD_XYZ_RL( 'W.',suff,wVel%v,myIter,myThid)
-          IF ( useDynP_inEos_Zc .OR. myIter.NE.nIter0 ) THEN
+          IF ( storePhiHyd4Phys .OR. myIter.NE.nIter0 ) THEN
             CALL WRITE_FLD_XYZ_RL('PH.',suff,totPhiHyd%v,myIter,myThid)
           ENDIF
 # endif
@@ -245,7 +249,7 @@ C         CALL MNC_CW_RL_W_S('D','state',0,0,'model_time',myTime,myThid)
           CALL MNC_CW_RL_W(pf,'state',0,0,'S', salt, myThid)
           CALL MNC_CW_RL_W(pf,'state',0,0,'Eta', etaN, myThid)
           CALL MNC_CW_RL_W(pf,'state',0,0,'W', wVel, myThid)
-          IF ( useDynP_inEos_Zc .OR. myIter.NE.nIter0 ) THEN
+          IF ( storePhiHyd4Phys .OR. myIter.NE.nIter0 ) THEN
             CALL MNC_CW_SET_UDIM('phiHyd', -1, myThid)
             CALL MNC_CW_RL_W_S('D','phiHyd',0,0,'T',myTime,myThid)
             CALL MNC_CW_SET_UDIM('phiHyd', 0, myThid)
