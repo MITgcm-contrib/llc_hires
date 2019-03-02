@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <mpi.h>
 
+#include "SIZE.h"
+
 
 // lat-lon-cap decomposition has 13 square facets
 // facetElements1D is typically 1080, or 2160, or 4320
@@ -105,18 +107,17 @@ createMPItypes(void)
 
 
 
-// Somehow we acquire this info at runtime
 void
 initSizesAndTypes(void)
 {
     /////////////////////////////////////////////
     // Fundamental values
     fieldElementalTypeMPI = MPI_DOUBLE;
-    facetElements1D = 1080;
-    tileSizeX = 90;
-    tileSizeY = 90;
-    xGhosts = 8;
-    yGhosts = 8;
+    facetElements1D = sFacet;
+    tileSizeX = sNx;
+    tileSizeY = sNy;
+    xGhosts = OLx;
+    yGhosts = OLy;
     /////////////////////////////////////////////
 
     // Derived values
@@ -338,6 +339,8 @@ readfield_(
     int i;
     char namebuf[filenameLength+1];
     char *filename = namebuf;
+
+//fprintf (stderr, "In NEW readfield_\n");
 
     MPI_Offset fieldOffsetInFile = *fieldOffsetInFileInPencils * tileSizeX * sizeofFieldElementalType;
 

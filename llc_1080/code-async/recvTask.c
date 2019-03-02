@@ -1,6 +1,6 @@
 
 // Code to do the m-on-n fan-in, recompositing, and output, of data
-// tiles for mitGCM.
+// tiles for MITgcm.
 //
 // There are aspects of this code that would be simpler in C++, but
 // we deliberately wrote the code in ansi-C to make linking it with
@@ -9,6 +9,7 @@
 
 
 #include "PACKAGES_CONFIG.h"
+#include "SIZE.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -17,17 +18,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <assert.h>
 
 #include <mpi.h>
 #include <alloca.h>
 
 
 #include <stdint.h>
+#include <limits.h>
 #include <errno.h>
 
 #define DEBUG 1
 
-#if (DEBUG >= 2)
+#if (DEBUG >= 3)
 #define FPRINTF fprintf
 #else
 #include <stdarg.h>
@@ -35,9 +38,9 @@ void FPRINTF(FILE *fp,...){return;}
 #endif
 
 
+#if (DEBUG >= 2)
 // Define our own version of "assert", where we sleep rather than abort.
 // This makes it easier to attach the debugger.
-#if (DEBUG >= 1)
 #define ASSERT(_expr)  \
     if (!(_expr))  { \
         fprintf(stderr, "ASSERT failed for pid %d : `%s': %s: %d: %s\n", \
@@ -45,15 +48,20 @@ void FPRINTF(FILE *fp,...){return;}
         sleep(9999); \
     }
 #else
+// Use the standard version of "assert"
 #define ASSERT assert
 #endif
 
+
+// The hostname that each rank is running on.  Currently, only rank 0
+// uses this.  It is allocated and deallocated in routine "f1"
+char (*allHostnames)[HOST_NAME_MAX+1]  = NULL;
 
 
 // If numRanksPerNode is set to be > 0, we just use that setting.
 // If it is <= 0, we dynamically determine the number of cores on
 // a node, and use that.  (N.B.: we assume *all* nodes being used in
-// the run have the *same* number of cores.)
+// the run have the *same* number of MPI processes on each.)
 int numRanksPerNode = 0;
 
 // Just an error check; can be zero (if you're confident it's all correct).
@@ -63,7 +71,8 @@ int numRanksPerNode = 0;
 
 
 ///////////////////////////////////////////////////////////////////////
-// Info about the data fields
+// Fundamental info about the data fields.  Most (but not all) of
+// this is copied or derived from the values in "SIZE.h"
 
 // double for now.  Might also be float someday
 #define datumType  double
@@ -72,14 +81,17 @@ int numRanksPerNode = 0;
 
 // Info about the data fields.  We assume that all the fields have the
 // same X and Y characteristics, but may have either 1 or NUM_Z levels.
-//
-// the following 3 values are required here. Could be sent over or read in
-// with some rearrangement in init routines
-//
-#define NUM_X   1080
-#define NUM_Y   14040L                     // get rid of this someday
-#define NUM_Z   90
-#define MULTDIM  7
+//   bcn: or MULTDIM levels (evidently used by "sea ice").
+
+// N.B. Please leave the seemingly unneeded "(long int)" casts in
+// place.  These individual values may not need them, but they get
+// used in calculations where the extra length might be important.
+#define NUM_X   ((long int) sFacet)
+#define NUM_Y   (((long int) sFacet) * 13)
+#define NUM_Z   ((long int) Nr)
+#define MULTDIM ((long int) 7)
+
+// Some values derived from the above constants
 #define twoDFieldSizeInBytes  (NUM_X * NUM_Y * 1 * datumSize)
 #define threeDFieldSizeInBytes  (twoDFieldSizeInBytes * NUM_Z)
 #define multDFieldSizeInBytes  (twoDFieldSizeInBytes * MULTDIM)
@@ -88,18 +100,22 @@ int numRanksPerNode = 0;
 // size (no odd-sized last piece), they all have the same X and Y
 // characteristics (including ghosting), and are full depth in Z
 // (either 1, or NUM_Z, or MULTDIM, as appropriate).
-//
-// all these data now sent over from compute ranks
-//
-int TILE_X = -1;
-int TILE_Y =  -1;
-int XGHOSTS  = -1;
-int YGHOSTS =  -1;
+#define TILE_X  sNx
+#define TILE_Y  sNy
+#define XGHOSTS OLx
+#define YGHOSTS OLy
+#define TOTAL_NUM_TILES  ((sFacet / sNx) * (sFacet / sNy) * 13)
+#define NUM_WET_TILES  (nPx * nPy)
 
-// Size of one Z level of a tile (NOT one Z level of a whole field)
-int tileOneZLevelItemCount = -1;
-int tileOneZLevelSizeInBytes = -1;
+// Size of one Z level of an individual tile.  This is the "in memory"
+// size, including ghosting.
+#define tileOneZLevelItemCount  (((long)(TILE_X + 2*XGHOSTS)) * (TILE_Y + 2*YGHOSTS))
+#define tileOneZLevelSizeInBytes  (tileOneZLevelItemCount * datumSize)
 
+
+
+//////////////////////////////////////////////////////////////////////
+// Define the depth (i.e. number of Z-levels) of the various fields.
 
 typedef struct dataFieldDepth {
     char dataFieldID;
@@ -138,78 +154,81 @@ dataFieldDepth_t fieldDepths[] = {
 #define numAllFields  (sizeof(fieldDepths)/sizeof(dataFieldDepth_t))
 
 
-
 ///////////////////////////////////////////////////////////////////////
 // Info about the various kinds of i/o epochs
 typedef struct epochFieldInfo {
     char dataFieldID;
     MPI_Comm registrationIntercomm;
     MPI_Comm dataIntercomm;
-    MPI_Comm ioRanksIntracomm;
-    int tileCount;
+    MPI_Comm ioRanksIntracomm;  // i/o ranks for *this* field
+    long int tileCount;
     int zDepth;  // duplicates the fieldDepth entry; filled in automatically
+    int *chunkWriters;  // Which rank writes the i'th chunk of z-levels
+    int nChunks;  // length of chunkWriters array
     char filenameTemplate[128];
     long int offset;
     int pickup;
 } fieldInfoThisEpoch_t;
 
-// The normal i/o dump
+// The normal i/o dump - style 0
 fieldInfoThisEpoch_t fieldsForEpochStyle_0[] = {
-  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "U.%010d.%s", 0, 0 },
-  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "V.%010d.%s", 0, 0 },
-  { 'W', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "W.%010d.%s", 0, 0 },
-  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "Salt.%010d.%s", 0, 0 },
-  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "Theta.%010d.%s", 0,0 },
-  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "Eta.%010d.%s", 0,0 },
+  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "U.%010d.%s", 0, 0 },
+  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "V.%010d.%s", 0, 0 },
+  { 'W', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "W.%010d.%s", 0, 0 },
+  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Salt.%010d.%s", 0, 0 },
+  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Theta.%010d.%s", 0,0 },
+  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Eta.%010d.%s", 0,0 },
 
-  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIarea.%010d.%s", 0,0 },
-  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIheff.%010d.%s", 0,0 },
-  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIhsnow.%010d.%s", 0,0 },
-  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIuice.%010d.%s", 0,0 },
-  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIvice.%010d.%s", 0,0 },
-  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "SIhsalt.%010d.%s", 0,0 },
+  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIarea.%010d.%s", 0,0 },
+  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIheff.%010d.%s", 0,0 },
+  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIhsnow.%010d.%s", 0,0 },
+  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIuice.%010d.%s", 0,0 },
+  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIvice.%010d.%s", 0,0 },
+  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIhsalt.%010d.%s", 0,0 },
 
-//{ 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "EtaHnm1.%010d.%s", 0,0 },
-  { 'I', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceTAUX.%010d.%s", 0,0 },
-  { 'J', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceTAUY.%010d.%s", 0,0 },
-  { 'K', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "KPPhbl.%010d.%s", 0,0 },
-  { 'L', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceSflux.%010d.%s", 0,0 },
+//{ 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "EtaHnm1.%010d.%s", 0,0 },
+  { 'I', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUX.%010d.%s", 0,0 },
+  { 'J', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUY.%010d.%s", 0,0 },
+  { 'K', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "KPPhbl.%010d.%s", 0,0 },
+  { 'L', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceSflux.%010d.%s", 0,0 },
 
-  { 'M', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceFWflx.%010d.%s", 0,0 },
-  { 'O', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceQnet.%010d.%s", 0,0 },
-  { 'P', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "PhiBot.%010d.%s", 0,0 },
-  { 'Q', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "oceQsw.%010d.%s", 0,0 },
-//{ 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "dEtaHdt.%010d.%s", 0,0 },
+  { 'M', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceFWflx.%010d.%s", 0,0 },
+  { 'O', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQnet.%010d.%s", 0,0 },
+  { 'P', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "PhiBot.%010d.%s", 0,0 },
+  { 'Q', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQsw.%010d.%s", 0,0 },
+//{ 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "dEtaHdt.%010d.%s", 0,0 },
 
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1,          "", 0,0 },
+  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0,0 },
 };
 
 
-// pickup file
+// pickup file dump - style 1
+// NOTE: if this changes, write_pickup_meta will also need to be changed
 fieldInfoThisEpoch_t fieldsForEpochStyle_1[] = {
-  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 1},
-  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 1},
-  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 2 + twoDFieldSizeInBytes * 0, 1},
-  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 3 + twoDFieldSizeInBytes * 0, 1},
-  { 'X', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 4 + twoDFieldSizeInBytes * 0, 1},
-  { 'Y', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 5 + twoDFieldSizeInBytes * 0, 1},
-  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 0, 1},
-  { 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 1, 1},
-  { 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 2, 1},
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1,                    "", 0 ,1},
+  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 1},
+  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 1},
+  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 2 + twoDFieldSizeInBytes * 0, 1},
+  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 3 + twoDFieldSizeInBytes * 0, 1},
+  { 'X', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 4 + twoDFieldSizeInBytes * 0, 1},
+  { 'Y', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 5 + twoDFieldSizeInBytes * 0, 1},
+  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 0, 1},
+  { 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 1, 1},
+  { 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 2, 1},
+  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0 ,1},
 };
 
 
-// seaice pickup
+// seaice pickup dump - style 2
+// NOTE: if this changes, write_pickup_meta will also need to be changed
 fieldInfoThisEpoch_t fieldsForEpochStyle_2[] = {
-  { 'A', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 2},
-  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 2},
-  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 1, 2},
-  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 2, 2},
-  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 3, 2},
-  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 4, 2},
-  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 5, 2},
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1,          "",                          0 },
+  { 'A', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 2},
+  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 2},
+  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 1, 2},
+  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 2, 2},
+  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 3, 2},
+  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 4, 2},
+  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 5, 2},
+  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0 },
 };
 
 
@@ -244,7 +263,6 @@ MPI_Comm globalIntercomm = MPI_COMM_NULL;
 #define roundUp(_x,_y)  (divCeil((_x),(_y)) * (_y))
 
 
-
 typedef enum {
     bufState_illegal,
     bufState_Free,
@@ -257,17 +275,15 @@ typedef struct buf_header{
     bufState_t state;
     int requestsArraySize;
     MPI_Request *requests;
-    uint64_t ck0;
-    char *payload;   // [tileOneZLevelSizeInBytes * NUM_Z];  // Max payload size
-  uint64_t ck1;      // now rec'vd from compute ranks & dynamically allocated in  
-} bufHdr_t;          // allocateTileBufs
+    char *payload;
+} bufHdr_t;
 
 
 bufHdr_t *freeTileBufs_ptr = NULL;
 bufHdr_t *inUseTileBufs_ptr = NULL;
 
 int maxTagValue = -1;
-int totalNumTiles = -1;
+
 
 // routine to convert double to float during memcpy
 // need to get byteswapping in here as well
@@ -317,6 +333,7 @@ long long i, rem;
 	}
 }
 
+
 // Debug routine
 countBufs(int nbufs)
 {
@@ -338,16 +355,17 @@ countBufs(int nbufs)
     if (nInUse + nFree != target) {
         fprintf(stderr, "Rank %d: bad number of buffs: free %d, inUse %d, should be %d\n",
                         ioIntracommRank, nFree, nInUse, target);
-        sleep(5000);
     }
+    ASSERT ((nInUse + nFree) == target);
 }
 
-int readn(int fd, void *p, int nbytes)
+
+long int readn(int fd, void *p, long int nbytes)
 {
-  
+
   char *ptr = (char*)(p);
 
-    int nleft, nread;
+    long int nleft, nread;
   
     nleft = nbytes;
     while (nleft > 0){
@@ -412,7 +430,7 @@ void write_pickup_meta(FILE *fp, int gcmIter, int pickup)
   
   fprintf(fp," nDims = [ %3d ];\n",ndims);
   fprintf(fp," dimList = [\n");
-  fprintf(fp," %10u,%10d,%10u,\n",NUM_X,1,NUM_X);
+  fprintf(fp," %10lu,%10d,%10lu,\n",NUM_X,1,NUM_X);
   fprintf(fp," %10ld,%10d,%10ld\n",NUM_Y,1,NUM_Y);
   fprintf(fp," ];\n");
   fprintf(fp," dataprec = [ 'float64' ];\n");
@@ -428,14 +446,14 @@ void write_pickup_meta(FILE *fp, int gcmIter, int pickup)
 
 
 
-double *outBuf=NULL;//[NUM_X*NUM_Y*NUM_Z];  // only needs to be myNumZSlabs
+double *outBuf=NULL;//was [NUM_X*NUM_Y*NUM_Z], but only needs to be myNumZSlabs
 size_t outBufSize=0;
 
 
 void
-do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int firstZ, int numZ, int gcmIter)
+do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNumZ, int gcmIter)
 {
-  if (0==numZ) return;  // this is *not* global NUM_Z : change name of parameter to avoid grief!
+  if (0==myNumZ) return;
 
   int pickup = whichField->pickup;
 
@@ -443,14 +461,14 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int firstZ, int numZ, i
   // swap here, if necessary
   //  int i,j;
 
-  //i = NUM_X*NUM_Y*numZ;
+  //i = NUM_X*NUM_Y*myNumZ;
   //mds_byteswapr8_(&i,outBuf);
 
   // mds_byteswapr8 expects an integer count, which is gonna overflow someday
   // can't redefine to long without affecting a bunch of other calls
   // so do a slab at a time here, to delay the inevitable
   //  i = NUM_X*NUM_Y;
-  //for (j=0;j<numZ;++j)
+  //for (j=0;j<myNumZ;++j)
   //  mds_byteswapr8_(&i,&outBuf[i*j]);
 
   // gnu builtin evidently honored by intel compilers
@@ -458,13 +476,13 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int firstZ, int numZ, i
   if (pickup) {
     uint64_t *alias = (uint64_t*)outBuf;
     size_t i;
-    for (i=0;i<NUM_X*NUM_Y*numZ;++i)
+    for (i=0;i<NUM_X*NUM_Y*myNumZ;++i)
       alias[i] = __builtin_bswap64(alias[i]);
   }
   else {
     uint32_t *alias = (uint32_t*)outBuf;
     size_t i;
-    for (i=0;i<NUM_X*NUM_Y*numZ;++i)
+    for (i=0;i<NUM_X*NUM_Y*myNumZ;++i)
       alias[i] = __builtin_bswap32(alias[i]);
   }
 
@@ -483,19 +501,19 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int firstZ, int numZ, i
 
   if (pickup) {
     lseek(fd,whichField->offset,SEEK_SET);
-    lseek(fd,firstZ*NUM_X*NUM_Y*datumSize,SEEK_CUR);
-    nbytes = NUM_X*NUM_Y*numZ*datumSize;
+    lseek(fd,myFirstZ*NUM_X*NUM_Y*datumSize,SEEK_CUR);
+    nbytes = NUM_X*NUM_Y*myNumZ*datumSize;
   }
   else {
-    lseek(fd,firstZ*NUM_X*NUM_Y*sizeof(float),SEEK_CUR);
-    nbytes = NUM_X*NUM_Y*numZ*sizeof(float);
+    lseek(fd,myFirstZ*NUM_X*NUM_Y*sizeof(float),SEEK_CUR);
+    nbytes = NUM_X*NUM_Y*myNumZ*sizeof(float);
   }
 
   ssize_t bwrit = writen(fd,outBuf,nbytes);  
 
   if (-1==bwrit) perror("Henze : file write problem : ");
 
-  FPRINTF(stderr,"Wrote %d of %d bytes (%d -> %d) \n",bwrit,nbytes,firstZ,numZ);
+  FPRINTF(stderr,"Wrote %d of %d bytes (%d -> %d) \n",bwrit,nbytes,myFirstZ,myNumZ);
 
   //  ASSERT(nbytes == bwrit);
 
@@ -509,11 +527,10 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int firstZ, int numZ, i
 }
 
 
-int NTILES = -1;
 
 typedef struct {
-  int off;
-  int skip;
+  long int off;
+  long int skip;
 } tile_layout_t;
 
 tile_layout_t *offsetTable;
@@ -525,19 +542,11 @@ processSlabSection(
   void *data,
   int myNumZSlabs)
 {
-  int intracommSize,intracommRank;
-  // MPI_Comm_size(whichField->ioRanksIntracomm, &intracommSize);
-  MPI_Comm_rank(whichField->ioRanksIntracomm, &intracommRank);
-   //printf("i/o rank %d/%d recv'd %d::%d (%d->%d)\n",intracommRank,intracommSize,whichField,tileID,firstZ,lastZ);
-  // printf("rank %d : tile %d is gonna go at %d and stride with %d, z = %d\n",intracommRank,tileID,offsetTable[tileID].off,
-  //	   offsetTable[tileID].skip,myNumZSlabs);
-
   int z;
 
   int pickup = whichField->pickup;
 
-  //ASSERT((tileID > 0) && (tileID < (sizeof(offsetTable)/sizeof(tile_layout_t))));
-  ASSERT( (tileID > 0) && (tileID <= NTILES) ); // offsetTable now dynamically allocated
+  ASSERT ((tileID > 0) && (tileID <= TOTAL_NUM_TILES));
 
   if (myNumZSlabs * twoDFieldSizeInBytes > outBufSize){
 
@@ -553,7 +562,7 @@ processSlabSection(
 
   for (z=0;z<myNumZSlabs;++z){
 
-    off_t zoffset = z*TILE_X*TILE_Y*NTILES; //NOT totalNumTiles;
+    off_t zoffset = z*TILE_X*TILE_Y*TOTAL_NUM_TILES;
     off_t hoffset = offsetTable[tileID].off;
     off_t skipdst = offsetTable[tileID].skip;
 
@@ -569,8 +578,6 @@ processSlabSection(
     double *src = (double*)data + zoff + hoff;
 
     off_t skipsrc = TILE_X+2*XGHOSTS;
-
-    //fprintf(stderr,"rank %d   tile %d   offset %d   skip %d    dst %x     src %x\n",intracommRank,tileID,hoffset,skipdst,dst,src); 
 
     long long n = TILE_X;
 
@@ -592,9 +599,6 @@ processSlabSection(
 void
 allocateTileBufs(int numTileBufs, int maxIntracommSize)
 {
-
-  ASSERT(tileOneZLevelSizeInBytes>0);  // be sure we have rec'vd values by now
-
     int i, j;
     for (i = 0;  i < numTileBufs;  ++i) {
 
@@ -612,7 +616,6 @@ allocateTileBufs(int numTileBufs, int maxIntracommSize)
         for (j = 0;  j < maxIntracommSize;  ++j) {
             newBuf->requests[j] = MPI_REQUEST_NULL;
         }
-	newBuf->ck0 = newBuf->ck1 = 0xdeadbeefdeadbeef;
 
         // Put the buf into the free list
         newBuf->state = bufState_Free;
@@ -680,10 +683,6 @@ tryToReceiveDataTile(
              dataIntercomm, &mpiStatus);
     bufHdr->state = bufState_InUse;
 
-    // Overrun check
-    ASSERT(bufHdr->ck0==0xdeadbeefdeadbeef);
-    ASSERT(bufHdr->ck0==bufHdr->ck1);
-
     // Return values
     *tileID = mpiStatus.MPI_TAG >> numCheckBits;
 
@@ -699,7 +698,7 @@ tryToReceiveDataTile(
 int
 tryToReceiveZSlab(
   void *buf,
-  int expectedMsgSize,
+  long int expectedMsgSize,
   MPI_Comm intracomm)
 {
     MPI_Status mpiStatus;
@@ -722,48 +721,64 @@ tryToReceiveZSlab(
 }
 
 
-
 void
 redistributeZSlabs(
   bufHdr_t *bufHdr,
   int tileID,
   int zSlabsPer,
-  int thisFieldNumZ,
-  MPI_Comm intracomm)
+  fieldInfoThisEpoch_t *fieldInfo)
 {
-    int pieceSize = zSlabsPer * tileOneZLevelSizeInBytes;
-    int tileSizeInBytes = tileOneZLevelSizeInBytes * thisFieldNumZ;
-    int offset = 0;
-    int recvRank = 0;
+    int thisFieldNumZ = fieldInfo->zDepth;
+    long int tileSizeInBytes = tileOneZLevelSizeInBytes * thisFieldNumZ;
+    long int fullPieceSize = zSlabsPer * tileOneZLevelSizeInBytes;
+    long int offset = 0;
 
+    MPI_Comm intracomm = fieldInfo->ioRanksIntracomm;
+
+    // Note that the MPI interface definition requires that this arg
+    // (i.e. "pieceSize") be of type "int".  So check to be sure we
+    // haven't overflowed the size.
+    int pieceSize = (int)fullPieceSize;
+    if (pieceSize != fullPieceSize) {
+        fprintf(stderr, "ERROR: pieceSize:%d, fullPieceSize:%ld\n",
+                        pieceSize,    fullPieceSize);
+        fprintf(stderr, "ERROR: tileOneZLevelSizeInBytes:%ld, tileSizeInBytes:%ld\n",
+                        tileOneZLevelSizeInBytes,     tileSizeInBytes);
+        fprintf(stderr, "ERROR: thisFieldNumZ:%d, zSlabsPer:%d\n",
+                          thisFieldNumZ    , zSlabsPer);
+    }
+    ASSERT (pieceSize == fullPieceSize);
+    ASSERT (pieceSize > 0);
+
+
+    // Send each piece (aka chunk) to the rank that is responsible
+    // for writing it.
+    int curPiece = 0;
     while ((offset + pieceSize) <= tileSizeInBytes) {
-
+        int recvRank = fieldInfo->chunkWriters[curPiece];
         MPI_Isend(bufHdr->payload + offset, pieceSize, MPI_BYTE, recvRank,
                   tileID, intracomm, &(bufHdr->requests[recvRank]));
         ASSERT(MPI_REQUEST_NULL != bufHdr->requests[recvRank]);
 
         offset += pieceSize;
-        recvRank += 1;
+        curPiece += 1;
     }
 
-    // There might be one last odd-sized piece
+    // There might be one last odd-sized piece (N.B.: odd-sized in Z;
+    // the X and Y sizes of a tile are always the same).
     if (offset < tileSizeInBytes) {
+        ASSERT (pieceSize >= tileSizeInBytes - offset);
         pieceSize = tileSizeInBytes - offset;
         ASSERT(pieceSize % tileOneZLevelSizeInBytes == 0);
 
+        int recvRank = fieldInfo->chunkWriters[curPiece];
         MPI_Isend(bufHdr->payload + offset, pieceSize, MPI_BYTE, recvRank,
                   tileID, intracomm, &(bufHdr->requests[recvRank]));
         ASSERT(MPI_REQUEST_NULL != bufHdr->requests[recvRank]);
-
-        offset += pieceSize;
-        recvRank += 1;
+        curPiece += 1;
     }
 
-    // Sanity check
-    ASSERT(recvRank <= bufHdr->requestsArraySize);
-    while (recvRank < bufHdr->requestsArraySize) {
-        ASSERT(MPI_REQUEST_NULL == bufHdr->requests[recvRank++])
-    }
+    ASSERT (curPiece == fieldInfo->nChunks);
 }
 
 
@@ -788,7 +803,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
     int zSlabsPer;
     int myNumZSlabs, myFirstZSlab, myLastZSlab, myNumSlabPiecesToRecv;
 
-    int numTilesRecvd, numSlabPiecesRecvd;
+    int ii, numTilesRecvd, numSlabPiecesRecvd;
 
 
     // Find the descriptor for my assigned field for this epoch style.
@@ -798,30 +813,37 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
     ASSERT('\0' != fieldInfo->dataFieldID);
 
 
-
     MPI_Comm_rank(fieldInfo->ioRanksIntracomm, &intracommRank);
     MPI_Comm_size(fieldInfo->ioRanksIntracomm, &intracommSize);
 
-
-    // Compute which z slab(s) we will be reassembling.
     zSlabsPer = divCeil(fieldInfo->zDepth, intracommSize);
-    myNumZSlabs = zSlabsPer;
- 
-    // Adjust myNumZSlabs in case it didn't divide evenly
-    myFirstZSlab = intracommRank * myNumZSlabs;
-    if (myFirstZSlab >= fieldInfo->zDepth) {
-        myNumZSlabs = 0;
-    } else if ((myFirstZSlab + myNumZSlabs) > fieldInfo->zDepth) {
-        myNumZSlabs = fieldInfo->zDepth - myFirstZSlab;
-    } else {
-        myNumZSlabs = zSlabsPer;
+
+    // Figure out if this rank writes z-slabs, and if so, which ones
+    myNumZSlabs = 0;
+    myFirstZSlab = 0;
+    myLastZSlab = -1;
+    for (ii = 0;  ii < fieldInfo->nChunks;  ++ii) {
+        if (fieldInfo->chunkWriters[ii] == intracommRank) {
+            myFirstZSlab = ii * zSlabsPer;
+            // The last chunk might be odd sized
+            myNumZSlabs = ((ii + 1) < fieldInfo->nChunks) ?
+                               zSlabsPer : fieldInfo->zDepth - myFirstZSlab;
+            myLastZSlab = myFirstZSlab + myNumZSlabs - 1;
+
+            break;
+        }
     }
-    myLastZSlab = myFirstZSlab + myNumZSlabs - 1;
+    if (myNumZSlabs > 0) {
+        ASSERT ((myFirstZSlab >= 0) && (myFirstZSlab < fieldInfo->zDepth));
+        ASSERT ((myLastZSlab >= 0) && (myLastZSlab < fieldInfo->zDepth));
+        ASSERT (myLastZSlab >= myFirstZSlab);
+    }
+
 
     // If we were not assigned any z-slabs, we don't get any redistributed
     // tile-slabs.  If we were assigned one or more slabs, we get
     // redistributed tile-slabs for every tile.
-    myNumSlabPiecesToRecv = (0 == myNumZSlabs) ? 0 : totalNumTiles;
+    myNumSlabPiecesToRecv = (0 == myNumZSlabs) ? 0 : NUM_WET_TILES;
 
 
     numTilesRecvd = 0;
@@ -842,30 +864,25 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             if (NULL == bufHdr) break; // No tile was received
 
             numTilesRecvd += 1;
-            redistributeZSlabs(bufHdr, tileID, zSlabsPer,
-                               fieldInfo->zDepth, fieldInfo->ioRanksIntracomm);
+            redistributeZSlabs(bufHdr, tileID, zSlabsPer, fieldInfo);
 
             // Add the bufHdr to the "in use" list
             bufHdr->next = inUseTileBufs_ptr;
             inUseTileBufs_ptr = bufHdr;
-
-
         }
 
 
         ////////////////////////////////////////////////////////////////
         // Check for tile-slabs redistributed from the i/o processes
         while (numSlabPiecesRecvd < myNumSlabPiecesToRecv) {
-            int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
+            long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
             char data[msgSize];
 
             int tileID = tryToReceiveZSlab(data, msgSize, fieldInfo->ioRanksIntracomm);
             if (tileID < 0) break;  // No slab was received
 
-
             numSlabPiecesRecvd += 1;
 	    processSlabSection(fieldInfo, tileID, data, myNumZSlabs);
-
 
             // Can do the write here, or at the end of the epoch.
             // Probably want to make it asynchronous (waiting for
@@ -875,6 +892,19 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             //    do_write(io_epoch,whichField,myFirstZSlab,myNumZSlabs);
             //}
         }
+
+
+        ////////////////////////////////////////////////////////////////
+	// Sanity check for non-writers
+	if (0 == myNumSlabPiecesToRecv) {  
+
+	    long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
+	    char data[msgSize];
+
+            // Check that no one has tried to re-distribute a slab to us.
+            int tileID = tryToReceiveZSlab(data, msgSize, fieldInfo->ioRanksIntracomm);
+            ASSERT (tileID < 0);
+	}
 
 
         ////////////////////////////////////////////////////////////////
@@ -907,7 +937,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
                 FPRINTF(stderr,"Rank %d freed a tile buffer\n", intracommRank);
             } else {
                 // At least one request is still outstanding.
-                // Put the buf on the inUse list.
+                // Put the buf back on the inUse list.
                 bufHdr->next = inUseTileBufs_ptr;
                 inUseTileBufs_ptr = bufHdr;
             }
@@ -943,13 +973,10 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
 
 
 
-
-
-
 // Main routine for the i/o tasks.  Callers DO NOT RETURN from
 // this routine; they MPI_Finalize and exit.
 void
-ioRankMain(int totalNumTiles)
+ioRankMain (void)
 {
     // This is one of a group of i/o processes that will be receiving tiles
     // from the computational processes.  This same process is also
@@ -964,7 +991,7 @@ ioRankMain(int totalNumTiles)
     // the ghost cells), and put them into the slab we are assembling.  Once
     // a slab is fully assembled, it is written to disk.
 
-    int i, size, count, numTileBufs;
+    int i, ierr, count, numTileBufs;
     MPI_Status status;
     int currentEpochID = 0;
     int maxTileCount = 0, max3DTileCount = 0, maxIntracommSize = 0;
@@ -973,40 +1000,21 @@ ioRankMain(int totalNumTiles)
     MPI_Comm_remote_size(globalIntercomm, &numComputeRanks);
 
 
-    ////////////////////////////////////////////////////////////
-    //// get global tile info via bcast over the global intercom
-
-
-    //    int ierr = MPI_Bcast(&NTILES,1,MPI_INT,0,globalIntercomm);
-
-    int data[9];
-
-    int ierr = MPI_Bcast(data,9,MPI_INT,0,globalIntercomm);
-
-    NTILES = data[3];
-    TILE_X = data[5];
-    TILE_Y = data[6];
-    XGHOSTS = data[7];
-    YGHOSTS = data[8];
-
-    tileOneZLevelItemCount = ((TILE_X + 2*XGHOSTS) * (TILE_Y + 2*YGHOSTS));  
-    tileOneZLevelSizeInBytes = (tileOneZLevelItemCount * datumSize);        // also calculated in compute ranks, urghh
-
-    int *xoff = malloc(NTILES*sizeof(int));
+    int *xoff = malloc(TOTAL_NUM_TILES*sizeof(int));
     ASSERT(xoff);
-    int *yoff = malloc(NTILES*sizeof(int));
+    int *yoff = malloc(TOTAL_NUM_TILES*sizeof(int));
     ASSERT(yoff);
-    int *xskip = malloc(NTILES*sizeof(int));
+    int *xskip = malloc(TOTAL_NUM_TILES*sizeof(int));
     ASSERT(xskip);
 
-    offsetTable = malloc((NTILES+1)*sizeof(tile_layout_t));
+    offsetTable = malloc((TOTAL_NUM_TILES+1)*sizeof(tile_layout_t));
     ASSERT(offsetTable);
 
-    ierr = MPI_Bcast(xoff,NTILES,MPI_INT,0,globalIntercomm);
-    ierr = MPI_Bcast(yoff,NTILES,MPI_INT,0,globalIntercomm);
-    ierr = MPI_Bcast(xskip,NTILES,MPI_INT,0,globalIntercomm);
+    ierr = MPI_Bcast(xoff,TOTAL_NUM_TILES,MPI_INT,0,globalIntercomm);
+    ierr = MPI_Bcast(yoff,TOTAL_NUM_TILES,MPI_INT,0,globalIntercomm);
+    ierr = MPI_Bcast(xskip,TOTAL_NUM_TILES,MPI_INT,0,globalIntercomm);
 
-    for (i=0;i<NTILES;++i){
+    for (i=0;i<TOTAL_NUM_TILES;++i){
       offsetTable[i+1].off = NUM_X*(yoff[i]-1) + xoff[i] - 1;
       offsetTable[i+1].skip = xskip[i];
     }
@@ -1036,8 +1044,10 @@ ioRankMain(int totalNumTiles)
         }
         ASSERT(NULL != p);
         ASSERT('\0' != p->dataFieldID);
-        MPI_Comm_size(p->ioRanksIntracomm, &size);
-        if (size > maxIntracommSize) maxIntracommSize = size;
+        MPI_Comm_size(p->ioRanksIntracomm, &thisIntracommSize);
+        if (thisIntracommSize > maxIntracommSize) {
+            maxIntracommSize = thisIntracommSize;
+        }
 
 
         // Receive a message from *each* computational rank telling us
@@ -1056,7 +1066,7 @@ ioRankMain(int totalNumTiles)
         // Sanity check
         MPI_Allreduce (&(p->tileCount), &count, 1,
                        MPI_INT, MPI_SUM, p->ioRanksIntracomm);
-        ASSERT(count == totalNumTiles);
+        ASSERT(count == NUM_WET_TILES);
     }
 
 
@@ -1073,8 +1083,7 @@ ioRankMain(int totalNumTiles)
     // Hack - for now, just pick a value for numTileBufs
     numTileBufs = (max3DTileCount > 0) ? max3DTileCount : maxTileCount;
     if (numTileBufs < 4) numTileBufs = 4;
-    if (numTileBufs > 15) numTileBufs = 15;
-    //    if (numTileBufs > 25) numTileBufs = 25;
+    if (numTileBufs > 25) numTileBufs = 25;
 
     allocateTileBufs(numTileBufs, maxIntracommSize);
     countBufs(numTileBufs);
@@ -1092,11 +1101,12 @@ ioRankMain(int totalNumTiles)
         MPI_Barrier(ioIntracomm);
 
         if (0 == ioIntracommRank) {
-            fprintf(stderr, "I/O ranks waiting for new epoch\n");
-            MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
+	    fprintf(stderr, "I/O ranks waiting for new epoch at time %f\n",MPI_Wtime());
+	    MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
 
             MPI_Recv(cmd, 4, MPI_INT, 0, 0, globalIntercomm, MPI_STATUS_IGNORE);
-            fprintf(stderr, "I/O ranks begining new epoch: %d, gcmIter = %d\n", cmd[1],cmd[3]);
+            fprintf(stderr, "I/O ranks begining new epoch: %d, gcmIter = %d, at time %f\n",
+                            cmd[1], cmd[3], MPI_Wtime());
 
 	    // before we start a new epoch, have i/o rank 0:
 	    // determine output filenames for this epoch
@@ -1152,6 +1162,9 @@ ioRankMain(int totalNumTiles)
 	    }
 	}
         MPI_Bcast(cmd, 4, MPI_INT, 0, ioIntracomm);  
+
+	if (0 == ioIntracommRank)
+	  fprintf(stderr,"i/o handshake completed %d %d %f\n",cmd[1],cmd[3],MPI_Wtime());
 
         switch (cmd[0]) {
 
@@ -1211,20 +1224,30 @@ findField(const char c)
 
 // Given a number of ranks and a set of fields we will want to output,
 // figure out how to distribute the ranks among the fields.
+// We attempt to distribute according to three separate criteria:
+//  1) Try to make the number of ranks assigned to a field be
+//     proportional to the number of bytes in that field.
+//  2) Try to even out the total number of MPI messages that are
+//     sent to any given i/o node.
+//  3) Try to even out the amount of output being written from
+//     any given i/o node.
+
 void
 computeIORankAssigments(
   int numComputeRanks,
   int numIORanks,
   int numFields,
   fieldInfoThisEpoch_t *fields,
-  int assignments[])
+  int assignments[],
+  int nToWrite[])
 {
-    int i,j,k, sum, count;
+    int i,j,k, iteration, sum, count;
 
     int numIONodes = numIORanks / numRanksPerNode;
-    int numIORanksThisField[numFields];
+    int numIORanksThisField[numFields], nRanks[numFields];
     long int bytesPerIORankThisField[numFields];
     int expectedMessagesPerRankThisField[numFields];
+    int isWriter[numIORanks];
     long int fieldSizes[numFields];
 
     struct ioNodeInfo_t {
@@ -1242,6 +1265,9 @@ computeIORankAssigments(
 
     ASSERT((numIONodes*numRanksPerNode) == numIORanks);
 
+    memset (assignments, 0, numIORanks*sizeof(int));
+    memset (isWriter, 0, numIORanks*sizeof(int));
+
 
     //////////////////////////////////////////////////////////////
     // Compute the size for each field in this epoch style
@@ -1251,9 +1277,9 @@ computeIORankAssigments(
     }
 
 
-    /////////////////////////////////////////////////////////
-    // Distribute the available i/o ranks among the fields,
-    // proportionally based on field size.
+    /////////////////////////////////////////////////////////////////
+    // Phase 1: Distribute the number of available i/o ranks among
+    // the fields, proportionally based on field size.
 
     // First, assign one rank per field
     ASSERT(numIORanks >= numFields);
@@ -1278,17 +1304,21 @@ computeIORankAssigments(
         bytesPerIORankThisField[k] = fieldSizes[k] / numIORanksThisField[k];
     }
 
-    ////////////////////////////////////////////////////////////
-    // At this point, all the i/o ranks should be apportioned
+    /////////////////////////////////////////////////////////////////
+    // At this point, the number of i/o ranks should be apportioned
     // among the fields.  Check we didn't screw up the count.
     for (sum = 0, i = 0;  i < numFields;  ++i) {
         sum += numIORanksThisField[i];
     }
     ASSERT(sum == numIORanks);
 
+    // Make a copy of numIORanksThisField
+    memcpy (nRanks, numIORanksThisField, numFields*sizeof(int));
+
 
 
     //////////////////////////////////////////////////////////////////
+    // Phase 2: try to even out the number of messages per node.
     // The *number* of i/o ranks assigned to a field is based on the
     // field size.  But the *placement* of those ranks is based on
     // the expected number of messages the process will receive.
@@ -1341,14 +1371,14 @@ computeIORankAssigments(
 
         // Make an initial choice of field
         for (i = 0;  i < numFields;  ++i) {
-            if (numIORanksThisField[i] > 0) break;
+            if (nRanks[i] > 0) break;
         }
         k = i;
         ASSERT(k < numFields);
 
         // Search for a better choice
         for (++i;  i < numFields;  ++i) {
-            if (numIORanksThisField[i] <= 0) continue;
+            if (nRanks[i] <= 0) continue;
             if (expectedMessagesPerRankThisField[i] >
                 expectedMessagesPerRankThisField[k])
             {
@@ -1360,12 +1390,12 @@ computeIORankAssigments(
         ioNodeInfo[j].expectedNumMessagesThisNode += expectedMessagesPerRankThisField[k];
         ioNodeInfo[j].assignedFieldThisCore[ioNodeInfo[j].numCoresAssigned] = k;
         ioNodeInfo[j].numCoresAssigned += 1;
-        numIORanksThisField[k] -= 1;
+        nRanks[k] -= 1;
     }
 
     // Sanity check - all ranks were assigned to a core
     for (i = 1;  i < numFields;  ++i) {
-        ASSERT(0 == numIORanksThisField[i]);
+        ASSERT(0 == nRanks[i]);
     }
     // Sanity check - all cores were assigned a rank
     for (i = 1;  i < numIONodes;  ++i) {
@@ -1373,14 +1403,149 @@ computeIORankAssigments(
     }
 
 
-    /////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+    // Phase 3: Select which ranks will be assigned to write out the
+    // fields.  We attempt to balance the amount that each node is
+    // assigned to write out.  Since Phase 1 and Phase 2 have already
+    // fixed a number of things, our options for balancing things
+    // is somewhat restricted.
+
+
+    // Count how many nodes each field is distributed across
+    int numIONodesThisField[numFields];
+    for (i = 0;  i < numFields;  ++i) {
+        numIONodesThisField[i] = 0;
+        for (j = 0;  j < numIONodes;  ++j) {
+            for (k = 0;  k < numRanksPerNode;  ++k) {
+                if (ioNodeInfo[j].assignedFieldThisCore[k] == i) {
+                    numIONodesThisField[i] += 1;
+                    break;
+                }
+            }
+        }
+        ASSERT (numIONodesThisField[i] > 0);
+        ASSERT (numIONodesThisField[i] <= numIONodes);
+    }
+
+
+    // Init a per-node running count of z-levels-to-write
+    memset (nToWrite, 0, numIONodes*sizeof(int));
+
+
+    // Iterate through all the fields, although we will select
+    // which field to operate on (i.e. curField) non-sequentially.
+    for (iteration = 0;  iteration < numFields;  ++iteration) {
+
+        // Pick the field distributed across the fewest number of nodes, on
+        // the theory that this field will have the least flexibility.
+        int curField = 0;
+        for (j = 1;  j < numFields;  ++j) {
+            if (numIONodesThisField[j] < numIONodesThisField[curField]) {
+                curField = j;
+            }
+        }
+        ASSERT (numIONodesThisField[curField] <= numIONodes);
+
+        // Now that we have chosen a field, identify any i/o nodes
+        // that have rank(s) assigned to that field.
+        int nAssigned[numIONodes];
+        for (i = 0;  i < numIONodes;  ++i) {
+            nAssigned[i] = 0;
+            for (j = 0;  j < numRanksPerNode;  ++j) {
+                if (ioNodeInfo[i].assignedFieldThisCore[j] == curField) {
+                    nAssigned[i] += 1;
+                }
+            }
+        }
+
+
+        // We do the writes in units of entire z-levels.  If a rank is a
+        // writer, it is assigned to write a chunk of one or more z-levels.
+        int chunkSize = divCeil (fields[curField].zDepth, numIORanksThisField[curField]);
+        int nChunks = divCeil (fields[curField].zDepth, chunkSize);
+        int curChunk;
+
+        // Designate the same number of ranks to be writers as there are chunks
+        fields[curField].chunkWriters = malloc (nChunks*sizeof(int));
+        ASSERT (fields[curField].chunkWriters != NULL);
+        fields[curField].nChunks = nChunks;
+        int nAvailable[numIONodes];
+        memcpy (nAvailable, nAssigned, numIONodes*sizeof(int));
+        for (curChunk = 0;  curChunk < nChunks;  ++curChunk) {
+
+            // Note that the last chunk might be an odd size (if chunkSize
+            // does not evenly divide zDepth).
+            if ((curChunk + 1) == nChunks) {
+              chunkSize = fields[curField].zDepth - curChunk*chunkSize;
+            }
+
+            // Pick a node that has at least one rank assigned to curField
+            // that has not already been designated as a writer.
+            // There must still be at least one, or we would have exited
+            // the loop already.
+            int curNode;
+            for (curNode = 0;  curNode < numIONodes;  ++curNode) {
+                if (nAvailable[curNode] > 0) break;
+            }
+            ASSERT (curNode < numIONodes);
+
+            // curNode is a candidate node; try to find an acceptable
+            // candidate node with a smaller nToWrite
+            for (i = curNode + 1;  i < numIONodes;  ++i) {
+                if ((nAvailable[i] > 0) && (nToWrite[i] < nToWrite[curNode])) {
+                  curNode = i;
+                }
+            }
+
+            // Find an appropriate rank on the chosen node
+            for (j = 0;  j < numRanksPerNode;  ++j) {
+                if ( (ioNodeInfo[curNode].assignedFieldThisCore[j] == curField) &&
+                     (!isWriter[curNode*numRanksPerNode + j]) )
+                {
+                    break;
+                }
+            }
+            // Double-check that we found an appropriate rank.
+            ASSERT (j < numRanksPerNode);
+
+
+            // We've picked a rank to be the writer of the current chunk.
+            // Now we need to figure out which rank this will wind up being
+            // in the "ioRanksIntracomm" for this field (when that intracomm
+            // eventually gets created), so we can set "chunkWriters".
+            int eventualCommRank = 0;
+            for (i = 0;  i < curNode;  ++i) eventualCommRank += nAssigned[i];
+            for (i = 0;  i < j;  ++i) {
+                if (ioNodeInfo[curNode].assignedFieldThisCore[i] == curField) {
+                    eventualCommRank += 1;
+                }
+            }
+
+
+            // Update the info for this choice of node+rank
+            fields[curField].chunkWriters[curChunk] = eventualCommRank;
+            isWriter[curNode*numRanksPerNode + j] = 1;
+            nAvailable[curNode] -= 1;
+            nToWrite[curNode] += chunkSize;
+
+        }
+
+        // We've finished with this curField; mark it so that we don't
+        // re-select this same curField the next time through the loop.
+        numIONodesThisField[curField] =  numIONodes + 1;
+    }
+
+
+    //////////////////////////////////////////////////////////////////
     // Return the computed assignments
+    // N.B. We are also returning info in "fields[*].chunkWriters"
     for (i = 0;  i < numIONodes;  ++i) {
         for (j = 0;  j < numRanksPerNode;  ++j) {
             assignments[i*numRanksPerNode + j] =
                     ioNodeInfo[i].assignedFieldThisCore[j];
         }
     }
+
 
     // Clean up
     for (i = 0;  i < numIONodes;  ++i) {
@@ -1392,48 +1557,77 @@ computeIORankAssigments(
 //////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 int
 isIORank(int commRank, int totalNumNodes, int numIONodes)
 {
     // Figure out if this rank is on a node that will do i/o.
     // Note that the i/o nodes are distributed throughout the
     // task, not clustered together.
-    int ioNodeStride = totalNumNodes / numIONodes;
     int thisRankNode = commRank / numRanksPerNode;
-    int n = thisRankNode / ioNodeStride;
-    return (((n * ioNodeStride) == thisRankNode) && (n < numIONodes)) ? 1 : 0;
+
+    int ioNodeStride = totalNumNodes / numIONodes;
+    int extra = totalNumNodes % numIONodes;
+
+    int inflectionPoint = (ioNodeStride+1)*extra;
+    if (thisRankNode <= inflectionPoint) {
+        return (thisRankNode % (ioNodeStride+1)) == 0;
+    } else {
+        return ((thisRankNode - inflectionPoint) % ioNodeStride) == 0;
+    }
+
 }
 
 
-// Find the number of *physical cores* on the current node
-// (ignore hyperthreading).  This should work for pretty much
-// any Linux based system (and fail horribly for anything else).
+
+// Get the number of MPI ranks that are running on one node.
+// We assume that the MPI ranks are launched in sequence, filling one
+// node before going to the next, and that each node has the same
+// number of ranks (except possibly the last node, which is allowed
+// to be short).
 int
-getNumCores(void)
+getNumRanksPerNode (MPI_Comm comm)
 {
-  return 20;  // until we figure out why this cratered
+    char myHostname[HOST_NAME_MAX+1];
+    int status, count;
+    int commSize, commRank;
 
-    char *magic = "cat /proc/cpuinfo | egrep \"core id|physical id\" | "
-                  "tr -d \"\\n\" | sed s/physical/\\\\nphysical/g | "
-                  "grep -v ^$ | sort -u | wc -l";
+    MPI_Comm_size (comm, &commSize);
+    MPI_Comm_rank (comm, &commRank);
 
-    FILE *fp = popen(magic,"r");
-    ASSERT(fp);
+    status = gethostname (myHostname, HOST_NAME_MAX);
+    myHostname[HOST_NAME_MAX] = '\0';
+    ASSERT (0 == status);
 
-    int rtnValue = -1;
-    
-    int res = fscanf(fp,"%d",&rtnValue);
+    if (0 == commRank) {
+        int nBlocks, ii, jj;
+        assert (allHostnames != NULL);
 
-    ASSERT(1==res);
+        // We assume these are already in-order and so don't
+        // need to be sorted.
 
-    pclose(fp);
+        // Count how many ranks have the same hostname as rank 0
+        for (count = 0;
+               (count < commSize) &&
+               (strcmp(&(allHostnames[count][0]), myHostname) == 0);
+             ++count);
+        ASSERT (count > 0);
 
-    ASSERT(rtnValue > 0);
-    return rtnValue;
+        // Check that the count is consistent for each block of hostnames
+        // (except possibly the last block, which might not be full).
+        nBlocks = commSize / count;
+
+        for (jj = 1;  jj < nBlocks;  ++jj) {
+            char *p = &(allHostnames[jj*count][0]);
+            for (ii = 0;  ii < count;  ++ii) {
+                char *q = &(allHostnames[jj*count + ii][0]);
+                ASSERT (strcmp (p, q) == 0);
+            }
+        }
+    }
+
+    MPI_Bcast (&count, 1, MPI_INT, 0, comm);
+    return count;
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -1450,6 +1644,9 @@ f1(
   int numTiles,
   MPI_Comm *rtnComputeComm)
 {
+    // Note that we ignore the argument "numTiles".  This value used to
+    // be needed, but now we get the information directly from "SIZE.h"
+
     MPI_Comm newIntracomm, newIntercomm, dupParentComm;
     int newIntracommRank, thisIsIORank;
     int parentSize, parentRank;
@@ -1458,11 +1655,46 @@ f1(
     int i, j, nF, compRoot, fieldIndex, epochStyleIndex;
     int totalNumNodes, numComputeNodes, newIntracommSize;
 
+
     // Init globals
-    totalNumTiles = numTiles;
+
+    // Info about the parent communicator
+    MPI_Initialized(&mpiIsInitialized);
+    ASSERT(mpiIsInitialized);
+    MPI_Comm_size(parentComm, &parentSize);
+    MPI_Comm_rank(parentComm, &parentRank);
+
+    // Find the max MPI "tag" value
+    MPI_Attr_get(MPI_COMM_WORLD, MPI_TAG_UB, &intPtr, &tagUBexists);
+    ASSERT(tagUBexists);
+    maxTagValue = *intPtr;
+
+    // Gather all the hostnames to rank zero
+    char myHostname[HOST_NAME_MAX+1];
+    int status;
+    status = gethostname (myHostname, HOST_NAME_MAX);
+    myHostname[HOST_NAME_MAX] = '\0';
+    ASSERT (0 == status);
+    if (parentRank != 0) {
+        // send my hostname to rank 0
+        MPI_Gather (myHostname, HOST_NAME_MAX+1, MPI_CHAR,
+                    NULL, 0, MPI_CHAR, 0, parentComm);
+    }
+    else {
+        allHostnames = malloc (parentSize*(HOST_NAME_MAX+1));
+        assert (allHostnames != NULL);
+
+        // Collect the hostnames from all the ranks
+        MPI_Gather (myHostname, HOST_NAME_MAX+1, MPI_CHAR,
+                    allHostnames, HOST_NAME_MAX+1, MPI_CHAR,
+                    0, parentComm);
+    }
+
     if (numRanksPerNode <= 0) {
         // Might also want to check for an env var (or something)
-        numRanksPerNode = getNumCores();
+        // N.B.: getNumRanksPerNode uses an MPI collective on the communicator
+        // and needs the global "allHostnames" to already be set in rank 0.
+        numRanksPerNode = getNumRanksPerNode(parentComm);
     }
 
     // Fill in the zDepth field of the fieldInfoThisEpoch_t descriptors
@@ -1484,18 +1716,6 @@ f1(
     }
 
 
-    // Find the max MPI "tag" value
-    MPI_Attr_get(MPI_COMM_WORLD, MPI_TAG_UB, &intPtr, &tagUBexists);
-    ASSERT(tagUBexists);
-    maxTagValue = *intPtr;
-
-
-    // Info about the parent communicator
-    MPI_Initialized(&mpiIsInitialized);
-    ASSERT(mpiIsInitialized);
-    MPI_Comm_size(parentComm, &parentSize);
-    MPI_Comm_rank(parentComm, &parentRank);
-
 
     // Figure out how many nodes we can use for i/o.
     // To make things (e.g. memory calculations) simpler, we want
@@ -1509,6 +1729,24 @@ f1(
     ASSERT(numIONodes > 0);
     ASSERT(numIONodes <= (totalNumNodes - numComputeNodes));
     numIORanks = numIONodes * numRanksPerNode;
+
+
+    // Print out the hostnames, identifying which ones are i/o nodes
+
+    if (0 == parentRank) {
+        printf ("\n%d total nodes,  %d i/o,  %d compute\n",
+                totalNumNodes, numIONodes, numComputeNodes);
+        for (i = 0;  i < parentSize;  i += numRanksPerNode) {
+            if (isIORank (i, totalNumNodes, numIONodes)) {
+                printf ("\n(%s)", &(allHostnames[i][0]));
+            } else {
+                printf (" %s", &(allHostnames[i][0]));
+            }
+        }
+        printf ("\n\n");
+    }
+    fflush (stdout);
+
 
 
     // It is surprisingly easy to launch the job with the wrong number
@@ -1535,7 +1773,9 @@ f1(
     MPI_Comm_rank(newIntracomm, &newIntracommRank);
 
     // Excess ranks disappear
-    // N.B. "parentSize" still includes these ranks.
+    // N.B. "parentComm" (and parentSize) still includes these ranks, so
+    // we cannot do MPI *collectives* using parentComm after this point,
+    // although the communicator can still be used for other things.
     if (isExcess == thisRanksType) {
         MPI_Finalize();
         exit(0);
@@ -1579,6 +1819,10 @@ f1(
     // the fields, and create an inter-communicator for each split.
 
     for (epochStyleIndex = 0;  epochStyleIndex < numEpochStyles;  ++epochStyleIndex) {
+        if (0 == parentRank) {
+            printf ("Set up epoch style %d\n", epochStyleIndex);
+        }
+
         fieldInfoThisEpoch_t *thisEpochStyle = epochStyles[epochStyleIndex];
         int fieldAssignments[numIORanks];
         int rankAssignments[numComputeRanks + numIORanks];
@@ -1586,10 +1830,12 @@ f1(
         // Count the number of fields in this epoch style
         for (nF = 0;  thisEpochStyle[nF].dataFieldID != '\0';  ++nF) ;
 
-        // Decide how to apportion the i/o ranks among the fields
+        // Decide how to apportion the i/o ranks among the fields.
+        // (Currently, this call also sets the "chunkWriters" array.)
         for (i=0; i < numIORanks; ++i) fieldAssignments[i] = -1;
+        int nToWrite[numIORanks/numRanksPerNode];
         computeIORankAssigments(numComputeRanks, numIORanks, nF,
-                              thisEpochStyle, fieldAssignments);
+                              thisEpochStyle, fieldAssignments, nToWrite);
         // Sanity check
         for (i=0; i < numIORanks; ++i) {
             ASSERT((fieldAssignments[i] >= 0) && (fieldAssignments[i] < nF));
@@ -1611,36 +1857,18 @@ f1(
         }
         ASSERT(j == numIORanks);
 
+
         if (0 == parentRank) {
-            printf("\ncpu assignments, epoch style %d\n", epochStyleIndex);
-            for (i = 0; i < numComputeNodes + numIONodes ; ++i) {
-                if (rankAssignments[i*numRanksPerNode] >= 0) {
-                    // i/o node
-                    for (j = 0; j < numRanksPerNode; ++j) {
-                        printf(" %1d", rankAssignments[i*numRanksPerNode + j]);
-                    }
-                } else {
-                    // compute node
-                    for (j = 0; j < numRanksPerNode; ++j) {
-                        if ((i*numRanksPerNode + j) >= (numComputeRanks + numIORanks)) break;
-                        ASSERT(-1 == rankAssignments[i*numRanksPerNode + j]);
-                    }
-                    printf(" #");
-                    for (; j < numRanksPerNode; ++j) {  // "excess" ranks (if any)
-                        printf("X");
-                    }
-                }
-                printf(" ");
-            }
-            printf("\n\n");
+            printf ("Create communicators for epoch style %d\n", epochStyleIndex);
         }
+        fflush (stdout);
+
 
         // Find the lowest rank assigned to computation; use it as
         // the "root" for the upcoming intercomm creates.
         for (compRoot = 0; rankAssignments[compRoot] != -1;  ++compRoot);
         // Sanity check
         if ((isCompute == thisRanksType) && (0 == newIntracommRank)) ASSERT(compRoot == parentRank);
-
 
         // If this is an I/O rank, split the newIntracomm (which, for
         // the i/o ranks, is a communicator among all the i/o ranks)
@@ -1670,6 +1898,23 @@ f1(
                 // ... and dup a separate one for tile registrations
                 MPI_Comm_dup(thisEpochStyle[myField].dataIntercomm,
                          &(thisEpochStyle[myField].registrationIntercomm));
+
+
+                // Sanity check: make sure the chunkWriters array looks ok.
+                {
+                    int ii, jj, commSize, nChunks = thisEpochStyle[myField].nChunks;
+                    ASSERT (nChunks > 0);
+                    ASSERT (thisEpochStyle[myField].chunkWriters != NULL);
+                    MPI_Comm_size (thisEpochStyle[myField].dataIntercomm, &commSize);
+                    for (ii = 0;  ii < nChunks;  ++ii) {
+                        ASSERT (thisEpochStyle[myField].chunkWriters[ii] >=  0);
+                        ASSERT (thisEpochStyle[myField].chunkWriters[ii] < commSize);
+                        for (jj = ii+1;  jj < nChunks;  ++jj) {
+                            ASSERT (thisEpochStyle[myField].chunkWriters[ii] !=
+                                    thisEpochStyle[myField].chunkWriters[jj]);
+                        }
+                    }
+                }
             }
         }
         else {
@@ -1692,12 +1937,93 @@ f1(
             }
         }
 
+
+        // Print a "map" of the core assignments.  Compute nodes are indicated
+        // by a "#" for the whole node, i/o nodes have the individual cores
+        // within the node broken out and their field assignment printed.
+        // If the core is writing to the disk, the field assignment is printed
+        // in parentheses.
+        if (0 == parentRank) {
+            int fieldIOCounts[nF];
+            memset (fieldIOCounts, 0, nF*sizeof(int));
+
+            printf ("Writer assignments, epoch style %d\n", epochStyleIndex);
+            for (i = 0;  i < nF;  ++i) {
+                fieldInfoThisEpoch_t *p = &(thisEpochStyle[i]);
+                int chunkSize = divCeil(p->zDepth,p->nChunks);
+                printf ("\n");
+                printf ( "field %2d ('%c'): %1d levels, %1d writers, %1d"
+                         " levels per writer (last writer = %d levels)\n",
+                        i, p->dataFieldID, p->zDepth, p->nChunks,
+                        chunkSize, p->zDepth - ((p->nChunks - 1)*chunkSize));
+                for (j = 0;  j < thisEpochStyle[i].nChunks;  ++j) {
+                    printf (" %1d", thisEpochStyle[i].chunkWriters[j]);
+                }
+                printf ("\n");
+            }
+            printf ("\n");
+
+            printf("\ncpu assignments, epoch style %d\n", epochStyleIndex);
+            int whichIONode = -1;
+            for (i = 0; i < numComputeNodes + numIONodes ; ++i) {
+
+                if (rankAssignments[i*numRanksPerNode] >= 0) {
+
+                    // i/o node
+                    ++whichIONode;
+                    printf("\n%s (%d Z, %ld bytes):",
+                           &(allHostnames[i*numRanksPerNode][0]),
+                           nToWrite[whichIONode],
+                           nToWrite[whichIONode]*twoDFieldSizeInBytes);
+
+                    for (j = 0; j < numRanksPerNode; ++j) {
+
+                        int assignedField = rankAssignments[i*numRanksPerNode + j];
+                        int k, commRank, nChunks, isWriter;
+                        nChunks = thisEpochStyle[assignedField].nChunks;
+                        commRank = fieldIOCounts[assignedField];
+
+                        isWriter = 0;
+                        for (k = 0;  k < nChunks;  ++k) {
+                            if (thisEpochStyle[assignedField].chunkWriters[k] == commRank) {
+                                isWriter = 1;
+                                break;
+                            }
+                        }
+                        printf(isWriter ? " (%1d)" : "  %1d ", assignedField);
+
+                        fieldIOCounts[assignedField] += 1;
+                    }
+                    printf("\n");
+
+                } else {
+
+                    // compute node
+                    for (j = 0; j < numRanksPerNode; ++j) {
+                        if ((i*numRanksPerNode + j) >= (numComputeRanks + numIORanks)) break;
+                        ASSERT(-1 == rankAssignments[i*numRanksPerNode + j]);
+                    }
+                    printf(" #");
+                    for (; j < numRanksPerNode; ++j) {  // "excess" ranks (if any)
+                        printf("X");
+                    }
+                }
+                printf(" ");
+            }
+            printf("\n\n");
+        }
+
+
+
     } // epoch style loop
+
+    // Note: only non-null in rank 0, but it's ok to "free" NULL
+    free(allHostnames);
 
 
     // I/O processes split off and start receiving data
     // NOTE: the I/O processes DO NOT RETURN from this call
-    if (isIO == thisRanksType) ioRankMain(totalNumTiles);
+    if (isIO == thisRanksType) ioRankMain();
 
 
     // The "compute" processes now return with their new intra-communicator.
@@ -1706,6 +2032,7 @@ f1(
     // but first, call mpiio initialization routine!
     initSizesAndTypes();
 
+    fflush (stdout);
     return;
 }
 
@@ -1808,6 +2135,15 @@ beginNewEpoch(int newEpochID, int gcmIter, int epochStyle)
         abort();
     }
 
+
+
+    // not necessary for correctness, but for better timings
+    MPI_Barrier(computeIntracomm);
+    if (0 == computeIntracommRank)
+      fprintf(stderr,"compute ready to emit %d %d %f\n",newEpochID,gcmIter,MPI_Wtime());
+
+
+
     ////////////////////////////////////////////////////////////////////////
     // Need to be sure the i/o tasks are done processing the previous epoch
     // before any compute tasks start sending tiles from a new epoch.
@@ -1826,6 +2162,9 @@ beginNewEpoch(int newEpochID, int gcmIter, int epochStyle)
 
     // Compute ranks wait here until rank 0 gets the ack from the i/o ranks
     MPI_Barrier(computeIntracomm);
+
+    if (0 == computeIntracommRank)
+      fprintf(stderr,"compute handshake completed %d %d %f\n",newEpochID,gcmIter,MPI_Wtime());
 
 
     currentEpochID = newEpochID;
@@ -1867,7 +2206,6 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
             if (p->dataFieldID == dataFieldID) break;
         }
         // Make sure we found a valid field
-
         ASSERT(p->dataIntercomm != MPI_COMM_NULL);
 
         MPI_Comm_remote_size(p->dataIntercomm, &remoteCommSize);
@@ -1879,24 +2217,7 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
     ASSERT(p->dataFieldID == dataFieldID);
 
     receiver = (computeIntracommRank + p->tileCount) % remoteCommSize;
-
     tag = (tileID << numCheckBits) | (epochID & bitMask);
-
-    //fprintf(stderr,"%d %d\n",flag,tileID);
-
-    /*
-    if (tileID==189){
-      int i,j;
-      for (i=0;i<TILE_Y;++i){
-	for (j=0;j<TILE_X;++j)
-	  fprintf(stderr,"%f ",((double*)data)[872+i*108+j]);
-	fprintf(stderr,"\n");
-      }
-    }
-	
-    */
-
-
 
     FPRINTF(stderr,"Rank %d sends field '%c', tile %d, to i/o task %d with tag %d(%d)\n",
                    computeIntracommRank, dataFieldID, tileID, receiver, tag, tag >> numCheckBits);
@@ -1933,71 +2254,16 @@ f4(int epochID)
 
 
 
-void myasyncio_set_global_sizes_(int *nx, int *ny, int *nz, 
-				 int *nt, int *nb, 
-				 int *tx, int *ty,
-				 int *ox, int *oy)
-{
-
-
-  int data[] = {*nx,*ny,*nz,*nt,*nb,*tx,*ty,*ox,*oy};
-  
-  int items = sizeof(data)/sizeof(int);
-
-
-  NTILES = *nt;  // total number of tiles
-
-
-  TILE_X = *tx;
-  TILE_Y = *ty;
-  XGHOSTS = *ox;
-  YGHOSTS = *oy;
-  tileOneZLevelItemCount = ((TILE_X + 2*XGHOSTS) * (TILE_Y + 2*YGHOSTS));
-  tileOneZLevelSizeInBytes = (tileOneZLevelItemCount * datumSize);    // needed by compute ranks in f3
-
-  
-  int rank,ierr;
-  MPI_Comm_rank(globalIntercomm,&rank);
-  
-
-  if (0==rank) 
-    printf("%d %d %d\n%d %d\n%d %d\n%d %d\n",*nx,*ny,*nz,*nt,*nb,*tx,*ty,*ox,*oy);
-
-
-  /*
-  if (0==rank)
-    ierr=MPI_Bcast(&NTILES,1,MPI_INT,MPI_ROOT,globalIntercomm);
-  else
-    ierr=MPI_Bcast(&NTILES,1,MPI_INT,MPI_PROC_NULL,globalIntercomm);
-  */
-
-  if (0==rank)
-    ierr=MPI_Bcast(data,items,MPI_INT,MPI_ROOT,globalIntercomm);
-  else
-    ierr=MPI_Bcast(data,items,MPI_INT,MPI_PROC_NULL,globalIntercomm);
-  
-}
-
 void asyncio_tile_arrays_(int *xoff, int *yoff, int *xskip)
 {
-    int rank,ierr;
+    int rank, ierr, rootProc;
+
     MPI_Comm_rank(globalIntercomm,&rank);
+    rootProc = (0 == rank) ? MPI_ROOT : MPI_PROC_NULL;
 
-    if (0==rank)
-      ierr=MPI_Bcast(xoff,NTILES,MPI_INT,MPI_ROOT,globalIntercomm);
-    else
-      ierr=MPI_Bcast(xoff,NTILES,MPI_INT,MPI_PROC_NULL,globalIntercomm);
-
-    if (0==rank)
-      ierr=MPI_Bcast(yoff,NTILES,MPI_INT,MPI_ROOT,globalIntercomm);
-    else
-      ierr=MPI_Bcast(yoff,NTILES,MPI_INT,MPI_PROC_NULL,globalIntercomm);
-
-    if (0==rank)
-      ierr=MPI_Bcast(xskip,NTILES,MPI_INT,MPI_ROOT,globalIntercomm);
-    else
-      ierr=MPI_Bcast(xskip,NTILES,MPI_INT,MPI_PROC_NULL,globalIntercomm);
-
+    ierr = MPI_Bcast (xoff, TOTAL_NUM_TILES, MPI_INT, rootProc, globalIntercomm);
+    ierr = MPI_Bcast (yoff, TOTAL_NUM_TILES, MPI_INT, rootProc, globalIntercomm);
+    ierr = MPI_Bcast (xskip, TOTAL_NUM_TILES, MPI_INT, rootProc, globalIntercomm);
 }
 
 
@@ -2011,13 +2277,13 @@ void
 bron_f1(
   MPI_Fint *ptr_parentComm,
   int *ptr_numComputeRanks,
-  int *ptr_totalNumTiles,
+  int *ptr_numTiles,
   MPI_Fint *rtnComputeComm)
 {
     // Convert the Fortran handle into a C handle
     MPI_Comm newComm, parentComm = MPI_Comm_f2c(*ptr_parentComm);
 
-    f1(parentComm, *ptr_numComputeRanks, *ptr_totalNumTiles, &newComm);
+    f1(parentComm, *ptr_numComputeRanks, *ptr_numTiles, &newComm);
 
     // Convert the C handle into a Fortran handle
     *rtnComputeComm = MPI_Comm_c2f(newComm);
@@ -2052,4 +2318,5 @@ bron_f4(int *ptr_epochID)
 {
     f4(*ptr_epochID);
 }
+
 

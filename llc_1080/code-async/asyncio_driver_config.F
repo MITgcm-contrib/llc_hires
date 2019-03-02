@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/asyncio_driver_config.F,v 1.1 2013/09/29 22:43:00 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code-async/asyncio_driver_config.F,v 1.2 2019/03/02 19:31:13 dimitri Exp $
 
 #include "PACKAGES_CONFIG.h"
 
@@ -37,8 +37,10 @@ c      CALL MYASYNCIO_SET_GLOBAL_SIZES( ASYNCIO_NXG,   ASYNCIO_NYG, NR )
 
 chenze have all compute ranks call & sort out bcast in recvTask
 
-      CALL MYASYNCIO_SET_GLOBAL_SIZES( exch2_global_Nx, exch2_global_Ny, 
-     $        Nr, exch2_nTiles, nPx, sNx, sNy, OLx, OLy )
+! Now that the C code can include SIZE.h directly, we don't
+! have to do this any more
+!      CALL MYASYNCIO_SET_GLOBAL_SIZES( exch2_global_Nx, exch2_global_Ny, 
+!     $        Nr, exch2_nTiles, nPx, sNx, sNy, OLx, OLy )
 
 
       CALL ASYNCIO_TILE_ARRAYS(exch2_txGlobalo, exch2_tyGlobalo, 

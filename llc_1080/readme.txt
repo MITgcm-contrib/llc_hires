@@ -5,7 +5,7 @@ cvs co MITgcm_contrib/llc_hires/llc_1080
 git clone https://github.com/MITgcm/MITgcm.git
 qsub -I -q long -l select=48:ncpus=28:model=bro,walltime=120:00:00 -m abe
 module purge
-module load comp-intel/2016.2.181 mpi-sgi/mpt.2.15r20
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 cd ~/llc_1080/MITgcm
 mkdir build run
 lfs setstripe -c -1 run
@@ -32,12 +32,11 @@ cvs co MITgcm_contrib/llc_hires/llc_1080
 git clone https://github.com/MITgcm/MITgcm.git
 qsub -I -q long -l select=52:ncpus=28:model=bro,walltime=120:00:00 -m abe
 module purge
-module load comp-intel/2016.2.181 mpi-sgi/mpt.2.15r20
+module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 cd ~/llc_1080/MITgcm
 mkdir build run
 lfs setstripe -c -1 run
 cd build
-cp ../../MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_90x90x1342 SIZE.h
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../MITgcm_contrib/llc_hires/llc_1080/code ../../MITgcm_contrib/llc_hires/llc_1080/code-async'
