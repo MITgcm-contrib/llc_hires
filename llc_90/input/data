@@ -36,9 +36,10 @@
  debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.TRUE.,
- useSingleCpuInput=.TRUE.,
- globalFiles=.FALSE.,
+# useSingleCPUio=.TRUE.,
+ useSingleCPUio=.FALSE.,
+# useSingleCpuInput=.TRUE.,
+# globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
@@ -50,7 +51,7 @@
  &PARM02
  cg2dMaxIters = 100,
  cg2dTargetResidual = 1.E-5,
- &
+ /
 
 # Time stepping parameters
  &PARM03
@@ -62,9 +63,9 @@
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 43200.0,
  dumpfreq = 3600.,
- dumpInitAndLast=.FALSE.,
  monitorFreq = 900.0,
- &
+ dumpInitAndLast=.FALSE.,
+ /
 
 # Gridding parameters
  &PARM04
@@ -76,9 +77,9 @@
      93.96, 96.58, 98.25, 99.25,100.01,101.33,104.56,111.33,122.83,
      139.09,158.94,180.83,203.55,226.50,249.50,272.50,295.50,318.50,
      341.50,364.50,387.50,410.50,433.50,456.50,
- &
+ /
 
 # Input datasets
  &PARM05
  bathyFile      ='bathy.bin',
- &
+ /

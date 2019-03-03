@@ -1,3 +1,4 @@
+From Bron, February 28, 2019
 
 In the newest version, it is no longer necessary to hand-edit the
 constants in "recvTask.c" and "readtile_mpiio.c".  Instead, the file
@@ -8,7 +9,6 @@ This means that "recvTask.c" and "readtile_mpiio.c" now get the
 information they need directly from "SIZE.h", so the magic constants
 for the run only need to be edited in one place (namely, SIZE.h).
 
-
 One tile per rank is recommended, mostly for pickup input performance,
 but it is not strictly necessary.
 
@@ -17,18 +17,11 @@ to do the rolling checkpoints yet. It'll dump u,v,t, and etan now -
 send me a list of other fields you want, as it is rather involved
 to change them. But this should be enough to see if it works.
 
+Set run-time parameter: useSingleCPUio=.FALSE.
 
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
-From Bron, February 28, 2019
-
-To use, set run-time parameter: useSingleCPUio=.FALSE.
-
-Only a couple of files are different from the sources I copied from you.
+Only a couple of files are different from previous version.
 But note in particular that  "SIZE.h"  is a new file in that directory,
 and "recvTask.c" has a huge number of changes.
-
-
-A couple of notes:
 
 The input scheme implemented here is only invoked on
 the 64bit pickup files.  It is specific to the LLC decomposition and will

@@ -60,12 +60,13 @@
  vectorInvariantMomentum=.TRUE.,
  implicitFreeSurface=.TRUE.,
  exactConserv=.TRUE.,
-# debuglevel=-1,
+ debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
+# useSingleCPUio=.TRUE.,
  useSingleCPUio=.FALSE.,
- useSingleCpuInput=.TRUE.,
- globalFiles=.TRUE.,
+# useSingleCpuInput=.TRUE.,
+# globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
@@ -77,7 +78,7 @@
  &PARM02
  cg2dMaxIters = 100,
  cg2dTargetResidual = 1.E-5,
- &
+ /
 
 # Time stepping parameters
  &PARM03

@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/mdsio_read_field.F,v 1.2 2017/10/03 04:20:38 dimitri Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/mdsio_read_field.F,v 1.3 2019/03/03 01:17:30 dimitri Exp $
 C $Name:  $
 
 #include "MDSIO_OPTIONS.h"
@@ -439,6 +439,8 @@ chenze : files is done via Fortran i/o. Our C routines will not do this,
 chenze : so we swap explicitly here. If _BYTESWAPIO is set, this will break.
 
 #ifdef ALLOW_ASYNCIO
+!        WRITE (msgBuf, '(A)') ' use  NEW  readField'
+!        CALL PRINT_ERROR ( msgBuf, myThid )
 
            IF ( filePrec.EQ.precFloat64 ) then
 
@@ -453,6 +455,10 @@ chenze : so we swap explicitly here. If _BYTESWAPIO is set, this will break.
               
            else
 #endif
+
+!        WRITE (msgBuf, '(A)') ' use  OLD  readField'
+!        CALL PRINT_ERROR ( msgBuf, myThid )
+
            DO k=kLo,kHi
             DO j=1,tNy
              irec = 1 + ( tBx + (j-1)*iGjLoc )/sNx
