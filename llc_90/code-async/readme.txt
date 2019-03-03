@@ -10,7 +10,17 @@ information they need directly from "SIZE.h", so the magic constants
 for the run only need to be edited in one place (namely, SIZE.h).
 
 One tile per rank is recommended, mostly for pickup input performance,
-but it is not strictly necessary.
+but it is not strictly necessary.  A minimum of one full node of I/O
+ranks is required.  The async I/O does allocate whole nodes to be
+either an I/O node, or a compute node.  It is permitted for the last
+*compute* node to have a "ragged edge", i.e., have fewer MPI processes
+on it than the other nodes do.  But the I/O nodes are all "full size".
+
+The other minimum value the I/O code requires is that there must
+be at least one core for each field you want to write, e.g., if you
+are dumping 20 different fields, there must be at least 20 cores
+allocated to the I/O.  Note that the 20 (or whatever) number is
+*aggregate* across all the I/O nodes, NOT a "per node" number.
 
 Choose dumpFreq and pChkptFreq as usual. We're not set up
 to do the rolling checkpoints yet. It'll dump u,v,t, and etan now -
