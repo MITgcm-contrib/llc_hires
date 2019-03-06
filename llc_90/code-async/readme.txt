@@ -1,4 +1,4 @@
-From Bron, February 28, 2019
+From Bron Nelson, February 28, 2019
 
 In the newest version, it is no longer necessary to hand-edit the
 constants in "recvTask.c" and "readtile_mpiio.c".  Instead, the file
@@ -21,6 +21,11 @@ be at least one core for each field you want to write, e.g., if you
 are dumping 20 different fields, there must be at least 20 cores
 allocated to the I/O.  Note that the 20 (or whatever) number is
 *aggregate* across all the I/O nodes, NOT a "per node" number.
+
+Another important constraint is that the total memory on all the I/O
+nodes *collectively* needs to be twice as big as the largest epoch you
+write.  So, if you are writing a 1.5 TB pickup dump, then you should
+have a sum total of 3TB of memory (or more) on the set of I/O nodes.
 
 Choose dumpFreq and pChkptFreq as usual. We're not set up
 to do the rolling checkpoints yet. It'll dump u,v,t, and etan now -
