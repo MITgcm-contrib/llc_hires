@@ -20,7 +20,7 @@
  lwdownfile        = 'jra55/jra55_dlw',
  uwindfile         = 'jra55/jra55_u10m',
  vwindfile         = 'jra55/jra55_v10m',
- runofffile        = 'jra55_do_runoff_cs510',
+ runofffile        = 'jra55_do_runoff_llc540',
 #
  precipstartdate1  = 19790101,
  precipstartdate2  = 013000,
