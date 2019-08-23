@@ -65,6 +65,7 @@
 #initial condition
       AreaFile   = 'areaInit.llc540',
       HeffFile   = 'heffInit.llc540',
+      HsnowFile  = 'hsnowInit.llc540',
  &
 #
  &SEAICE_PARM02
