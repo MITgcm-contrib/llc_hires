@@ -42,8 +42,8 @@
 
 # Elliptic solver parameters
  &PARM02
- cg2dMaxIters=100,
- cg2dTargetResidual=1.E-5,
+ cg2dMaxIters=300,
+ cg2dTargetResidual=1.E-10,
  &
 
 # Time stepping parameters
@@ -51,7 +51,7 @@
  niter0=0,
  endtime=854841600.,
  abEps=0.1,
- deltaT=1200.,
+ deltaT=600.,
  cAdjFreq=0.,
  pChkptFreq=31536000.,
  chkptFreq=2592000.,
