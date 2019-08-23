@@ -1,0 +1,90 @@
+#! /bin/csh
+set filesize=3782894400
+set last_pickup=`ls -lt pickup.*.data | awk '$5~/'${filesize}'/{print $NF}'|head -1 `
+if (-e ${last_pickup}) then
+set last_meta=`echo $last_pickup | sed 's/data/meta/'`
+set timestep=`awk '$1~/timeStepNumber/{printf("%010d",$4)}' $last_meta`
+\ln -sf ${last_pickup} pickup.${timestep}.data
+set last_pickupmeta=`echo $last_pickup|awk '{split($0,a,".");print a[1]"."a[2]".meta"}'`
+\ln -sf ${last_pickupmeta} pickup.${timestep}.meta
+endif
+
+set filesize=162302400
+set last_pickup_seaice=`ls -lt pickup_seaice.*.data | awk '$5~/'${filesize}'/{print $NF}'|head -1 `
+if (-e ${last_pickup_seaice}) then
+set last_meta=`echo $last_pickup_seaice | sed 's/data/meta/'`
+set timestep=`awk '$1~/timeStepNumber/{printf("%010d",$4)}' $last_meta`
+\ln -sf ${last_pickup_seaice} pickup_seaice.${timestep}.data
+set last_pickupmeta=`echo $last_pickup_seaice|awk '{split($0,a,".");print a[1]"."a[2]".meta"}'`
+\ln -sf ${last_pickupmeta} pickup_seaice.${timestep}.meta
+
+set newiter0=`expr $timestep \* 1`
+ex - data >> /dev/null <<EOF
+/niter0=
+c
+ niter0=${newiter0},
+.
+w
+q
+EOF
+endif
+
+\mv STDOUT.0000 stdout.${newiter0}
+\rm STD*
+
+\rm DRHODR.*.meta
+\rm ETAN.*.meta
+\rm ETANSQ.*.meta
+\rm EXFhl.*.meta
+\rm EXFhs.*.meta
+\rm EXFlwnet.*.meta
+\rm KPPhbl.*.meta
+\rm KPPmld.*.meta
+\rm PHIBOT.*.meta
+\rm RHOANOSQ.*.meta
+\rm RHOAnoma.*.meta
+\rm SALTSQan.*.meta
+\rm SALTanom.*.meta
+\rm SFLUX.*.meta
+\rm SIarea.*.meta
+\rm SIheff.*.meta
+\rm SIhsnow.*.meta
+\rm SIhsalt.*.meta
+\rm SIuice.*.meta
+\rm SIvice.*.meta
+\rm SRELAX.*.meta
+\rm SSS.*.meta
+\rm SST.*.meta
+\rm TFLUX.*.meta
+\rm THETA.*.meta
+\rm THETASQ.*.meta
+\rm URHOMASS.*.meta
+\rm USLTMASS.*.meta
+\rm UTHMASS.*.meta
+\rm UVEL.*.meta
+\rm UVELMASS.*.meta
+\rm UVELSQ.*.meta
+\rm UVEL_k2.*.meta
+\rm UV_VEL_Z.*.meta
+\rm VRHOMASS.*.meta
+\rm VSLTMASS.*.meta
+\rm VTHMASS.*.meta
+\rm VVEL.*.meta
+\rm VVELMASS.*.meta
+\rm VVELSQ.*.meta
+\rm VVEL_k2.*.meta
+\rm WRHOMASS.*.meta
+\rm WSLTMASS.*.meta
+\rm WTHMASS.*.meta
+\rm WU_VEL.*.meta
+\rm WVELMASS.*.meta
+\rm WVELSQ.*.meta
+\rm WV_VEL.*.meta
+\rm oceFWflx.*.meta
+\rm oceQnet.*.meta
+\rm oceQsw.*.meta
+\rm oceSflux.*.meta
+\rm oceTAUX.*.meta
+\rm oceTAUY.*.meta
+\rm surForcS.*.meta
+\rm surForcT.*.meta
