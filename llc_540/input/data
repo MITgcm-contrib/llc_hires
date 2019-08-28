@@ -27,7 +27,7 @@
  useAreaViscLength=.TRUE.,
  selectVortScheme = 2,
  bottomDragQuadratic = 0.0021,
- selectImplicitDrag  = 1,
+ selectImplicitDrag  = 2,
  tempAdvScheme=7,
  saltAdvScheme=7,
  StaggerTimeStep=.TRUE.,
@@ -67,6 +67,9 @@
  usingCartesianGrid=.FALSE.,
  usingSphericalPolarGrid=.FALSE.,
  usingCurvilinearGrid=.TRUE.,
+ pCellMix_select = 20,
+ pCellMix_delR = 3.,
+ pCellMix_viscAr = 50*5.e-3,
  delR   = 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.01,
  10.03, 10.11, 10.32, 10.80, 11.76, 13.42, 16.04 , 19.82, 24.85, 
  31.10, 38.42, 46.50, 55.00, 63.50, 71.58, 78.90, 85.15, 90.18, 
@@ -77,7 +80,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      = 'SandS14p1_ibcao_540x7020_cap6000_smooth.bin',
+ bathyFile      = 'Bathy_compact_llc540_540x7020_v1.bin',
  pSurfInitFile  = 'pSurfInit.llc540',
  hydrogThetaFile= 'thetaInit.llc540',
  hydrogSaltFile = 'saltInit.llc540',
