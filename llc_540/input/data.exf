@@ -20,7 +20,7 @@
  lwdownfile        = 'jra55/jra55_dlw',
  uwindfile         = 'jra55/jra55_u10m',
  vwindfile         = 'jra55/jra55_v10m',
- runofffile        = 'jra55_do_runoff_llc540',
+ runofffile        = 'jra55_do_runoff_LLC_540',
 #
  precipstartdate1  = 19790101,
  precipstartdate2  = 013000,
@@ -147,10 +147,5 @@
  vwind_nlon        = 640,
  vwind_nlat        = 320,
 #
- runoff_lon0       = 0.125D0,
- runoff_lon_inc    = 0.25D0,
- runoff_lat0       = -89.875D0,
- runoff_lat_inc    = 719*0.25D0,
- runoff_nlon       = 1440,
- runoff_nlat       = 720,
+ runoff_interpMethod = 0,
  &

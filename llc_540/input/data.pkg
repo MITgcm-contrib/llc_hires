@@ -6,5 +6,5 @@
  useEXF         = .TRUE.,
 # useDiagnostics = .TRUE.,
  useSALT_PLUME  = .TRUE.,
- useDOWN_SLOPE  = .TRUE.,
+ useBBL         = .TRUE.,
  &
