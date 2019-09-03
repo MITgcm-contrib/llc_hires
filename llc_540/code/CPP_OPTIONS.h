@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/CPP_OPTIONS.h,v 1.1 2019/08/23 18:19:49 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/CPP_OPTIONS.h,v 1.2 2019/09/03 18:43:41 zhc Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -79,7 +79,7 @@ C   near surface & bottom for too thin grid-cell
 C-- Time-stepping code options:
 
 C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
-#undef ALLOW_SOLVE4_PS_AND_DRAG
+#define ALLOW_SOLVE4_PS_AND_DRAG
 
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE

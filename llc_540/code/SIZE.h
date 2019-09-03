@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/SIZE.h,v 1.1 2019/08/23 18:19:49 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/SIZE.h,v 1.2 2019/09/03 18:43:41 zhc Exp $
 C $Name:  $
 
 C
@@ -50,7 +50,7 @@ C     Nr  :: No. points in Z for full process domain.
      &           OLy =   4,
      &           nSx =   1,
      &           nSy =   1,
-     &           nPx = 4212,
+     &           nPx = 4212-1393,
      &           nPy =   1,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,
