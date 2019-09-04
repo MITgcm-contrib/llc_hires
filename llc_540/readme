@@ -13,7 +13,7 @@
 
 # integrate 1992-2019 model on pleiades
  cd ../run
- cp ../../MITgcm_contrib/MITgcm_contrib/llc_540/input/* .
+ cp ../../MITgcm_contrib/llc_hires/llc_540/input/* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
  ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
