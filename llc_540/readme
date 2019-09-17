@@ -12,6 +12,7 @@
  make -j 16
 
 # integrate 1992-2019 model on pleiades
+# jra55 forcing
  cd ../run
  cp ../../MITgcm_contrib/llc_hires/llc_540/input/* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
@@ -19,6 +20,32 @@
  ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
  ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/jra55 .
+ ln -sf /nobackup/dcarrol2/LOAC/write_bin/jra55_do/v1.4.0/LLC_540/jra55* .
+ ln -sf ../build/mitgcmuv .
+ qsub job_ivy_llc540
+
+# jra55do forcing
+ cd ../run
+ cp ../../MITgcm_contrib/llc_hires/llc_540/input/* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/forcing/jra55_do .
+ ln -sf data.exf_jra55do data.exf
+ ln -sf /nobackup/dcarrol2/LOAC/write_bin/jra55_do/v1.4.0/LLC_540/jra55* .
+ ln -sf ../build/mitgcmuv .
+ qsub job_ivy_llc540
+
+# eraxx forcing
+ cd ../run
+ cp ../../MITgcm_contrib/llc_hires/llc_540/input/* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/forcing/era_xx_it50 .
+ ln -sf data.exf_eraxx data.exf
  ln -sf /nobackup/dcarrol2/LOAC/write_bin/jra55_do/v1.4.0/LLC_540/jra55* .
  ln -sf ../build/mitgcmuv .
  qsub job_ivy_llc540
