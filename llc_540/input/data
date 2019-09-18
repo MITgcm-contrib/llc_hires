@@ -50,7 +50,9 @@
  &PARM03
  niter0=432,
  endtime=854841600.,
- abEps=0.1,
+ doAB_onGtGs=.FALSE.,
+ alph_AB=0.5,
+ beta_AB=0.281105,
  deltaT=600.,
  cAdjFreq=0.,
  pChkptFreq=31536000.,
