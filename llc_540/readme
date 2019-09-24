@@ -50,3 +50,25 @@
  ln -sf ../build/mitgcmuv .
  qsub job_ivy_llc540
 
+
+##################
+Rain correction factors
+Aiming for 1.5 +/1 1 mm/year barystatic sea level increase
+
+jra55
+unadjusted sea level increase: 322.5 mm/yr
+correction needed: -321 mm/yr
+mean precip over ocean: 4.267e-8 m/s =  1346.6 mm/yr
+correction factor: (1346.6-321)/1346.6 = 0.7616
+
+jra55do
+unadjusted sea level increase: 29.6 mm/yr
+correction needed: -28.1 mm/yr
+mean precip over ocean: 3.4788e-8 m/s =  1097.83 mm/yr
+correction factor: (1097.83-28.1)/1097.83 = 0.9744
+
+eraxx
+unadjusted sea level increase: 13.1 mm/yr
+correction needed: -11.6 mm/yr
+mean precip over ocean: 3.8299e-8 m/s =  1208.62 mm/yr
+correction factor: (1208.62-11.6)/1208.62 = 0.9904
