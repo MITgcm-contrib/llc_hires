@@ -50,6 +50,10 @@
  ln -sf ../build/mitgcmuv .
  qsub job_ivy_llc540
 
+##################
+#to run on small number of cpus
+#build:  ln -sf SIZE.h_60 SIZE.h
+#run:    ln -sf data.exch2_60 data.exch2 
 
 ##################
 Rain correction factors
@@ -72,3 +76,4 @@ unadjusted sea level increase: 13.1 mm/yr
 correction needed: -11.6 mm/yr
 mean precip over ocean: 3.8299e-8 m/s =  1208.62 mm/yr
 correction factor: (1208.62-11.6)/1208.62 = 0.9904
+#run: ln -sf data.exf_eraxx_scal_precip data.exf
