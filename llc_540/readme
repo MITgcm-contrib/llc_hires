@@ -54,6 +54,7 @@
 #to run on small number of cpus
 #build:  ln -sf SIZE.h_60 SIZE.h
 #run:    ln -sf data.exch2_60 data.exch2 
+#        qsub job_ivy_llc540_60
 
 ##################
 Rain correction factors
