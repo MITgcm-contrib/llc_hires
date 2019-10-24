@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/CPP_OPTIONS.h,v 1.2 2019/09/03 18:43:41 zhc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/CPP_OPTIONS.h,v 1.3 2019/10/24 15:32:44 zhc Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -44,7 +44,7 @@ C o Include/exclude balancing surface forcing relaxation code
 #define ALLOW_BALANCE_RELAX
 
 C o Include/exclude checking for negative salinity
-#undef CHECK_SALINITY_FOR_NEGATIVE_VALUES
+#define CHECK_SALINITY_FOR_NEGATIVE_VALUES
 
 C-- Options to discard parts of the main code:
 
