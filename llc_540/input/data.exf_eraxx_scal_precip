@@ -74,7 +74,7 @@
 #NOT FOR NEW RUNOFF FIELD exf_inscal_runoff = 3.1710e-08,
  exf_inscal_swdown = -1.0,
  exf_inscal_lwdown = -1.0,
- exf_inscal_precip = .9904,
+ exf_inscal_precip = .9924,
 # to compensate for sea level rise for nlfs/realFWF
 #precip_exfremo_intercept = 1.073E-9,
 #precip_exfremo_slope = -3.340E-18,
