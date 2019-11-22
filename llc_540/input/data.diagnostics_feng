@@ -1,0 +1,62 @@
+# Diagnostic Package Choices
+#
+# daily 2-D fields:
+# ====================
+# 
+# oceTAUX  zonal surface wind stress, >0 increases uVel (N/m^2)
+# oceTAUY  meridional surf. wind stress, >0 increases vVel (N/m^2)
+# ETAN     Perturbation of Surface (pressure, height) (Pa,m)
+#
+# daily 3-D fields:
+# =================
+# 
+# SALTanom Salt anomaly (=SALT-35; g/kg)
+# THETA    Potential Temperature (degC)
+# UVELMASS Zonal Mass-Weighted Comp of Velocity (m/s)
+# VVELMASS Meridional Mass-Weighted Comp of Velocity (m/s)
+#
+ &diagnostics_list
+   frequency(1)  = 86400.,
+    fields(1,1)  = 'oceTAUX ',
+    filename(1)  = 'oceTAUX',
+   frequency(2)  = 86400.,
+    fields(1,2)  = 'oceTAUY ',
+    filename(2)  = 'oceTAUY',
+   frequency(3) = 86400.,
+    fields(1,3) = 'ETAN    ',
+    filename(3) = 'ETAN',
+   frequency(19) = 86400.,
+    fields(1,19) = 'SALTanom',
+    filename(19) = 'SALTanom',
+   frequency(20) = 86400.,
+    fields(1,20) = 'THETA   ',
+    filename(20) = 'THETA',
+   frequency(21) = 86400.,
+    fields(1,21) = 'UVELMASS',
+    filename(21) = 'UVELMASS',
+   frequency(22) = 86400.,
+    fields(1,22) = 'VVELMASS',
+    filename(22) = 'VVELMASS',
+ &
+
+# Parameter for Diagnostics of per level statistics:
+#-----------------
+# for each output-stream:
+#  stat_fname(n) : prefix of the output file name (only 8.c long) for
+#outp.stream n
+#  stat_freq(n):< 0 : write snap-shot output every |stat_freq| seconds
+#               > 0 : write time-average output every stat_freq seconds
+#  stat_phase(n)    : write at time = stat_phase + multiple of |stat_freq|
+#  stat_region(:,n) : list of "regions" (default: 1 region only=global)
+#  stat_fields(:,n) : list of diagnostics fields (8.c) (see
+#"available_diagnostics.log"
+#                 file for the list of all available diag. in this particular
+#config)
+#-----------------
+ &DIAG_STATIS_PARMS
+#- an example just to check the agreement with MONITOR output:
+#stat_fields(1,1)= 'ETAN    ','UVEL    ','VVEL    ','WVEL    ', 'THETA   ',
+#   stat_fname(1)= 'dynStDiag',
+#    stat_freq(1)= -864000.,
+#   stat_phase(1)= 0.,
+ &
