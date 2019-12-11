@@ -10,16 +10,17 @@
  useExfYearlyFields= .TRUE.,
  useExfCheckRange  = .FALSE.,
  useRelativeWind   = .FALSE.,
+ ht = 10.,
  &
 #
  &EXF_NML_02
- precipfile        = 'jra55/jra55_rain',
- atempfile         = 'jra55/jra55_tmp2m_degC',
- aqhfile           = 'jra55/jra55_spfh2m',
- swdownfile        = 'jra55/jra55_dsw',
- lwdownfile        = 'jra55/jra55_dlw',
- uwindfile         = 'jra55/jra55_u10m',
- vwindfile         = 'jra55/jra55_v10m',
+ precipfile        = 'jra55_do/jra55_do_rain',
+ atempfile         = 'jra55_do/jra55_do_tmp10m_degC',
+ aqhfile           = 'jra55_do/jra55_do_spfh10m',
+ swdownfile        = 'jra55_do/jra55_do_dsw',
+ lwdownfile        = 'jra55_do/jra55_do_dlw',
+ uwindfile         = 'jra55_do/jra55_do_u10m',
+ vwindfile         = 'jra55_do/jra55_do_v10m',
  runofffile        = 'jra55_do_runoff_LLC_540',
 #
  precipstartdate1  = 19790101,
@@ -52,7 +53,7 @@
  exf_offset_atemp  = 273.15,
  exf_inscal_swdown = -1.,
  exf_inscal_lwdown = -1., 
- exf_inscal_precip = 1.,
+ exf_inscal_precip = .9744,
  &
 #
  &EXF_NML_04

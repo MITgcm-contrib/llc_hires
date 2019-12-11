@@ -10,6 +10,7 @@
  useExfYearlyFields= .TRUE.,
  useExfCheckRange  = .FALSE.,
  useRelativeWind   = .FALSE.,
+ ht = 10.,
  &
 #
  &EXF_NML_02
