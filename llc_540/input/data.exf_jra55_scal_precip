@@ -10,7 +10,6 @@
  useExfYearlyFields= .TRUE.,
  useExfCheckRange  = .FALSE.,
  useRelativeWind   = .FALSE.,
- ht = 10.,
  &
 #
  &EXF_NML_02
@@ -54,7 +53,6 @@
  exf_inscal_swdown = -1.,
  exf_inscal_lwdown = -1., 
  exf_inscal_precip = 1.,
- exf_inscal_precip = .9744,
  &
 #
  &EXF_NML_04
