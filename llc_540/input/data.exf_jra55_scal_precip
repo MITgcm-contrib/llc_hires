@@ -52,7 +52,7 @@
  exf_offset_atemp  = 273.15,
  exf_inscal_swdown = -1.,
  exf_inscal_lwdown = -1., 
- exf_inscal_precip = 1.,
+ exf_inscal_precip = 0.7490,
  &
 #
  &EXF_NML_04
