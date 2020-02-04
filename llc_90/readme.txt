@@ -27,7 +27,7 @@ make depend
 make -j 96
 cp mitgcmuv ../run1
 cd ../run1
-ln -sf /nobackup/dmenemen/GEOS5/experiments/llc90/data/* .
+ln -sf /nobackup/dmenemen/tarballs/llc_90/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input/* .
@@ -46,7 +46,7 @@ make depend
 make -j 96
 cp mitgcmuv ../run2
 cd ../run2
-ln -sf /nobackup/dmenemen/GEOS5/experiments/llc90/data/* .
+ln -sf /nobackup/dmenemen/tarballs/llc_90/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input/* .
@@ -55,6 +55,7 @@ mpiexec -n 136 ./mitgcmuv
 
 ###################################################
 # 30x30x96 configuration with asyncio and no seaice
+cd ../../MITgcm
 mkdir run4
 cd build
 rm *
@@ -65,7 +66,7 @@ make depend
 make -j 16
 cp mitgcmuv ../run4
 cd ../run4
-ln -sf /nobackup/dmenemen/GEOS5/experiments/llc90/data/* .
+ln -sf /nobackup/dmenemen/tarballs/llc_90/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input-noseaice/* .
