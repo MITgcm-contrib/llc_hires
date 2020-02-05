@@ -55,7 +55,6 @@ mpiexec -n 136 ./mitgcmuv
 
 ###################################################
 # 30x30x96 configuration with asyncio and no seaice
-# Hangs after first "I/O ranks waiting for new epoch"
 cd ../../MITgcm
 mkdir run4
 cd build
