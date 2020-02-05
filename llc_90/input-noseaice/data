@@ -44,17 +44,17 @@
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
- &
+ /
 
 # Elliptic solver parameters
  &PARM02
  cg2dMaxIters = 100,
  cg2dTargetResidual = 1.E-5,
- &
+ /
 
 # Time stepping parameters
  &PARM03
- nIter0=0,
+ nIter0=1,
  nTimeSteps=12,
  deltaT=900.,
  abEps = 0.1,
@@ -62,9 +62,9 @@
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 43200.0,
  dumpfreq = 3600.,
- dumpInitAndLast=.FALSE.,
  monitorFreq = 900.0,
- &
+ dumpInitAndLast=.FALSE.,
+ /
 
 # Gridding parameters
  &PARM04
@@ -76,9 +76,9 @@
      93.96, 96.58, 98.25, 99.25,100.01,101.33,104.56,111.33,122.83,
      139.09,158.94,180.83,203.55,226.50,249.50,272.50,295.50,318.50,
      341.50,364.50,387.50,410.50,433.50,456.50,
- &
+ /
 
 # Input datasets
  &PARM05
  bathyFile      ='bathy.bin',
- &
+ /
