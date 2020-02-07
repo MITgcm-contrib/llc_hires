@@ -33,8 +33,8 @@ ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input/* .
 mpiexec -n 96 ./mitgcmuv
 
-#####################################
-# 30x30x96 configuration with asyncio
+###################################################
+# 30x30x96 configuration with Bron's latest asyncio
 cd ../../MITgcm
 mkdir run2
 cd build
@@ -53,21 +53,21 @@ cp ../../MITgcm_contrib/llc_hires/llc_90/input/* .
 mv data_async data
 mpiexec -n 136 ./mitgcmuv
 
-###################################################
-# 30x30x96 configuration with asyncio and no seaice
+#################################################################
+# 30x30x96 configuration with Bron's latest asyncio and no seaice
 cd ../../MITgcm
-mkdir run4
+mkdir run3
 cd build
 rm *
 ../tools/genmake2 -of \
  ../../MITgcm_contrib/llc_hires/llc_90/code-async/linux_amd64_ifort+mpi_ice_nas \
   -mpi -mods ../../MITgcm_contrib/llc_hires/llc_90/code-async-noseaice
 make depend
-make -j 16
-cd ../run4
+make -j 96
+cd ../run3
 cp ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_90/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../MITgcm_contrib/llc_hires/llc_90/input-noseaice/* .
-mpiexec -n 124 ./mitgcmuv
+mpiexec -n 136 ./mitgcmuv

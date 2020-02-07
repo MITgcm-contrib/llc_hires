@@ -118,9 +118,6 @@ enum {
 ! for a Fortran compile, so we just assume that since this wasn't C/C++,
 ! it must be Fortran.
 
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/SIZE.h,v 1.1 2019/03/03 01:17:30 dimitri Exp $
-C $Name:  $
-C
 CBOP
 C    !ROUTINE: SIZE.h
 C    !INTERFACE:
