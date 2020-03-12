@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/seaice_write_pickup.F,v 1.1 2017/10/03 00:09:12 dimitri Exp $
-C $Name:  $
-
 #include "SEAICE_OPTIONS.h"
 
 CBOP

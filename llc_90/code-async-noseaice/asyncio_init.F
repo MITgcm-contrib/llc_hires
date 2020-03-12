@@ -1,4 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async-noseaice/asyncio_init.F,v 1.1 2017/10/09 02:02:49 dimitri Exp $
 #include "CPP_EEOPTIONS.h"
 
       SUBROUTINE ASYNCIO_INIT(

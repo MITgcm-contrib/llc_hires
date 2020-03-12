@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/write_state.F,v 1.4 2014/03/06 03:00:39 dimitri Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 

@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/eeboot_minimal.F,v 1.4 2014/03/06 02:45:05 dimitri Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_EEOPTIONS.h"
 

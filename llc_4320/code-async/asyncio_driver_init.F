@@ -1,4 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/asyncio_driver_init.F,v 1.1 2013/09/20 12:38:03 dimitri Exp $
 #include "CPP_EEOPTIONS.h"
  
       SUBROUTINE ASYNCIO_DRIVER_INIT(

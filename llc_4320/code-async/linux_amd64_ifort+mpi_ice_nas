@@ -1,8 +1,5 @@
 #!/bin/bash
 #
-# $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas,v 1.5 2016/04/14 03:51:44 dimitri Exp $
-# $Name:  $
-
 # Used to run the testreport on pleiades with:
 # module load comp-intel/2015.0.090 mpi-sgi/mpt.2.12r23 netcdf/4.0
 # works on all types of nodes 

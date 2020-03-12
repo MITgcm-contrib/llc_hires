@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/ecco_cost_weights.F,v 1.1 2017/03/02 20:13:26 zhc Exp $
-C $Name:  $
-
 #include "ECCO_OPTIONS.h"
 
 

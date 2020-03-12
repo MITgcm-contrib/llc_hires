@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/mdsio_read_field.F,v 1.3 2019/03/03 01:17:30 dimitri Exp $
-C $Name:  $
-
 #include "MDSIO_OPTIONS.h"
 
 CBOP

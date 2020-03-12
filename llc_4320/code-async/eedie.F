@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code-async/eedie.F,v 1.2 2014/03/06 02:45:05 dimitri Exp $
-C $Name:  $
-
 #include "CPP_EEOPTIONS.h"
 #ifdef USE_LIBHPM
 # include "f_hpm.h"

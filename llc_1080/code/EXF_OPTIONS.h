@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code/EXF_OPTIONS.h,v 1.2 2013/10/24 22:04:40 dimitri Exp $
-C $Name:  $
-
 CBOP
 C !ROUTINE: EXF_OPTIONS.h
 C !INTERFACE:

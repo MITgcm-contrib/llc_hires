@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/DIAG_OPTIONS.h,v 1.1 2019/08/23 18:19:49 zhc Exp $
-C $Name:  $
-
 #ifndef DIAG_OPTIONS_H
 #define DIAG_OPTIONS_H
 #include "PACKAGES_CONFIG.h"

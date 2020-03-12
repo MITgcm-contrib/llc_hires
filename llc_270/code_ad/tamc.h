@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/tamc.h,v 1.3 2017/03/02 20:09:11 zhc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 
 c     ================================================================

@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/ctrl_map_ini_ecco.F,v 1.1 2017/03/02 20:13:27 zhc Exp $
-C $Name:  $
-
 #include "CTRL_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"

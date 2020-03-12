@@ -1,5 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_90/code-async/asyncio_driver_config.F,v 1.2 2019/03/03 01:17:30 dimitri Exp $
-
 #include "PACKAGES_CONFIG.h"
 
 

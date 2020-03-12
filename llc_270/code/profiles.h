@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/profiles.h,v 1.3 2015/09/29 18:07:50 zhc Exp $
-C $Name:  $
-
 C============================================================
 C NOBSMAX : maximal number of profiles
 C============================================================

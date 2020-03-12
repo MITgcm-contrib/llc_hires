@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_1080/code/SIZE.h_36x36x7628,v 1.1 2018/04/19 10:30:41 dimitri Exp $
-C $Name:  $
-
 C
 CBOP
 C    !ROUTINE: SIZE.h

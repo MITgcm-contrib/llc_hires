@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_540/code/SIZE.h,v 1.3 2019/09/04 17:59:32 zhc Exp $
-C $Name:  $
-
 C
 CBOP
 C    !ROUTINE: SIZE.h

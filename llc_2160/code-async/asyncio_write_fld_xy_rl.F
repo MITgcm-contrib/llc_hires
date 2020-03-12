@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code-async/asyncio_write_fld_xy_rl.F,v 1.2 2013/12/30 03:47:38 dimitri Exp $
-C $Name:  $
-
 #include "CPP_EEOPTIONS.h"
 #include "W2_OPTIONS.h"
 #include "RW_OPTIONS.h"

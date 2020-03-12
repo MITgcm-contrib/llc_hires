@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/cost_gencost_sstv4.F,v 1.1 2017/03/02 20:13:27 zhc Exp $
-C $Name:  $
-
 #include "ECCO_OPTIONS.h"
 
 

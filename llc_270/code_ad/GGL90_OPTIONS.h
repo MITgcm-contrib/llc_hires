@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/GGL90_OPTIONS.h,v 1.1 2014/06/19 21:59:29 zhc Exp $
-C $Name:  $
-
 C     *=============================================================*
 C     | GGL90_OPTIONS.h
 C     | o CPP options file for GGL90 package.

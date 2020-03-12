@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/MDSIO_BUFF_3D.h,v 1.2 2014/06/19 21:58:16 zhc Exp $
-C $Name:  $
-
 CBOP
 C     !ROUTINE: MDSIO_BUFF_3D.h
 C     !INTERFACE:

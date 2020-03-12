@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/autodiff_inadmode_set_ad.F,v 1.4 2017/03/02 20:09:11 zhc Exp $
-C $Name:  $
-
 #include "AUTODIFF_OPTIONS.h"
 
       SUBROUTINE ADAUTODIFF_INADMODE_SET( myThid )

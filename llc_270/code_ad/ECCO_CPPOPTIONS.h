@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code_ad/ECCO_CPPOPTIONS.h,v 1.3 2017/03/02 20:09:11 zhc Exp $
-C $Name:  $
-
 #ifndef ECCO_CPPOPTIONS_H
 #define ECCO_CPPOPTIONS_H
 #include "AD_CONFIG.h"

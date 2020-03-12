@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_2160/code/KPP_OPTIONS.h,v 1.1 2014/01/07 04:02:55 dimitri Exp $
-C $Name:  $
-
 C     *==========================================================*
 C     | KPP_OPTIONS.h
 C     | o CPP options file for KPP package.
