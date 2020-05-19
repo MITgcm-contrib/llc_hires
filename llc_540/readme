@@ -64,7 +64,8 @@
  ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/era5 ERA5
 # ln -sf data.exf_era5 data.exf
- ln -sf data.exf_era5_scal_precip data.exf
+# ln -sf data.exf_era5_scal_precip data.exf
+ ln -sf data.exf_era5_scal_precip2 data.exf
  ln -sf /nobackup/dcarrol2/LOAC/write_bin/jra55_do/v1.4.0/LLC_540/jra55* .
  ln -sf ../build/mitgcmuv .
  qsub job_ivy_llc540
