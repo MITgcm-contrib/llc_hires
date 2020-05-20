@@ -3,7 +3,7 @@ clear
 fn4='/nobackup/hzhang1/CS510_reborn/MITgcm/run_540_era5_1/stdout.0000_1'
 
 vars={'dynstat_eta_mean','seaice_heff_mean','seaice_hsnow_mean'};
-val4=time_series(fn4,'time_tsnumber',vars{[1 end-1:end]});
+val4=mitgcmhistory(fn4,'time_tsnumber',vars{[1 end-1:end]});
 v4=val4(:,2)+val4(:,3)*0.92+val4(:,4)*.92*0.333;
 tt=val4(:,1)/144/365.25+1992;
 tt=tt(1:end-1);
