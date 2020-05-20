@@ -66,6 +66,7 @@
 # ln -sf data.exf_era5 data.exf
 # ln -sf data.exf_era5_scal_precip data.exf
  ln -sf data.exf_era5_scal_precip2 data.exf
+#data.exf_era5_scal_precip2 made by matlab/mk_ERA5rain_scale.m 
  ln -sf /nobackup/dcarrol2/LOAC/write_bin/jra55_do/v1.4.0/LLC_540/jra55* .
  ln -sf ../build/mitgcmuv .
  qsub job_ivy_llc540
