@@ -3,5 +3,5 @@
 # Off-line optimization parameters
 # ********************************
  &OPTIM
- optimcycle=33,
+ optimcycle=50,
  /
