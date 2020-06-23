@@ -1,3 +1,6 @@
+C $Header: /u/gcmpack/MITgcm_contrib/gael/verification/global_oce_llc90/code/tamc.h_itXX,v 1.1 2012/10/04 17:12:00 gforget Exp $
+C $Name:  $
+
 #include "PACKAGES_CONFIG.h"
 
 c     ================================================================
@@ -65,9 +68,9 @@ c      parameter( nchklev_1      =   65 ) !65*77*77 for HAS
 c prof=4      
 c     parameter( nchklev_1      =   50 )
       integer    nchklev_2
-      parameter( nchklev_2      =   98 )
+      parameter( nchklev_2      =   120 )
       integer    nchklev_3
-      parameter( nchklev_3      =   98 )
+      parameter( nchklev_3      =   120 )
 
 c--   Note always check for the correct sizes of the common blocks!
 

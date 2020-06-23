@@ -1,3 +1,6 @@
+C $Header: /u/gcmpack/MITgcm_contrib/gael/verification/global_oce_llc90/code/ECCO_CPPOPTIONS.h_itXX,v 1.3 2014/02/05 15:22:50 gforget Exp $
+C $Name:  $
+
 #ifndef ECCO_CPPOPTIONS_H
 #define ECCO_CPPOPTIONS_H
 #include "AD_CONFIG.h"
@@ -161,7 +164,7 @@ C       >>> Sea Surface Height Observation/Estimates.
 #define ALLOW_SSH_MEAN_COST_CONTRIBUTION
 #define ALLOW_SSH_TPANOM_COST_CONTRIBUTION
 #define ALLOW_SSH_ERSANOM_COST_CONTRIBUTION
-chzh#define ALLOW_SSH_GFOANOM_COST_CONTRIBUTION
+#define ALLOW_SSH_GFOANOM_COST_CONTRIBUTION
 # if (defined (ALLOW_SSH_MEAN_COST_CONTRIBUTION) || \
       defined (ALLOW_SSH_TPANOM_COST_CONTRIBUTION) || \
       defined (ALLOW_SSH_ERSANOM_COST_CONTRIBUTION))
