@@ -1,117 +1,54 @@
-#########################
-# 90x90x102 configuration
+# ========
+#
+# LLC270 state estimate
+# WARNING: - Before starting make you have an Earthdata account (Or create it at: https://urs.earthdata.nasa.gov/users/new)
+#
+# ========
 
-module purge
-module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
-cd ~/llc_270
-cvs co MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_270
+# ==============
+# 1. Get code
+git clone https://github.com/MITgcm/MITgcm.git
+cd MITgcm
+git checkout checkpoint64x
+cd ..
+svn checkout https://github.com/MITgcm-contrib/llc_hires/trunk/llc_270
+# For the following requests you need your Earthdata username and WebDAV password (different from Earthdata password)
+# Find it at :https://ecco.jpl.nasa.gov/drive
+wget -r -nH -np --user=USERNAME --ask-password https://ecco.jpl.nasa.gov/drive/files/Version5/Alpha/input_forcing
+wget -r -nH -np --user=USERNAME --ask-password https://ecco.jpl.nasa.gov/drive/files/Version5/Alpha/input_ecco
+wget -r -nH -np --user=USERNAME --ask-password https://ecco.jpl.nasa.gov/drive/files/Version5/Alpha/input_init
+wget -r -nH -np --user=USERNAME --ask-password https://ecco.jpl.nasa.gov/drive/files/Version5/Alpha/XX
+mv drive/files/Version5/Alpha/input_forcing llc_270/
+mv drive/files/Version5/Alpha/input_ecco    llc_270/
+mv drive/files/Version5/Alpha/input_init    llc_270/
+mv drive/files/Version5/Alpha/XX            llc_270/
+rm -r drive/
+
+# ================
+# 2. Build executable for Mac Delta based on llc270 iteration 42 optimized solution
+#    Prerequisite: 1. Get code
+==============
 cd MITgcm
 mkdir build run
 cd build
-cp ../../MITgcm_contrib/llc_hires/llc_270/code/SIZE.h_90x90x102 SIZE.h
-../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
-  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code
-make depend
-make -j 16
 
-cd ~/llc_270/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_90x90x102
-ln -sf /nobackupp8/dmenemen/tarballs/llc_270/run_template/* .
-ln -sf /nobackup/hzhang1/forcing/era-interim .
-
-rm data.exf
-cp ../../MITgcm_contrib/llc_hires/llc_270/input/* .
-ln -sf data.exch2_90x90x102 data.exch2
-mpiexec -n 117 ./mitgcmuv_90x90x117
-
-tail -f STDOUT.0000 | grep advcfl_W
-
-vals=mitgcmhistory('STDOUT.0000','time_secondsf','advcfl_W');
-
-#########################
-# 45x45x366 configuration
-
-module purge
-module load comp-intel/2012.0.032 mpi-sgi/mpt.2.08r7 netcdf/4.0
-cd ~/llc_270
-cvs co MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_270
-cd MITgcm
-mkdir build run
-cd build
-cp ../../MITgcm_contrib/llc_hires/llc_270/code/SIZE.h_45x45x366 SIZE.h
-../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
-  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code
-make depend
-make -j 16
-
-cd ~/llc_270/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_45x45x366
-ln -sf /nobackupp8/dmenemen/tarballs/llc_270/run_template/* .
-ln -sf /nobackup/hzhang1/forcing/era-interim .
-ln -sf /nobackup/hzhang1/llc_1080/MITgcm/PH_270/input_file/runoff-2d-Fekete-1deg-mon-V4-SMOOTH.bin .
-ln -sf /nobackup/hzhang1/llc_1080/MITgcm/PH_270/input_file/*.nc .
-cp ../../MITgcm_contrib/llc_hires/llc_270/input/* .
-ln -sf data.exch2_45x45x366 data.exch2
-mkdir -p diags profiles
-
-qsub job_366_onW
-
-tail -f STDOUT.0000|grep -E 'advcfl_W|time_tsnumber'
-
-
-#########################
-# 30x30x767 configuration
-# FWD + ADJ
-#########################
-
-module load comp-intel/2012.0.032 mpi-sgi/mpt netcdf/4.0 
-
-#1 code
-cvs co -r checkpoint64x MITgcm_code
-cvs co MITgcm_contrib/llc_hires/llc_270
-cd MITgcm
-
-mkdir build run
-
-#2 build
-cd build
-#FWD
-../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
-  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code_ad
-  make depend
-  make -j 16
-make Clean
-#ADJ
-../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
-  -mpi -mods ../../MITgcm_contrib/llc_hires/llc_270/code_ad
-  make depend
-  make adtaf
-  make -j 16 adall
-
-#3 run:
+   module purge
+   module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+   ../tools/genmake2 -of ../../llc_270/code_ad/linux_amd64_ifort+mpi_ice_nas \
+   -mo ../../llc_270/code_ad
+   make depend
+   make -j 16
+ 
+# ================
+# 3. Run the setup
+#    Prerequisite: 2. Build executable
 cd ../run
-mkdir diags tapes profiles
-ln -s ../build/mitgcmuv* .
-
-dirs="pri_err ts grace sst ssh si_IAN insitu optim33 nul"
-for i in $dirs
-do
-	ln -s /nobackup/hzhang1/obs/$i .
-done	
-ln -s /nobackup/hzhang1/forcing/era_xx .
-
-dirs="pri_err ts grace sst ssh si_IAN insitu optim33"
-for i in $dirs
-do
-	ln -sf $i/* .
-done	
-cp -p /nobackup/hzhang1/obs/input/* .
-#change data* as needed
-qsub llc270_fwdHas
-qsub -q vlong llc270_adjHas
-
-
-
+mkdir diags tapes
+cp ../../llc_270/input_ad/* .
+ln -s ../build/mitgcmuv .
+ln -s ../../llc_270/input_forcing era_xx
+ln -s ../../llc_270/input_ecco/* .
+ln -s ../../llc_270/input_init/* .
+ln -s ../../llc_270/XX/* .
+qsub job_Irun_bM3
 
