@@ -25,7 +25,7 @@ mv drive/files/Version5/Alpha/XX            llc_270/
 rm -r drive/
 
 # ================
-# 2. Build executable for Mac Delta based on llc270 iteration 42 optimized solution
+# 2. Build executable
 #    Prerequisite: 1. Get code
 ==============
 cd MITgcm
@@ -40,7 +40,7 @@ cd build
    make -j 16
  
 # ================
-# 3. Run the setup
+# 3. Run model
 #    Prerequisite: 2. Build executable
 cd ../run
 mkdir diags tapes
