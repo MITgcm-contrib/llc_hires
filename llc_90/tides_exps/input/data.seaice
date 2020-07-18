@@ -1,0 +1,58 @@
+# SEAICE parameters
+ &SEAICE_PARM01
+
+      SEAICEpresH0=2.,
+      SEAICEpresPow0=1,
+      SEAICEpresPow1=1,
+
+      SEAICE_strength = 2.25e4,
+      SEAICE_area_max = 0.97,      
+
+      SEAICE_no_slip     = .TRUE.,
+
+      SEAICE_drag=0.001,
+      OCEAN_drag=0.001,
+
+#####
+      SEAICEuseTILT=.FALSE.,
+      SEAICE_multDim=1,
+      SEAICErestoreUnderIce=.TRUE.,
+
+      SEAICE_salt0=4.,
+
+      LSR_ERROR          = 2.e-4,
+      SEAICEuseDYNAMICS  = .TRUE.,
+      MIN_ATEMP          = -40.,
+      MIN_TICE           = -40.,
+      SEAICEadvScheme    = 33,
+      SEAICEuseFluxForm = .TRUE.,
+      SEAICEadvSnow      = .TRUE.,
+      SEAICEdiffKhHeff   = 400.,
+      SEAICEdiffKhArea   = 400.,
+      SEAICEdiffKhSnow   = 400.,
+      SEAICEuseFlooding  = .TRUE.,
+      SEAICE_mcPheePiston= 3.858024691358025E-05,
+      SEAICE_frazilFrac  = 1.,
+      SEAICE_mcPheeTaper = 0.,
+      SEAICE_areaLossFormula=2,
+      SEAICEheatConsFix  = .TRUE.,
+      SEAICE_tempFrz0    = -1.96,
+      SEAICE_dTempFrz_dS = 0.,
+      SEAICEuseMetricTerms = .TRUE.,
+      SEAICE_clipVelocities = .TRUE.,
+
+#take 33% out of (1-albedo)
+      SEAICE_dryIceAlb   = 0.84,
+      SEAICE_wetIceAlb   = 0.78,
+      SEAICE_drySnowAlb  = 0.90,
+      SEAICE_wetSnowAlb  = 0.8 ,
+#default albedos
+      SEAICE_dryIceAlb_south   = 0.75
+      SEAICE_wetIceAlb_south   = 0.66
+      SEAICE_drySnowAlb_south  = 0.84
+      SEAICE_wetSnowAlb_south  = 0.7 
+ /
+#
+ &SEAICE_PARM02
+ /
+

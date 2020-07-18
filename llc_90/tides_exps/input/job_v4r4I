@@ -1,0 +1,24 @@
+#!/bin/csh
+#PBS -l select=5:ncpus=20:model=ivy
+##PBS -l walltime=72:00:00
+##PBS -q vlong
+#PBS -l walltime=2:00:00
+#PBS -q devel
+#PBS -j oe
+#PBS -m abe
+
+#module load comp-intel/11.1.046 
+#module load mpi/mpt.1.25
+#new for ivy/has:
+#module load comp-intel/2012.0.032 mpi-sgi/mpt netcdf/4.0
+#module load comp-intel mpi-sgi/mpt
+module purge
+module load comp-intel mpi-sgi hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+
+
+
+cd $PBS_O_WORKDIR
+limit stacksize unlimited
+#./modpickup
+mpiexec -np 96 ./mitgcmuv
+

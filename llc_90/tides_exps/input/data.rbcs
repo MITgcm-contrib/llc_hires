@@ -1,0 +1,25 @@
+ &RBCS_PARM01
+#
+ rbcsForcingOffset=-30240000.,
+#OLD rbcsIniter=360,
+ rbcsForcingPeriod=2628000.,
+ rbcsForcingCycle=31536000.,
+ relaxMaskFile(1)  = 'RBC_mask_surf_eccollc_90x50.bin',
+ relaxMaskFile(2)  = 'RBC_mask_surf_eccollc_90x50.bin',
+ relaxMaskFile(3)  = 'RBC_mask_surf_eccollc_90x50.bin',
+ tauRelaxT=15768000.,
+ relaxTFile='T_WPv1_M_eccollc_90x50.bin',
+ useRBCtemp=.FALSE.,
+ tauRelaxS=15768000.,
+ relaxSFile='S_WPv1_M_eccollc_90x50.bin', 
+ useRBCsalt=.TRUE.,
+ /
+#
+ &RBCS_PARM02
+ tauRelaxPTR(1)=6307200.,
+ relaxPtracerFile(1)=' ',
+ useRBCptrnum(1)=.FALSE.,
+ tauRelaxPTR(2)=6307200.,
+ relaxPtracerFile(2)=' ',
+ useRBCptrnum(2)=.FALSE.,
+ /

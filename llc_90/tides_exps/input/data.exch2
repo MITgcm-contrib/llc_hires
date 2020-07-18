@@ -1,0 +1,69 @@
+# EXCH2 Package: Wrapper-2 User Choice
+#--------------------
+#  preDefTopol   :: pre-defined Topology selector:
+#                :: = 0 : topology defined from processing "data.exch2";
+#                :: = 1 : simple, single facet topology;
+#                :: = 2 : customized topology (w2_set_myown_facets)
+#                :: = 3 : 6-facet Cube (3 face-dims: nRed, nGreen, nBlue).
+#  dimsFacets    :: facet pair of dimensions (n1x,n1y, n2x,n2y ...)
+#  facetEdgeLink :: Face-Edge connectivity map:
+#    facetEdgeLink(i,j)=XX.1 : face(j)-edge(i) (i=1,2,3,4 <==> N,S,E,W)
+#    is connected to Northern edge of face "XX" ; similarly,
+#    = XX.2 : to Southern.E, XX.3 = Eastern.E, XX.4 = Western.E of face "XX"
+#  blankList     :: List of "blank" tiles
+#  W2_mapIO      :: global map IO selector (-1 = old type ; 0 = 1 long line in X
+#                :: 1 = compact, mostly in Y dir)
+#  W2_printMsg   :: option for information messages printing
+#                :: <0 : write to log file ; =0 : minimum print ; 
+#                :: =1 : no duplicated print ; =2 : all processes do print
+#--------------------
+ &W2_EXCH2_PARM01
+  W2_printMsg= 0,
+  W2_mapIO   = 1,
+#
+  preDefTopol=0,
+#-- 5 facets llc_120 topology (drop facet 6 and its connection):
+  dimsFacets(1:10) = 90, 270, 90, 270, 90, 90, 270, 90, 270, 90,
+  facetEdgeLink(1:4,1)= 3.4, 0. , 2.4, 5.1,
+  facetEdgeLink(1:4,2)= 3.2, 0. , 4.2, 1.3,
+  facetEdgeLink(1:4,3)= 5.4, 2.1, 4.4, 1.1,
+  facetEdgeLink(1:4,4)= 5.2, 2.3, 0. , 3.3,
+  facetEdgeLink(1:4,5)= 1.4, 4.1, 0. , 3.1,
+#-- full 6 facets llc_120 topology (equivalent to default preDefTopol=3):
+# dimsFacets(1:12) = 120, 360, 120, 360, 120, 120, 360, 120, 360, 120, 120, 120,
+# facetEdgeLink(1:4,1)= 3.4, 6.1, 2.4, 5.1,
+# facetEdgeLink(1:4,2)= 3.2, 6.3, 4.2, 1.3,
+# facetEdgeLink(1:4,3)= 5.4, 2.1, 4.4, 1.1,
+# facetEdgeLink(1:4,4)= 5.2, 2.3, 6.2, 3.3,
+# facetEdgeLink(1:4,5)= 1.4, 4.1, 6.4, 3.1,
+# facetEdgeLink(1:4,6)= 1.2, 4.3, 2.2, 5.3,
+#
+#90x30   nprocs = 36 
+#  blankList(1:3)=1,10,11,
+#30x90  
+#
+#45x30   nprocs = 72
+#  blankList(1:6)=1,2,19,20,21,22
+#old:  blankList(1:8)=1,2,19,20,21,22,33,72
+#30x45   nprocs = 68
+#  blankList(1:10)=2,3,19,20,21,35,51,60,69,78
+#45x45   nprocs = 48
+#  blankList(1:4)=2,13,14,23
+#old:  blankList(1:3)=2,13,14
+#30x30   nprocs = 96 
+  blankList(1:21)=1,2,3,5,6,28,29,30,31,32,33,49,50,52,53,72,81,90,99,108,117
+#old:   blankList(1:18)=1,2,3,28,29,30,31,32,33,49,50,53,72,81,90,99,108,117
+#15x30   nprocs = 192
+#  blankList(1:42)=1,2,3,4,5,6,9,10,11,12,55,56,57,58,59,60,61,62,63,64,65,66,
+#            97,98,99,100,103,104,105,106,143,144,
+#            161,162,179,180,197,198,215,216,233,234
+#15x15   nprocs = 360
+#  blankList(1:108)=1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18,21,22,23,24,
+#  65,71,75,76,90,95,96,101,102,109,110,111,112,113,114,115,116,117,118,119,
+#  120,121,122,123,124,125,126,127,128,129,130,131,132,
+#  188,189,190,193,194,195,196,199,
+#  200,201,202,203,205,206,207,208,209,211,212,213,214,215,216,242,247,253,
+#  267,268,269,270,287,288,305,306,323,324,341,342,359,360,362,376,377,378,
+#  380,381,382,395,396,400,412,413,414,430,
+#
+ /

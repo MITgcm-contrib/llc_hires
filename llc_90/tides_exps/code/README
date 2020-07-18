@@ -1,0 +1,4 @@
+Requires the SPICE toolkit which can be downloaded here:
+https://naif.jpl.nasa.gov/naif/toolkit_FORTRAN.html
+The full path to spicelib.a has to be included in the LIBS variable
+in the optfile used.
