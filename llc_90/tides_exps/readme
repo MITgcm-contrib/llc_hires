@@ -40,7 +40,25 @@
  cp -pr ${MOD}/input/* .
  qsub job_v4r4I
 
-#run w/ offline tides via EXF
+#for offline tides via EXF
+ mkdir build2 run2
+#build:
+cd build2
+ ln -sf ${MOD}/code/packages.conf_NOtides ${MOD}/code/packages.conf
+ ln -sf ${MOD}/code/EXF_OPTIONS.h_NOtides ${MOD}/code/EXF_OPTIONS.h
+ ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+    -mo ${MOD}/code
+ make depend
+ make -j 16
+#run:
+cd run2
+ ln -s ${inputdir}/input_init/error_weight/ctrl_weight/* .
+ ln -s ${inputdir}/input_init/error_weight/data_error/* .
+ ln -s ${inputdir}/input_init/* .
+ ln -s ${inputdir}/input_ecco/*/* .
+ ln -s ${inputdir}/input_forcing/eccov4r4* .
+ rename 001 004 pic*
+ ln -s ../build2/mitgcmuv .
 ln -sf /nobackup/ojahn/forcing/tides .
 ln -sf data.pkg_NOtides data.pkg
 ln -sf data.exf_tides   data.exf
