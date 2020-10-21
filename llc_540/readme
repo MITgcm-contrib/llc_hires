@@ -12,6 +12,12 @@
  make depend
  make -j 16
 
+#run_template/ + forcing/era_xx_it50/ + forcing/jra55/
+#also avaiable at ECCO Drive
+#https://ecco.jpl.nasa.gov/drive/files/ECCO2/LLC540/run_template
+#https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/era_xx_it50
+#https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/jra55
+
 # integrate 1992-2019 model on pleiades
 # jra55 forcing
  cd ../run
