@@ -40,7 +40,7 @@
 #---
   frequency(3) = 2635200.0,
    fields(1:5,3) = 'UVELMASS','VVELMASS','WVELMASS',
-                 'GM_PsiX ','GM_PsiY ',
+#                 'GM_PsiX ','GM_PsiY ',
 #uvel is approximately uvelmass divided by initial hfac, so we dont output the former
 #                'UVEL    ','VVEL    ','WVEL     ',
 #full 3D temperature fluxes : 'DFxE_TH ','DFyE_TH ','DFrE_TH ','DFrI_TH ','ADVx_TH ','ADVy_TH ','ADVr_TH ',
