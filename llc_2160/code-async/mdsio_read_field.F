@@ -436,6 +436,8 @@ chenze : files is done via Fortran i/o. Our C routines will not do this,
 chenze : so we swap explicitly here. If _BYTESWAPIO is set, this will break.
 
 #ifdef ALLOW_ASYNCIO
+!        WRITE (msgBuf, '(A)') ' use  NEW  readField'
+!        CALL PRINT_ERROR ( msgBuf, myThid )
 
            IF ( filePrec.EQ.precFloat64 ) then
 
@@ -450,6 +452,10 @@ chenze : so we swap explicitly here. If _BYTESWAPIO is set, this will break.
               
            else
 #endif
+
+!        WRITE (msgBuf, '(A)') ' use  OLD  readField'
+!        CALL PRINT_ERROR ( msgBuf, myThid )
+
            DO k=kLo,kHi
             DO j=1,tNy
              irec = 1 + ( tBx + (j-1)*iGjLoc )/sNx
