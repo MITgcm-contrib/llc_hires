@@ -1,0 +1,39 @@
+#Build executable for llc540 with latest MITgcm code on pleiades
+ git clone https://github.com/MITgcm-contrib/llc_hires.git
+ git clone https://github.com/MITgcm/MITgcm.git
+ MOD90="../../llc_hires/llc_90/tides_exps"
+ MOD540="../../llc_hires/llc_540/tides_exps"
+
+ cd MITgcm
+ cd pkg
+ ln -s ${MOD90}/pkg_tides tides
+ cd ..
+ mkdir build run
+ cd build
+ module purge
+ module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+ ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas -mo ${MOD540}/code
+    grep spice Makefile
+    sed -i 's|LIBS = -L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -lnetcdff -lnetcdf| \
+& -L../../llc_hires/llc_90/tides_exps/lib -lspice|' Makefile
+    grep spice Makefile
+ make depend
+ make -j 16
+ cd ..
+
+# era5 forcing
+#run: copy from  ~/llc_hires/llc_540/readme
+ cd run
+ cp ${MOD540}/input/* . 
+ ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
+ rename 0432 1440 pickup*432.*ta
+ ln -sf ${MOD90}/input/kernels .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/runoff* .
+ ln -sf /nobackup/hzhang1/forcing/era5 .
+ ln -sf ../build/mitgcmuv mitgcmuv
+ ln -sf data.exch2_60 data.exch2
+ qsub job_ivy_llc540
+

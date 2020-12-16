@@ -1,0 +1,5 @@
+ &TIDES_PARM01
+ tides_metaKernel='meta_kernel',
+ tides_permC0 = 0.,
+ tides_permC1 = 0.,
+ /

@@ -1,0 +1,11 @@
+# Packages
+ &PACKAGES
+ useCAL         = .TRUE.,
+ useSEAICE      = .TRUE.,
+ useKPP         = .TRUE.,
+ useEXF         = .TRUE.,
+# useDiagnostics = .TRUE.,
+ useSALT_PLUME  = .TRUE.,
+ useBBL         = .TRUE.,
+ useTIDES       = .TRUE.,
+ &
