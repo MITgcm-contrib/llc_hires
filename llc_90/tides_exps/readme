@@ -22,7 +22,7 @@
     -mo ${MOD}/code
  grep spice Makefile
  sed -i "s|LIBS = -L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -lnetcdff -lnetcdf| \
-     & -L../../llc_hires/llc_90/tides_exps/lib -lspice|" Makefile 
+     & -L${MOD}/lib -lspice|" Makefile 
  grep spice Makefile
  make depend
  make -j 16
