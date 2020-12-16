@@ -21,8 +21,8 @@
  ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
     -mo ${MOD}/code
  grep spice Makefile
- sed "s|LIBS = -L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -lnetcdff -lnetcdf| \
-     & -L${MOD}/lib -lspice|" < Makefile > M_tmp; mv M_tmp Makefile
+ sed -i "s|LIBS = -L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -lnetcdff -lnetcdf| \
+     & -L../../llc_hires/llc_90/tides_exps/lib -lspice|" Makefile 
  grep spice Makefile
  make depend
  make -j 16
