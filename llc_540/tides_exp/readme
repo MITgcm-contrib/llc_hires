@@ -2,7 +2,7 @@
  git clone https://github.com/MITgcm-contrib/llc_hires.git
  git clone https://github.com/MITgcm/MITgcm.git
  MOD90="../../llc_hires/llc_90/tides_exps"
- MOD540="../../llc_hires/llc_540/tides_exps"
+ MOD540="../../llc_hires/llc_540/tides_exp"
 
  cd MITgcm
  cd pkg
@@ -35,5 +35,5 @@
  ln -sf /nobackup/hzhang1/forcing/era5 .
  ln -sf ../build/mitgcmuv mitgcmuv
  ln -sf data.exch2_60 data.exch2
- qsub job_ivy_llc540
+ qsub job_ivy_llc540_60
 
