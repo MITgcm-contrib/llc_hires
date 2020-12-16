@@ -1,4 +1,72 @@
-For interactive session, Ivy Bridge nodes:
+##############################################
+# 72x72_7556 configuration updated for DYAMOND
+# and using Bron's latest asyncio code
+
+cd ~/DYAMOND/llc2160
+git clone https://github.com/MITgcm-contrib/llc_hires.git
+git clone git@github.com:MITgcm/MITgcm.git
+
+qsub -I -q R10236203 -l select=196:ncpus=40:model=cas_ait,walltime=120:00:00 -m abe
+module purge
+module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd ~/DYAMOND/llc2160/MITgcm
+mkdir build run
+cd build
+cp ../../llc_hires/llc_2160/code-async/SIZE.h_72x72_7556 SIZE.h
+../tools/genmake2 -of \
+ ../../llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../llc_hires/llc_2160/code ../../llc_hires/llc_2160/code-async'
+make depend
+make -j 128
+
+cd ../run
+cp ../build/mitgcmuv mitgcmuv_72x72_7556
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../llc_hires/llc_2160/input/* .
+cp data.exch2_72x72x7556 data.exch2
+rm data data.cal data.seaice
+ln -sf /nobackupp11/dmenemen/DYAMOND/llc2160_IC/* .
+
+mpiexec -n 7840 ./mitgcmuv_72x72_7556
+
+tail -f STDOUT.00000 | grep advcfl_W
+
+##############################################
+# 72x72_7556 configuration updated for DYAMOND
+
+cd ~/DYAMOND/llc2160
+git clone https://github.com/MITgcm-contrib/llc_hires.git
+git clone git@github.com:MITgcm/MITgcm.git
+
+qsub -I -q R10236203 -l select=196:ncpus=40:model=cas_ait,walltime=120:00:00 -m abe
+module purge
+module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd ~/DYAMOND/llc2160/MITgcm
+mkdir build run
+cd build
+cp ../../llc_hires/llc_2160/code/SIZE.h_72x72_7556 SIZE.h
+../tools/genmake2 -of \
+ ../../llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../llc_hires/llc_2160/code ../../llc_hires/llc_2160/code-async'
+make depend
+make -j 128
+
+cd ../run
+cp ../build/mitgcmuv mitgcmuv_72x72_7556
+ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+cp ../../llc_hires/llc_2160/input/* .
+cp data.exch2_72x72x7556 data.exch2
+rm data data.cal data.seaice
+ln -sf /nobackupp11/dmenemen/DYAMOND/llc2160_IC/* .
+
+mpiexec -n 7840 ./mitgcmuv_72x72_7556
+
+tail -f STDOUT.00000 | grep advcfl_W
+
+##########################
+# For interactive session, Ivy Bridge nodes:
 qsub -I -q devel -l select=300:ncpus=20:model=ivy,walltime=02:00:00 -m abe
 qsub -I -q normal -l select=103:ncpus=20:model=ivy,walltime=8:00:00 -m abe
 qsub -I -q long -l select=300:ncpus=20:model=ivy,walltime=120:00:00 -m abe

@@ -35,8 +35,10 @@ c      CALL MYASYNCIO_SET_GLOBAL_SIZES( ASYNCIO_NXG,   ASYNCIO_NYG, NR )
 
 chenze have all compute ranks call & sort out bcast in recvTask
 
-      CALL MYASYNCIO_SET_GLOBAL_SIZES( exch2_global_Nx, exch2_global_Ny, 
-     $        Nr, exch2_nTiles, nPx, sNx, sNy, OLx, OLy )
+! Now that the C code can include SIZE.h directly, we don't
+! have to do this any more
+!      CALL MYASYNCIO_SET_GLOBAL_SIZES( exch2_global_Nx, exch2_global_Ny, 
+!     $        Nr, exch2_nTiles, nPx, sNx, sNy, OLx, OLy )
 
 
       CALL ASYNCIO_TILE_ARRAYS(exch2_txGlobalo, exch2_tyGlobalo, 

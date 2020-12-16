@@ -13,7 +13,7 @@
  &
 #
  &EXF_NML_02
- apressurefile     = 'EOG_pres_tide',
+ apressurefile     = 'EOG_pres',
  aqhfile           = 'EOG_spfh2m',
  atempfile         = 'EOG_tmp2m_degC',
  uwindfile         = 'EOG_u10m',
@@ -25,7 +25,7 @@
 #
  apressurestartdate1 = 19790101,
  apressurestartdate2 = 000000,
- apressureperiod     = 3600.0,
+ apressureperiod     = 21600.0,
  aqhstartdate1       = 19790101,
  aqhstartdate2       = 000000,
  aqhperiod           = 21600.0,
