@@ -53,7 +53,7 @@ fi
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 
-LIBS='-L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf'
+LIBS='-L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -L../../llc_hires/llc_90/tides_exps/lib -lspice'
 INCLUDES='-I/nasa/sgi/mpt/2.14r19/include -I/nasa/netcdf/4.4.1.1_mpt/include'
 #INCLUDEDIRS='/nasa/sgi/mpt/2.14r19/include'
 

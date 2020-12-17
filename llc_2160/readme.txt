@@ -9,7 +9,9 @@ git clone git@github.com:MITgcm/MITgcm.git
 qsub -I -q R10236203 -l select=196:ncpus=40:model=cas_ait,walltime=120:00:00 -m abe
 module purge
 module load comp-intel/2016.2.181 mpi-hpe/mpt.2.17r13 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
-cd ~/DYAMOND/llc2160/MITgcm
+cd ~/DYAMOND/llc2160/MITgcm/pkg
+ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
+cd ..
 mkdir build run
 cd build
 cp ../../llc_hires/llc_2160/code-async/SIZE.h_72x72_7556 SIZE.h
@@ -21,6 +23,7 @@ make -j 128
 
 cd ../run
 cp ../build/mitgcmuv mitgcmuv_72x72_7556
+ln -sf ../../llc_hires/llc_90/tides_exps/input/kernels .
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../llc_hires/llc_2160/input/* .

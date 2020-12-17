@@ -36,6 +36,7 @@ FFLAGS="$FFLAGS -W0 -WB"
 if test "x$IEEE" = x ; then     #- with optimisation:
     FOPTIM='-O2 -ipo -fp-model precise -align -axCORE-AVX2 -xSSE4.2 -traceback -ftz'
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
+    NOOPTFILES="$NOOPTFILES obcs_init_fixed.F"
 else
   if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
     FOPTIM='-O0 -noalign'
@@ -52,7 +53,7 @@ fi
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 
-LIBS='-L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf'
+LIBS='-L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -L../../llc_hires/llc_90/tides_exps/lib -lspice'
 INCLUDES='-I/nasa/sgi/mpt/2.14r19/include -I/nasa/netcdf/4.4.1.1_mpt/include'
 #INCLUDEDIRS='/nasa/sgi/mpt/2.14r19/include'
 
