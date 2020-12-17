@@ -1,6 +1,9 @@
 ##############################################
 # 72x72_7556 configuration updated for DYAMOND
-# and using Bron's latest asyncio code
+# using Bron's latest asyncio code
+# and Oliver's pkg/tides
+# https://github.com/jahn/MITgcm/tree/tides
+# https://github.com/jahn/ECCO-v4-Configurations/tree/tides/ECCOv4%20Release%204/tides
 
 cd ~/DYAMOND/llc2160
 git clone git@github.com:MITgcm-contrib/llc_hires.git
@@ -22,16 +25,16 @@ make depend
 make -j 128
 
 cd ../run
-cp ../build/mitgcmuv mitgcmuv_72x72_7556
-ln -sf ../../llc_hires/llc_90/tides_exps/input/kernels .
+cp ../build/mitgcmuv mitgcmuv_72x72_7556_tides
 ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/llc_2160/input/* .
 cp data.exch2_72x72x7556 data.exch2
 rm data
 ln -sf /nobackupp11/dmenemen/DYAMOND/llc2160_IC/* .
 
-mpiexec -n 7840 ./mitgcmuv_72x72_7556
+mpiexec -n 7840 ./mitgcmuv_72x72_7556_tides
 
 tail -f STDOUT.00000 | grep advcfl_W
 
