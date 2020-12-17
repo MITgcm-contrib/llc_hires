@@ -3,7 +3,7 @@
 # and using Bron's latest asyncio code
 
 cd ~/DYAMOND/llc2160
-git clone https://github.com/MITgcm-contrib/llc_hires.git
+git clone git@github.com:MITgcm-contrib/llc_hires.git
 git clone git@github.com:MITgcm/MITgcm.git
 
 qsub -I -q R10236203 -l select=196:ncpus=40:model=cas_ait,walltime=120:00:00 -m abe
