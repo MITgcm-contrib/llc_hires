@@ -123,6 +123,8 @@ C       |-- CTRL_INIT
 C       |-- CTRL_ADMTLM
 C       |
 C       |-- DIAGNOSTICS_INIT_FIXED
+C       |
+C       |-- ASYNCIO_DRIVER_CONFIG
 
 C     !USES:
       IMPLICIT NONE
@@ -667,6 +669,10 @@ C-    needs to call DIAGNOSTICS_INIT_FIXED after all package-diag-init calls
 # endif
         CALL DIAGNOSTICS_INIT_FIXED( myThid )
       ENDIF
+#endif
+
+#ifdef ALLOW_ASYNCIO
+      CALL ASYNCIO_DRIVER_CONFIG( myThid  )
 #endif
 
 #ifdef ALLOW_DEBUG
