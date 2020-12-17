@@ -25,7 +25,7 @@ ln -sf /nobackup/dmenemen/tarballs/llc_2160/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../llc_hires/llc_2160/input/* .
 cp data.exch2_72x72x7556 data.exch2
-rm data data.cal data.seaice
+rm data
 ln -sf /nobackupp11/dmenemen/DYAMOND/llc2160_IC/* .
 
 mpiexec -n 7840 ./mitgcmuv_72x72_7556
