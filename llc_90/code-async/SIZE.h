@@ -150,6 +150,7 @@ C     Nx  :: Number of points in X for the full domain.
 C     Ny  :: Number of points in Y for the full domain.
 C     Nr  :: Number of points in vertical direction.
 CEOP
+      INTEGER sFacet
       INTEGER sNx
       INTEGER sNy
       INTEGER OLx
