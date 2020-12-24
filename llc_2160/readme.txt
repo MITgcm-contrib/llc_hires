@@ -20,9 +20,9 @@ cd build
 cp ../../llc_hires/llc_2160/code-async/SIZE.h_72x72_7556 SIZE.h
 ../tools/genmake2 -of \
  ../../llc_hires/llc_2160/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '../../llc_hires/llc_2160/code ../../llc_hires/llc_2160/code-async'
+ '../../llc_hires/llc_2160/code-async ../../llc_hires/llc_2160/code'
 make depend
-make -j 128
+make -j 64
 
 cd ../run
 cp ../build/mitgcmuv mitgcmuv_72x72_7556_tides
