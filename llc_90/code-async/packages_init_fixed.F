@@ -23,6 +23,8 @@ C       |
 C       |-- DIAGNOSTICS_INIT_EARLY
 C       |-- DIAGNOSTICS_MAIN_INIT
 C       |
+C       |-- NEST2W_INIT_FIXED
+C       |
 C       |-- GAD_INIT_FIXED
 C       |
 C       |-- MOM_INIT_FIXED
@@ -75,17 +77,17 @@ C       |-- GCHEM_INIT_FIXED
 C       |
 C       |-- RBCS_INIT_FIXED
 C       |
+C       |-- STREAMICE_INIT_FIXED
+C       |
+C       |-- SHELFICE_INIT_FIXED
+C       |
+C       |-- ICEFRONT_INIT_FIXED
+C       |
 C       |-- FRAZIL_INIT_FIXED
 C       |
 C       |-- SEAICE_INIT_FIXED
 C       |
 C       |-- SALT_PLUME_INIT_FIXED
-C       |
-C       |-- SHELFICE_INIT_FIXED
-C       |
-C       |-- STREAMICE_INIT_FIXED
-C       |
-C       |-- ICEFRONT_INIT_FIXED
 C       |
 C       |-- THSICE_INIT_FIXED
 C       |
@@ -113,12 +115,16 @@ C       |-- OASIS_INIT_FIXED
 C       |
 C       |-- EMBED_FILES_INIT
 C       |
+C       |-- TIDES_INIT_FIXED
+C       |
 C       |-- MYPACKAGE_INIT_FIXED
 C       |
 C       |-- CTRL_INIT
 C       |-- CTRL_ADMTLM
 C       |
 C       |-- DIAGNOSTICS_INIT_FIXED
+C       |
+C       |-- ASYNCIO_DRIVER_CONFIG
 
 C     !USES:
       IMPLICIT NONE
@@ -169,6 +175,16 @@ C-    needs to call DIAGNOSTICS_INIT_EARLY before all package-diag-init calls
         CALL DIAGNOSTICS_MAIN_INIT( myThid )
       ENDIF
 #endif
+
+#ifdef ALLOW_NEST2W_COMMON
+C--   Initialise the 2-Way Nesting packages
+      IF ( useNest2W_parent .OR. useNest2W_child ) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('NEST2W_INIT_FIXED',myThid)
+# endif
+        CALL NEST2W_INIT_FIXED( myThid )
+      ENDIF
+#endif /* ALLOW_NEST2W_COMMON */
 
 #ifdef ALLOW_GENERIC_ADVDIFF
 C--   Initialize fixed params for GAD
@@ -358,7 +374,7 @@ C--   in order to provide the weight files
 
 #ifdef ALLOW_ECCO
       IF (useECCO) THEN
-C--   Initialise ecco-specific cost function. This needs to preceed 
+C--   Initialise ecco-specific cost function. This needs to preceed
 C     the call ctrl_init in order to provide the weight files
 # ifdef ALLOW_DEBUG
         IF (debugMode) CALL DEBUG_CALL('ECCO_COST_INIT_FIXED',myThid)
@@ -424,6 +440,37 @@ C--   Initialise fixed array for Float pkg
       ENDIF
 #endif
 
+#ifdef ALLOW_STREAMICE
+      IF (useStreamIce) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('STREAMICE_INIT_FIXED',myThid)
+# endif
+#ifndef ALLOW_OPENAD
+       CALL STREAMICE_INIT_FIXED( myThid )
+#else
+       CALL OPENAD_STREAMICE_INIT_FIXED( myThid )
+#endif
+      ENDIF
+#endif /* ALLOW_STREAMICE */
+
+#ifdef ALLOW_SHELFICE
+      IF (useShelfIce) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('SHELFICE_INIT_FIXED',myThid)
+# endif
+        CALL SHELFICE_INIT_FIXED( myThid )
+      ENDIF
+#endif /* ALLOW_SHELFICE */
+
+#ifdef ALLOW_ICEFRONT
+      IF (useICEFRONT) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('ICEFRONT_INIT_FIXED',myThid)
+# endif
+        CALL ICEFRONT_INIT_FIXED( myThid )
+      ENDIF
+#endif /* ALLOW_ICEFRONT */
+
 #ifdef ALLOW_FRAZIL
       IF (useFRAZIL) THEN
 # ifdef ALLOW_DEBUG
@@ -450,37 +497,6 @@ C--   Initialise fixed array for Float pkg
         CALL SALT_PLUME_INIT_FIXED(myThid)
       ENDIF
 #endif
-
-#ifdef ALLOW_SHELFICE
-      IF (useShelfIce) THEN
-# ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('SHELFICE_INIT_FIXED',myThid)
-# endif
-        CALL SHELFICE_INIT_FIXED( myThid )
-      ENDIF
-#endif /* ALLOW_SHELFICE */
-
-#ifdef ALLOW_STREAMICE
-      IF (useStreamIce) THEN
-# ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('STREAMICE_INIT_FIXED',myThid)
-# endif
-#ifndef ALLOW_OPENAD
-       CALL STREAMICE_INIT_FIXED( myThid )
-#else
-       CALL OPENAD_STREAMICE_INIT_FIXED( myThid )
-#endif
-      ENDIF
-#endif /* ALLOW_STREAMICE */
-
-#ifdef ALLOW_ICEFRONT
-      IF (useICEFRONT) THEN
-# ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('ICEFRONT_INIT_FIXED',myThid)
-# endif
-        CALL ICEFRONT_INIT_FIXED( myThid )
-      ENDIF
-#endif /* ALLOW_ICEFRONT */
 
 #ifdef ALLOW_THSICE
       IF (useThSIce) THEN
@@ -606,6 +622,15 @@ C--   needs to be called after the OASIS_INIT
       ENDIF
 #endif
 
+#ifdef ALLOW_TIDES
+      IF (useTIDES) THEN
+# ifdef ALLOW_DEBUG 
+        IF (debugMode) CALL DEBUG_CALL('TIDES_INIT_FIXED',myThid)
+# endif
+        CALL TIDES_INIT_FIXED(myThid)
+      ENDIF
+#endif
+
 #ifdef ALLOW_MYPACKAGE
       IF (useMYPACKAGE) THEN
 # ifdef ALLOW_DEBUG
@@ -617,7 +642,7 @@ C--   needs to be called after the OASIS_INIT
 
 #ifdef ALLOW_CTRL
       IF (useCTRL) THEN
-C--   Initialise the control variables. Moved to the end of this S/R 
+C--   Initialise the control variables. Moved to the end of this S/R
 C     to allow other pkgs to set mask and weight fields.
 # ifdef ALLOW_DEBUG
         IF (debugMode) CALL DEBUG_CALL('CTRL_INIT',myThid)
