@@ -84,7 +84,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      = 'Bathy_compact_llc540_540x7020_v2.bin',
+ bathyFile      = 'BATHY_2',
  pSurfInitFile  = 'pSurfInit.llc540',
  hydrogThetaFile= 'thetaInit.llc540',
  hydrogSaltFile = 'saltInit.llc540',

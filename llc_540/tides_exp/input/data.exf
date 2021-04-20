@@ -27,7 +27,7 @@
  vwindfile         = 'era5/ERA5_v10m',
  swdownfile        = 'era5/ERA5_dsw',
  lwdownfile        = 'era5/ERA5_dlw',
- runofffile        = 'runoff1p2472-360x180x12.bin',
+ runofffile        = 'runoff-360x180x12.bin',
 #
  apressurestartdate1 = 19920101,
  apressureperiod   = 3600.0,
