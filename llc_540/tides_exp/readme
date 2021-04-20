@@ -29,7 +29,7 @@
  rename 0432 1440 pickup*432.*ta
  ln -sf ${MOD90}/input/kernels .
  ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/llc_540/run_template/BATHY* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/runoff* .
  ln -sf /nobackup/hzhang1/forcing/era5 .
