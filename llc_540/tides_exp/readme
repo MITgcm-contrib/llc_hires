@@ -33,6 +33,6 @@
  ln -sf /nobackup/hzhang1/llc_540/run_template/runoff* .
  ln -sf /nobackup/hzhang1/forcing/era5 .
  ln -sf ../build/mitgcmuv mitgcmuv
- ln -sf data.exch2_60 data.exch2
+ ln -sf data.exch2_60_EXP2 data.exch2
  qsub job_ivy_llc540_60
 
