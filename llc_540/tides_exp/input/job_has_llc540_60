@@ -13,5 +13,5 @@ module load comp-intel mpi-sgi hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 cd $PBS_O_WORKDIR
 limit stacksize unlimited
 #./modpickup
-mpiexec -np 767 ./mitgcmuv
+mpiexec -np 784 ./mitgcmuv
 
