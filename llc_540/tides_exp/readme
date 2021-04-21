@@ -25,8 +25,7 @@
 #run: copy from  ~/llc_hires/llc_540/readme
  cd run
  cp ${MOD540}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
- rename 0432 1440 pickup*432.*ta
+ ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*1440.*ta .
  ln -sf ${MOD90}/input/kernels .
  ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/BATHY* .
