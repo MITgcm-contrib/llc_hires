@@ -88,5 +88,5 @@
  pSurfInitFile  = 'pSurfInit.llc540',
  hydrogThetaFile= 'thetaInit.llc540',
  hydrogSaltFile = 'saltInit.llc540',
- diffKrFile     = 'DIFFKR_2_20_1_lat6070_cube81_for_llc540',
+ diffKrFile     = 'DIFFKR_2_20_1_lat6070_cube81_for_llc540_2',
  &
