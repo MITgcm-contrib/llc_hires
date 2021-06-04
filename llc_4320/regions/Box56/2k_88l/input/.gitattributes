@@ -1,0 +1,2 @@
+Salt* filter=lfs diff=lfs merge=lfs -text
+Theta* filter=lfs diff=lfs merge=lfs -text
