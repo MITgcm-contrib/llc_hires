@@ -38,6 +38,8 @@
  rename 001 004 pic*
  ln -s ../build/mitgcmuv .
  cp -pr ${MOD}/input/* .
+ rm -r kernels
+ ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
  qsub job_v4r4I
 
 #for offline tides via EXF

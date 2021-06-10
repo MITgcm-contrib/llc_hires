@@ -27,7 +27,8 @@
  cd run
  cp ${MOD540}/input/* . 
  ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*1440.*ta .
- ln -sf ${MOD90}/input/kernels .
+# ln -sf ${MOD90}/input/kernels .
+ ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
  ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/BATHY* .
  ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
