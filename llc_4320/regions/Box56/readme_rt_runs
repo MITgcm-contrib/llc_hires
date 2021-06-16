@@ -1,0 +1,12 @@
+1. For all runs starting with "rt", the forcing files will have to be linked from /home/p/peltier/dmenemen/project/ECMWF_operational/.
+Runtime parameter file template can be found in /home/p/peltier/dmenemen/project/Box56/run_template/ and /home/p/peltier/dmenemen/project/Box56/input/
+
+2. For vertical layers higher than the original global run (88 layers), new boundary and intial condition files will have to be made by some
+appropriate interpolation algorithm. They only exists as soft links here
+
+3. The build options file (specific to Scinet/Niagara (Toronto) supercomputer) can be used from the run "rt_120_equi_back_off"
+and can be run as described in the readme.txt file in "2k_88l/"
+
+4. Check readme of "2k_88l/code/" on where to change the KPP package related files
+
+
