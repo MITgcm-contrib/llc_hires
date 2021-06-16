@@ -1,10 +1,11 @@
-#!/bin/bash -l
-##SBATCH -p dragonfly1,dragonfly2,dragonfly3,dragonfly4,compute
+#!/bin/bash
 #SBATCH -N 29
 #SBATCH --ntasks-per-node=40
-#SBATCH -t 00:30:00
-#SBATCH -J test
-source /gpfs/bb0/scinet/bin/intel.sh
-source /gpfs/bb0/scinet/bin/intelmpi.sh
-cd ~/MITgcm/run
-mpiexec.hydra -n 1152 ./mitgcmuv
+#SBATCH -t 22:30:00
+#SBATCH -J 120_back_off
+#SBATCH --mail-user=ritabrata90official@gmail.com
+#SBATCH --mail-type=ALL
+cd $SLURM_SUBMIT_DIR
+module load NiaEnv/2019b intel/2019u4 openmpi/4.0.1 hdf5/1.8.21 netcdf/4.6.3
+mpirun -n 1152 ./mitgcmuv
+#mpiexec.hydra -n 1152 ./mitgcmuv
