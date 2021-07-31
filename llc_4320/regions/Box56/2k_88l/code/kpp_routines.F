@@ -1004,6 +1004,8 @@ c     fRi, fcon             function of Rig
 #ifdef ALLOW_DIAGNOSTICS
       _RL KPPRigc(imt,Nr)
       _RL KPPRigs(imt,Nr)
+      _RL KPPRigsC(imt,Nr)
+      _RL KPPRigcC(imt,Nr)
 #endif /* ALLOW_DIAGNOSTICS */
 
 #ifdef ALLOW_KPP_VERTICALLY_SMOOTH
@@ -1091,6 +1093,7 @@ c  evaluate f of Brunt-Vaisala squared for convection, store in fcon
             fcon  = fcon * fcon * fcon
 #ifdef ALLOW_DIAGNOSTICS
             KPPRigc(i,ki) = Rig
+            KPPRigcC(i,ki) = fcon
 #endif
 
 c  evaluate f of smooth Ri for shear instability, store in fRi
@@ -1107,6 +1110,7 @@ C     importend from MOM5 code
 #endif
 #ifdef ALLOW_DIAGNOSTICS
             KPPRigs(i,ki) = Rig
+            KPPRigsC(i,ki) = fRi
 #endif
 c ----------------------------------------------------------------------
 c            evaluate diffusivities and viscosity
@@ -1138,7 +1142,9 @@ c    mixing due to internal waves, and shear and static instability
 #ifdef ALLOW_DIAGNOSTICS
       IF ( useDiagnostics ) THEN
         CALL DIAGNOSTICS_FILL(KPPRigc   ,'KPPRigc ',0,Nr,2,bi,bj,myThid)
+        CALL DIAGNOSTICS_FILL(KPPRigcC  ,'KPPRigcC',0,Nr,2,bi,bj,myThid)
         CALL DIAGNOSTICS_FILL(KPPRigs   ,'KPPRigs ',0,Nr,2,bi,bj,myThid)
+        CALL DIAGNOSTICS_FILL(KPPRigsC  ,'KPPRigsC',0,Nr,2,bi,bj,myThid)
       ENDIF
 #endif /* ALLOW_DIAGNOSTICS */
 

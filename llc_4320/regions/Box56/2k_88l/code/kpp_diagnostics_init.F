@@ -127,8 +127,22 @@ C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
         CALL DIAGNOSTICS_ADDTOLIST( diagNum,
      I       diagName, diagCode, diagUnits, diagTitle, 0, myThid )
 
+        diagName  = 'KPPRigcC'
+        diagTitle = 'Convective Gradient Richardson number counter'
+        diagUnits = 'non-dimensional '
+        diagCode  = 'SM P    UR      '
+        CALL DIAGNOSTICS_ADDTOLIST( diagNum,
+     I       diagName, diagCode, diagUnits, diagTitle, 0, myThid )
+
         diagName  = 'KPPRigs '
         diagTitle = 'Gradient Richardson number, Shear'
+        diagUnits = 'non-dimensional '
+        diagCode  = 'SM P    UR      '
+        CALL DIAGNOSTICS_ADDTOLIST( diagNum,
+     I       diagName, diagCode, diagUnits, diagTitle, 0, myThid )
+
+        diagName  = 'KPPRigsC'
+        diagTitle = 'Shear Gradient Richardson number counter'
         diagUnits = 'non-dimensional '
         diagCode  = 'SM P    UR      '
         CALL DIAGNOSTICS_ADDTOLIST( diagNum,
