@@ -3,6 +3,7 @@
 # nTx - No. threads per process in X
 # nTy - No. threads per process in Y
  &EEPARMS
+ DEBUGMODE = .TRUE.,
  /
 # Note: Some systems use & as the
 # namelist terminator. Other systems
