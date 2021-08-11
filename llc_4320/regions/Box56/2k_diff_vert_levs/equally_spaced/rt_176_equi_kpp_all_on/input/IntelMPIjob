@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH -N 29
+#SBATCH --ntasks-per-node=40
+#SBATCH -t 18:00:00
+#SBATCH -J 176_kpp_all_on
+#SBATCH --mail-user=ritabrata90official@gmail.com
+#SBATCH --mail-type=ALL
+cd $SLURM_SUBMIT_DIR
+module load NiaEnv/2019b intel/2019u4 openmpi/4.0.1 hdf5/1.8.21 netcdf/4.6.3
+mpirun -n 1152 ./mitgcmuv
+#mpiexec.hydra -n 1152 ./mitgcmuv

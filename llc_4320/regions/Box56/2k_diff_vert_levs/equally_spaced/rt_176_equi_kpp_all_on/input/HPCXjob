@@ -1,0 +1,11 @@
+#!/bin/bash -l
+##SBATCH -p dragonfly1,dragonfly2,dragonfly3,dragonfly4,compute
+#SBATCH -N 29
+#SBATCH --ntasks-per-node=40
+#SBATCH -t 00:30:00
+#SBATCH -J test
+source /gpfs/bb0/scinet/bin/intel.sh
+source /gpfs/bb0/scinet/bin/hpcx_intel.sh
+
+#Disable SHARP for now 
+mpirun -np 1152 -x HCOLL_ENABLE_SHARP=0 ./mitgcmuv

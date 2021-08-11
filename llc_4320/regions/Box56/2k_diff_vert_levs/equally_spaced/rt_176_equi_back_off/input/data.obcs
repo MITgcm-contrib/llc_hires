@@ -1,0 +1,36 @@
+# ***************
+# Open boundaries
+# ***************
+ &OBCS_PARM01
+ OB_Jnorth = 288*-1,
+ OB_Jsouth = 288*1,
+ OB_Ieast  = 468*-1,
+ OB_Iwest  = 468*1,
+#
+ useOBCSprescribe =.TRUE.,
+#
+ OBNsFile='Salt_North.288.176.2545',
+ OBNtFile='Theta_North.288.176.2545',
+ OBNuFile='U_North.288.176.2545',
+ OBNvFile='V_North.288.176.2545',
+#
+ OBSsFile='Salt_South.288.176.2545',
+ OBStFile='Theta_South.288.176.2545',
+ OBSuFile='U_South.288.176.2545',
+ OBSvFile='V_South.288.176.2545',
+#
+ OBEsFile='Salt_East.468.176.2545',
+ OBEtFile='Theta_East.468.176.2545',
+ OBEuFile='U_East.468.176.2545',
+ OBEvFile='V_East.468.176.2545',
+#
+ OBWsFile='Salt_West.468.176.2545',
+ OBWtFile='Theta_West.468.176.2545',
+ OBWuFile='U_West.468.176.2545',
+ OBWvFile='V_West.468.176.2545',
+ &
+# *****************************************
+# Sponge Layer Parameters.
+# *****************************************
+ &OBCS_PARM03
+ &
