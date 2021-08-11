@@ -113,7 +113,7 @@
  &PARM03
  nIter0=0,
  endtime=9158400.,
- deltaT = 5.,
+ deltaT = 10.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
