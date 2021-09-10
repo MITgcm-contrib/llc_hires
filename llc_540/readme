@@ -22,10 +22,10 @@
 # jra55 forcing
  cd ../run
  cp ${MOD}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
- ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
- ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/jra55 .
 # ln -sf data.exf_jra55 data.exf
 # ln -sf data.exf_jra55_scal_precip data.exf
@@ -38,10 +38,10 @@
 # era5 forcing
  cd ../run
  cp ${MOD}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
- ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
- ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/era5 ERA5
 # ln -sf data.exf_era5 data.exf
 # ln -sf data.exf_era5_scal_precip data.exf
@@ -55,10 +55,10 @@
 # merra2 forcing
  cd ../run
  cp ${MOD}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
- ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
- ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/merra2 .
 # ln -sf data.exf_merra2 data.exf
 # ln -sf data.exf_merra2_scal_precip data.exf
@@ -71,10 +71,10 @@
 # eraxx forcing
  cd ../run
  cp ${MOD}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*432.*ta .
- ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/Bathy_*_v2.bin .
- ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/pickup*432.*ta .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/tile* .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/Bathy_*_v2.bin .
+ ln -sf /nobackup/hzhang1/pub/llc540/run_template/DIFFKR* .
  ln -sf /nobackup/hzhang1/forcing/era_xx_it50 .
 # ln -sf data.exf_eraxx data.exf
  ln -sf data.exf_eraxx_scal_precip data.exf
