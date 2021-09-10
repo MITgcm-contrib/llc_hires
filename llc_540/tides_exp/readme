@@ -29,13 +29,12 @@
 #run: copy from  ~/llc_hires/llc_540/readme
  cd run
  cp ${MOD540}/input/* . 
- ln -sf /nobackup/hzhang1/llc_540/run_template/pickup*1440.*ta .
-# ln -sf ${MOD90}/input/kernels .
- ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
- ln -sf /nobackup/hzhang1/llc_540/run_template/tile* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/BATHY* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/DIFFKR* .
- ln -sf /nobackup/hzhang1/llc_540/run_template/runoff* .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/pickup*1440.*ta .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/kernels .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/tile* .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/BATHY* .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/DIFFKR* .
+ ln -sf /nobackup/hzhang1/pub/llc540/RUN2/runoff* .
  ln -sf /nobackup/hzhang1/forcing/era5 .
  ln -sf ../build/mitgcmuv mitgcmuv
  ln -sf data.exch2_60_EXP2 data.exch2
