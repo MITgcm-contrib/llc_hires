@@ -1,5 +1,5 @@
 clear
-close all
+close all;
 
 saveBathy = 0;
 maskDryCells = 1;
@@ -7,9 +7,7 @@ maskDryCells = 1;
 gridDir = '/Users/carrolld/Documents/research/carbon/simulations/grid/LLC_270/';
 
 dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/LLC_270/';
-
 dataDir2 = '/Users/carrolld/Documents/research/LLC_540/bin/';
-
 saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/LLC_270_bathy/';
 
 %% 
@@ -199,9 +197,9 @@ if saveBathy
     
     depth(isnan(depth)) = 0;
     
-    %save([saveDir 'LLC_540_bathy_' suffix '.mat'],'depth','-v7.3');
+    save([saveDir 'LLC_540_bathy_' suffix '.mat'],'depth','-v7.3');
     
-    writebin([saveDir  'LLC_540_bathy_' suffix '.bin'],depth,1,'real*4');
+    writebin([saveDir 'LLC_540_bathy_' suffix '.bin'],depth,1,'real*4');
     
     cd(saveDir);
     

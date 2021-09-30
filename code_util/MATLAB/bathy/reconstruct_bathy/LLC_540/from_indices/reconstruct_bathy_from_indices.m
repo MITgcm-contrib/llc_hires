@@ -1,5 +1,5 @@
 clear
-close all
+close all;
 
 gridDir = '/Users/carrolld/Documents/research/LLC_540/grid/';
 

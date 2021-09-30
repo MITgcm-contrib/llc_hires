@@ -34,4 +34,4 @@ colorbar
 
 %% 
 
-%save([saveDir 'GEBCO_2020_lon_lat.mat'],'lon','lat','elevation','-v7.3');
+save([saveDir 'GEBCO_2020_lon_lat.mat'],'lon','lat','elevation','-v7.3');

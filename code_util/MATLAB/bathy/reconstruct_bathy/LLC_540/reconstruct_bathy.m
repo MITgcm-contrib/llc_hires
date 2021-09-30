@@ -1,19 +1,16 @@
 clear
-close all
+close all;
 
 saveBathy = 1;
 maskDryCells = 1;
 
 useShallowDepthCrit = 0;
-useDeepDepthCrit = 1;
+useDeepDepthCrit = 0;
 
 gridDir = '/Users/carrolld/Documents/research/LLC_540/grid/';
 
 dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/LLC_540/';
-%dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/LLC_540/experiments/dustin/';
-
 dataDir2 = '/Users/carrolld/Documents/research/LLC_540/bin/';
-
 saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/LLC_540_bathy/';
 
 %% 
@@ -200,15 +197,15 @@ title('Difference (m)');
 
 if saveBathy
     
-    writebin([saveDir  'LLC_540_bathy_' saveSuffix '.bin'],depth,1,'real*4');
-    save([saveDir  'LLC_540_bathy_' saveSuffix '.mat'],'bf');
+    save([saveDir 'LLC_540_bathy_' saveSuffix '.mat'],'bf');
+    
+    writebin([saveDir 'LLC_540_bathy_' saveSuffix '.bin'],depth,1,'real*4');
     
     cd(saveDir);
     
     close all
     
     testDepth = readbin([saveDir 'LLC_540_bathy_' saveSuffix '.bin'],[nx ny],1,'real*4');
-    %testDepth(testDepth == 0) = nan;
     
     hFig1 = figure(1);
     set(hFig1,'units','normalized','outerposition',[0 0 1 1]);

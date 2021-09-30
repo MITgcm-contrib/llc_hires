@@ -1,5 +1,5 @@
 clear
-close all
+close all;
 
 tic
 
@@ -7,7 +7,6 @@ plotPoly = 1;
 
 dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/cell_corners/';
 dataDir2 = '/Users/carrolld/Documents/research/LLC_540/mat/bedmachine/';
-
 saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/bedmachine/';
 
 %%

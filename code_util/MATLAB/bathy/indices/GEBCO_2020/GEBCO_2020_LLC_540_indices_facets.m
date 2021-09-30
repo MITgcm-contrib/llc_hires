@@ -1,5 +1,5 @@
 clear
-close all
+close all;
 
 tic
 
@@ -9,7 +9,6 @@ maskDryCells = 1;
 dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/cell_corners/LLC_540/';
 dataDir2 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/';
 dataDir3 = '/Users/carrolld/Documents/research/LLC_540/raw_data/gebco_2020/';
-
 saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/';
 
 %%
