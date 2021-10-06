@@ -1,3 +1,11 @@
+#run_template/ and forcing/ECMWF_operational/
+#are also available at ECCO Drive:
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/LLC1080/run_template
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/ECMWF_operational
+#To access to ECCO Drive, a free NASA Earthdata login is required
+#from https://urs.earthdata.nasa.gov/users/new
+
+
 ==============
 # Interactive 90x90x1342 tile configuration with latest MITgcm, no asyncio
 cd ~/llc_1080

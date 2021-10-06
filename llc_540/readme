@@ -17,6 +17,8 @@
 #https://ecco.jpl.nasa.gov/drive/files/ECCO2/LLC540/run_template
 #https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/era_xx_it50
 #https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/jra55
+#To access to ECCO Drive, a free NASA Earthdata login is required
+#from https://urs.earthdata.nasa.gov/users/new
 
 # integrate 1992-2019 model on pleiades
 # jra55 forcing

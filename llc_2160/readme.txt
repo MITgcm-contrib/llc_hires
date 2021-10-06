@@ -1,3 +1,11 @@
+#run_template/ and forcing/ECMWF_operational/
+#are also available at ECCO Drive
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/LLC2160/run_template
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/ECMWF_operational
+#To access to ECCO Drive, a free NASA Earthdata login is required
+#from https://urs.earthdata.nasa.gov/users/new
+
+
 ##############################################
 # 72x72_7556 configuration updated for DYAMOND
 # using Bron's latest asyncio code

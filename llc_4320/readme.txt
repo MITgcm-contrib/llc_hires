@@ -1,3 +1,11 @@
+#run_template/ and forcing/ECMWF_operational/
+#are also available at ECCO Drive
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/LLC4320/run_template
+# https://ecco.jpl.nasa.gov/drive/files/ECCO2/atmos/ECMWF_operational
+#To access to ECCO Drive, a free NASA Earthdata login is required
+#from https://urs.earthdata.nasa.gov/users/new
+
+
 #############################
 # 90x90x19023 configuration
 module purge
