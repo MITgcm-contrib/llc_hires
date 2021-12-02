@@ -1,6 +1,7 @@
 #!/bin/bash
 #Build executable for llc540 with latest MITgcm code on pleiades
 #and latest OS+MPI
+#ssh pfe26
  git clone https://github.com/MITgcm-contrib/llc_hires.git
  git clone https://github.com/MITgcm/MITgcm.git
  MOD90="../../llc_hires/llc_90/tides_exps"
