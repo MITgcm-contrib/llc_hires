@@ -52,10 +52,10 @@ fi
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 
-LIBS='-L/nasa/sgi/mpt/2.14r19/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf'
-INCLUDES='-I/nasa/sgi/mpt/2.14r19/include -I/nasa/netcdf/4.4.1.1_mpt/include'
-#INCLUDEDIRS='/nasa/sgi/mpt/2.14r19/include'
+LIBS='-L/nasa/hpe/mpt/2.25_rhel79/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf'
+INCLUDES='-I/nasa/hpe/mpt/2.25_rhel79/include -I/nasa/netcdf/4.4.1.1_mpt/include'
+#INCLUDEDIRS='/nasa/hpe/mpt/2.25_rhel79/include'
 
 #- used for parallel (MPI) DIVA
- MPIINCLUDEDIR='/nasa/sgi/mpt/2.14r19/include'
+ MPIINCLUDEDIR='/nasa/hpe/mpt/2.25_rhel79/include'
 #MPI_HEADER_FILES='mpif.h mpiof.h'

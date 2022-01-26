@@ -9,11 +9,11 @@
 ==============
 # Interactive 90x90x1342 tile configuration with latest MITgcm, no asyncio
 cd ~/llc_1080
-git clone git@github.com:MITgcm-contrib/llc_hires.git
+git clone https://github.com/MITgcm-contrib/llc_hires.git
 git clone https://github.com/MITgcm/MITgcm.git
 qsub -I -q long -l select=48:ncpus=28:model=bro,walltime=120:00:00 -m abe
 module purge
-module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 cd ~/llc_1080/MITgcm
 mkdir build run
 lfs setstripe -c -1 run
@@ -36,18 +36,18 @@ mpiexec -n 1342 ./mitgcmuv
 ==============
 # Interactive 90x90x1342 tile configuration with latest MITgcm, with asyncio
 cd ~/llc_1080
-cvs co MITgcm_contrib/llc_hires/llc_1080
+git clone https://github.com/MITgcm-contrib/llc_hires.git
 git clone https://github.com/MITgcm/MITgcm.git
 qsub -I -q long -l select=52:ncpus=28:model=bro,walltime=120:00:00 -m abe
 module purge
-module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 cd ~/llc_1080/MITgcm
 mkdir build run
 lfs setstripe -c -1 run
 cd build
 ../tools/genmake2 -of \
- ../../MITgcm_contrib/llc_hires/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
- '../../MITgcm_contrib/llc_hires/llc_1080/code ../../MITgcm_contrib/llc_hires/llc_1080/code-async'
+ ../../llc_hires/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../llc_hires/llc_1080/code ../../llc_hires/llc_1080/code-async'
 make depend
 make -j 56
 cd ../run_test_async
@@ -55,7 +55,7 @@ cp ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 ln -sf ~dmenemen/llc_1080/MITgcm/run_2011/pick*354240* .
-cp ../../MITgcm_contrib/llc_hires/llc_1080/input/* .
+cp ../../llc_hires/llc_1080/input/* .
 mv data.exch2_90x90x1342 data.exch2
 mpiexec -n 1442 ./mitgcmuv
 
