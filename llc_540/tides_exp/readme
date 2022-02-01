@@ -1,7 +1,5 @@
 #!/bin/bash
 #Build executable for llc540 with latest MITgcm code on pleiades
-#and latest OS+MPI
-#ssh pfe26
  git clone https://github.com/MITgcm-contrib/llc_hires.git
  git clone https://github.com/MITgcm/MITgcm.git
  MOD90="../../llc_hires/llc_90/tides_exps"
@@ -18,10 +16,8 @@
  # source /usr/share/modules/init/bash
  module purge
  module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
- ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas -mo ${MOD540}/code
- sed -i "s|nasa/sgi/mpt/2.14r19|nasa/hpe/mpt/2.25_rhel79|" Makefile
- sed -i "s|LIBS = -L/nasa/hpe/mpt/2.25_rhel79/lib -lmpi -L/nasa/netcdf/4.4.1.1_mpt/lib -lnetcdf -lnetcdff -lnetcdf| \
-& -L${MOD90}/lib -lspice|" Makefile
+ ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas -mo ${MOD540}/code -mpi
+ sed -i "s|-lnetcdff -lnetcdf|& -L${MOD90}/lib -lspice|" Makefile
  make depend
  make -j 16
  cd ..
