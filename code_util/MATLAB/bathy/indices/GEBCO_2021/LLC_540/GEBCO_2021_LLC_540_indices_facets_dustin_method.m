@@ -4,12 +4,11 @@ close all;
 tic
 
 plotPoly = 0;
-maskDryCells = 1;
+maskDryCells = 0;
 
-dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/cell_corners/';
-dataDir2 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/';
-dataDir3 = '/Users/carrolld/Documents/research/LLC_540/raw_data/gebco_2020/';
-saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/experiments/dimitris/';
+dataDir1 = '/Users/carrolld/Documents/research/bathy/mat/cell_corners/LLC_540/';
+dataDir2 = '/Users/carrolld/Documents/research/bathy/raw_data/GEBCO_2021/';
+saveDir = '/Users/carrolld/Documents/research/bathy/mat/bathy/LLC_540/GEBCO_2021/';
 
 %%
 
@@ -22,14 +21,15 @@ dy = 0.1;
 
 %%
 
-GEBCO = load([dataDir2 'GEBCO_2020_lon_lat.mat']);
+fileName = 'GEBCO_2021.nc';
+
+GEBCO.lon = ncread([dataDir2 fileName],'lon');
+GEBCO.lat = ncread([dataDir2 fileName],'lat');
 
 GEBCO.lon2 = GEBCO.lon;
 GEBCO.lon2(GEBCO.lon2 < 0) = GEBCO.lon2(GEBCO.lon2 < 0) + 360;
 
-fileName = 'GEBCO_2020.nc';
-
-elevation = -ncread([dataDir3 fileName],'elevation');
+elevation = -ncread([dataDir2 fileName],'elevation');
 elevation(elevation <= 0) = 0;
 
 %%
@@ -134,10 +134,10 @@ for i = 1:numFacets
             
             numDryCells = length(find(bathyPoly == 0));
             
-            %For all coarse cells that contain > 5% wet GEBCO points
-            %compute median of the 30% deepest wet GEBCO points
+            %if GEBCO search region contains >= 90% land, set model grid cell to land.
+            %otherwise, exclude GEBCO land cells and compute median.
             
-            if (numDryCells >= (numTotalCells .* 0.95))
+            if (numDryCells >= (numTotalCells .* 0.9))
                 
                 bathy.numWetCells(j,k) = nan;
                 
@@ -181,9 +181,6 @@ for i = 1:numFacets
                 end
                 
                 bathyPoly(isnan(bathyPoly)) = [];
-                
-                bathyPoly = sort(bathyPoly);
-                bathyPoly(1:floor(length(bathyPoly) .* 0.7)) = [];
                 
                 bathy.numWetCells(j,k) = length(find(bathyPoly ~= 0));
                 
@@ -287,15 +284,15 @@ for i = 1:numFacets
     
     if maskDryCells
         
-        suffix = 'wet_dimitris';
+        suffix = 'wet_dustin';
         
     else
         
-        suffix = 'all_dimitris';
+        suffix = 'all_dustin';
         
     end
     
-    save([saveDir 'GEBCO_LLC_540_indices_facet_' num2str(i) '_' suffix  '.mat'],'bathy','-v7.3');
+    save([saveDir 'GEBCO_2021_LLC_540_indices_facet_' num2str(i) '_' suffix  '.mat'],'bathy','-v7.3');
     
     clear bathy
     

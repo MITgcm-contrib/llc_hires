@@ -1,24 +1,29 @@
 clear
 close all;
 
+tic
+
 saveBathy = 1;
-maskDryCells = 1;
+maskDryCells = 0;
 
-gridDir = '/Users/carrolld/Documents/research/LLC_540/grid/';
+useShallowDepthCrit = 0;
+useDeepDepthCrit = 0;
 
-dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/LLC_540/'
-dataDir2 = '/Users/carrolld/Documents/research/LLC_540/bin/';
-saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/LLC_540_bathy/experiments/';
+gridDir = '/Users/carrolld/Documents/research/LLC_270/grid/';
+
+dataDir1 = '/Users/carrolld/Documents/research/bathy/mat/bathy/LLC_270/GEBCO_2021/';
+dataDir2 = '/Users/carrolld/Documents/research/bathy/bin/grid/LLC_270/';
+saveDir = '/Users/carrolld/Documents/research/bathy/mat/bathy/LLC_270/GEBCO_2021/';
 
 %%
 
 if maskDryCells
     
-    suffix = 'wet';
+    suffix = 'wet_dustin';
     
 else
     
-    suffix = 'all';
+    suffix = 'all_dustin';
     
 end
 
@@ -27,24 +32,39 @@ end
 numFacets = 5;
 numFaces = 13;
 
-nx = 540;
+nx = 270;
 ny = nx .* numFaces;
 
 %%
 
 for i = 1:numFacets
     
-    eval(['load([dataDir1 ''GEBCO_LLC_540_indices_facet_' num2str(i) '_' suffix '.mat'']);']);
+    eval(['load([dataDir1 ''GEBCO_2021_LLC_270_indices_facet_' num2str(i) '_' suffix '.mat'']);']);
     
     facet{i}.numWetCells = bathy.numWetCells;
     
     field =  bathy.medianDepth;
-
-    field(field <= 20) = 0;
-
+    
     field(isnan(field)) = 0;
     
-    saveSuffix = [suffix '_experiment_1'];
+    if useShallowDepthCrit
+        
+        %field(field <= 5) = 0;
+        field(field > -5 & field < 0) = -5; %mackenzie setup
+        
+        saveSuffix = [suffix '_method_5m_crit'];
+        
+    elseif useDeepDepthCrit
+        
+        field(field >= 1 & field <= 10) = 10;
+        
+        saveSuffix = [suffix '_method_10m_crit'];
+        
+    else
+        
+        saveSuffix = [suffix '_method'];
+        
+    end
     
     b = field;
     b2=1+0*b;
@@ -61,9 +81,11 @@ for i = 1:numFacets
     
 end
 
+toc
+
 %%
 
-rawDepth = -readbin([dataDir2 'Bathy_compact_filled_llc540_540x7020_v1_gib.bin'],[nx ny],1,'real*4');
+rawDepth = -readbin([dataDir2 'bathy270_filled_noCaspian_r4'],[nx ny],1,'real*4');
 
 rawDepth(rawDepth <= 0) = nan;
 
@@ -83,8 +105,6 @@ numWetCells(nx*nx*7+1:nx*nx*10) = facet{4}.numWetCells;
 numWetCells(nx*nx*10+1:nx*nx*13) = facet{5}.numWetCells;
 
 numWetCells(numWetCells == 0) = nan;
-
-%shallow depth threshold
 
 maxDepth = 200;
 
@@ -116,7 +136,7 @@ axis tight
 
 set(gca,'FontSize',fs);
 
-title('LLC 540 Bathy (m)');
+title('LLC 270 Bathy (m)');
 
 cc2 = subplot(142);
 
@@ -135,7 +155,7 @@ axis tight
 
 set(gca,'FontSize',fs);
 
-title('GEBCO LLC 540 Bathy (m)');
+title('GEBCO LLC 270 Bathy (m)');
 
 cc3 = subplot(143);
 
@@ -181,15 +201,15 @@ title('Difference (m)');
 
 if saveBathy
     
-    save([saveDir 'LLC_540_bathy_' saveSuffix '.mat'],'bf');
-    
-    writebin([saveDir 'LLC_540_bathy_' saveSuffix '.bin'],depth,1,'real*4');
+    writebin([saveDir  'LLC_270_bathy_' saveSuffix '.bin'],depth,1,'real*4');
+    save([saveDir  'LLC_270_bathy_' saveSuffix '.mat'],'depth','-v7.3');
     
     cd(saveDir);
     
     close all
     
-    testDepth = readbin([saveDir 'LLC_540_bathy_' saveSuffix '.bin'],[nx ny],1,'real*4');
+    testDepth = readbin([saveDir 'LLC_270_bathy_' saveSuffix '.bin'],[nx ny],1,'real*4');
+    testDepth(testDepth == 0) = nan;
     
     hFig1 = figure(1);
     set(hFig1,'units','normalized','outerposition',[0 0 1 1]);
@@ -202,3 +222,5 @@ if saveBathy
     colormap(colors1);
     
 end
+
+%%

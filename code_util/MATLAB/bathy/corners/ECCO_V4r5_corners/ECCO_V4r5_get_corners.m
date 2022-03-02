@@ -1,30 +1,32 @@
 clear
-close all
+close all;
 
-% these paths will need to be adjusted
-cd('/Users/carrolld/Documents/research/LLC_540');
-gDir = '/Users/carrolld/Documents/research/carbon/simulations/grid/LLC_270/';
+gridDir = '/Users/carrolld/Documents/research/bathy/bin/grid/ECCO_V4r5/';
+
+saveDir = '/Users/carrolld/Documents/research/bathy/mat/cell_corners/ECCO_V4r5/';
+
+%% 
 
 % define some constants
 numFaces = 13;
-nx = 270;
-ny = 270 .* numFaces;
+nx = 90;
+ny = 90 .* numFaces;
 
 % input grid and landmask
-XGsw = readbin([gDir 'XG.data'],[nx ny]);
-YGsw = readbin([gDir 'YG.data'],[nx ny]);
+XGsw = readbin([gridDir 'XG.data'],[nx ny]);
+YGsw = readbin([gridDir 'YG.data'],[nx ny]);
 
 % read tile00?.mitgdrid files
-tile{1}.XG=readbin([gDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
-tile{1}.YG=readbin([gDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
-tile{2}.XG=readbin([gDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
-tile{2}.YG=readbin([gDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
-tile{3}.XG=readbin([gDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',5);
-tile{3}.YG=readbin([gDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',6);
-tile{4}.XG=readbin([gDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
-tile{4}.YG=readbin([gDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
-tile{5}.XG=readbin([gDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
-tile{5}.YG=readbin([gDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
+tile{1}.XG=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
+tile{1}.YG=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
+tile{2}.XG=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
+tile{2}.YG=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
+tile{3}.XG=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',5);
+tile{3}.YG=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',6);
+tile{4}.XG=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
+tile{4}.YG=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
+tile{5}.XG=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
+tile{5}.YG=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
 
 % find the remaining 3 corners
 XGsw=XGsw; XGse=XGsw; XGnw=XGsw; XGne=XGsw;
@@ -65,7 +67,7 @@ end
 
 %%
 
-save(['cell_corners_facet.mat'],'facet','-v7.3');
+save([saveDir 'cell_corners_facets.mat'],'facet','-v7.3');
 
 %%
 % look @ fields

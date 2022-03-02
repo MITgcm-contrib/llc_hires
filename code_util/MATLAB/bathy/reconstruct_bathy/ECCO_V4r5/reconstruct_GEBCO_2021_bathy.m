@@ -1,55 +1,93 @@
 clear
 close all;
 
-saveBathy = 0;
-maskDryCells = 1;
+tic
 
-gridDir = '/Users/carrolld/Documents/research/carbon/simulations/grid/LLC_270/';
+saveBathy = 1;
+maskDryCells = 0;
 
-dataDir1 = '/Users/carrolld/Documents/research/LLC_540/mat/GEBCO_2020/LLC_270/';
-dataDir2 = '/Users/carrolld/Documents/research/LLC_540/bin/';
-saveDir = '/Users/carrolld/Documents/research/LLC_540/mat/LLC_270_bathy/';
+useShallowDepthCrit = 0;
+useDeepDepthCrit = 0;
 
-%% 
+gridDir = '/Users/carrolld/Documents/research/ECCO_V4r5/grid/';
+
+dataDir1 = '/Users/carrolld/Documents/research/bathy/mat/bathy/ECCO_V4r5/GEBCO_2021/';
+dataDir2 = '/Users/carrolld/Documents/research/bathy/bin/grid/ECCO_V4r5/';
+saveDir = '/Users/carrolld/Documents/research/bathy/mat/bathy/ECCO_V4r5/GEBCO_2021/';
+
+%%
 
 if maskDryCells
     
-    suffix = 'wet_LLC_270';
+    suffix = 'wet_dustin';
     
 else
     
-    suffix = 'all_LLC_270';
+    suffix = 'all_dustin';
     
 end
+
 %%
 
 numFacets = 5;
 numFaces = 13;
 
-nx = 270;
+nx = 90;
 ny = nx .* numFaces;
 
 %%
 
 for i = 1:numFacets
     
-    eval(['load([dataDir1 ''GEBCO_LLC_270_indices_facet_' num2str(i) '_' suffix '.mat'']);']);
+    eval(['load([dataDir1 ''GEBCO_2021_ECCO_V4r5_indices_facet_' num2str(i) '_' suffix '.mat'']);']);
     
     facet{i}.numWetCells = bathy.numWetCells;
     
-    %facet{i}.bathy = bathy.maxDepth;
-    %facet{i}.bathy = bathy.meanDepth;
-    facet{i}.bathy = bathy.medianDepth;
+    field =  bathy.medianDepth;
     
-    clear bathy
+    field(isnan(field)) = 0;
+    
+    if useShallowDepthCrit
+        
+        %field(field <= 5) = 0;
+        field(field > -5 & field < 0) = -5; %mackenzie setup
+        
+        saveSuffix = [suffix '_5m_crit'];
+        
+    elseif useDeepDepthCrit
+        
+        field(field >= 1 & field <= 10) = 10;
+        
+        saveSuffix = [suffix '_10m_crit'];
+        
+    else
+        
+        saveSuffix = [suffix '_method'];
+        
+    end
+    
+    b = field;
+    b2=1+0*b;
+    b2(find(b))=0;
+    b3=imfill(b2,'holes');
+    bf=b;
+    bf(find(b3))=0;
+    
+    facet{i}.bathy = bf;
+    
+    clear bathy field
     
     disp(num2str(i));
     
 end
 
+toc
+
 %%
 
-rawDepth = readbin([dataDir2 'Depth.data'],[nx ny],1,'real*4');
+rawDepth = -readbin([dataDir2 'BATHY_ICE_SHELF_CAVITY_PLUS_ICE_FRONT_LLC_0090.bin'],[nx ny],1,'real*4');
+
+rawDepth(rawDepth <= 0) = nan;
 
 depth = zeros(nx,ny);
 numWetCells = zeros(nx,ny);
@@ -66,18 +104,7 @@ numWetCells(nx*nx*6+1:nx*nx*7) = facet{3}.numWetCells;
 numWetCells(nx*nx*7+1:nx*nx*10) = facet{4}.numWetCells;
 numWetCells(nx*nx*10+1:nx*nx*13) = facet{5}.numWetCells;
 
-%rawDepth(rawDepth <= 0) = nan;
-
-depth(isnan(depth)) = 0;
-
 numWetCells(numWetCells == 0) = nan;
-
-ix = find(rawDepth == 0 | depth == 0);
-
-rawDepth(ix) = nan;
-depth(ix) = nan;
-
-%%
 
 maxDepth = 200;
 
@@ -109,7 +136,7 @@ axis tight
 
 set(gca,'FontSize',fs);
 
-title('LLC 540 Bathy (m)');
+title('LLC 270 Bathy (m)');
 
 cc2 = subplot(142);
 
@@ -128,7 +155,7 @@ axis tight
 
 set(gca,'FontSize',fs);
 
-title('GEBCO LLC 540 Bathy (m)');
+title('GEBCO LLC 270 Bathy (m)');
 
 cc3 = subplot(143);
 
@@ -168,47 +195,32 @@ set(gca,'FontSize',fs);
 
 title('Difference (m)');
 
-%% 
-
-hFig2 = figure(2);
-set(hFig2,'units','normalized','outerposition',[0 0 1 1]);
-set(gcf,'color',[1 1 1]);
-
-hold on
-
-set(gca,'color',bgColor);
-
-quikplot_llc(rawDepth - depth);
-
-hcb4 = colorbar;
-caxis([-200 200]);
-
-colormap(colors2);
-
-axis tight
-
-set(gca,'FontSize',fs);
-
-title('LLC 270 - GEBCO LLC 270 (m)');
+%pause
 
 %%
 
 if saveBathy
     
-    depth(isnan(depth)) = 0;
-    
-    save([saveDir 'LLC_540_bathy_' suffix '.mat'],'depth','-v7.3');
-    
-    writebin([saveDir 'LLC_540_bathy_' suffix '.bin'],depth,1,'real*4');
+    writebin([saveDir  'ECCO_V4r5_bathy_' saveSuffix '.bin'],depth,1,'real*4');
+    save([saveDir  'ECCO_V4r5_bathy_' saveSuffix '.mat'],'depth','-v7.3');
     
     cd(saveDir);
     
     close all
     
-    testDepth = readbin([saveDir 'LLC_540_bathy_' suffix '.bin'],[nx ny],1,'real*4');
+    testDepth = readbin([saveDir 'ECCO_V4r5_bathy_' saveSuffix '.bin'],[nx ny],1,'real*4');
+    testDepth(testDepth == 0) = nan;
+    
+    hFig1 = figure(1);
+    set(hFig1,'units','normalized','outerposition',[0 0 1 1]);
+    set(gcf,'color',[1 1 1]);
     
     quikplot_llc(testDepth);
-
+    
+    caxis([0 5000]);
+    
+    colormap(colors1);
+    
 end
 
-%% 
+%%
