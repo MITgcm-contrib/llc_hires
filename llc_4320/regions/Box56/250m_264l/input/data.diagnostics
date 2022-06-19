@@ -1,0 +1,25 @@
+ &diagnostics_list
+   frequency(1) = 86400.,
+    fields(1,1) = 'ETAN    ',
+    filename(1) = 'ETAN',
+   frequency(2) = 86400.,
+    fields(1,2) = 'PHIBOT  ',
+    filename(2) = 'PHIBOT',
+   frequency(3) = 86400.,
+    fields(1,3) = 'SALTanom',
+    filename(3) = 'SALTanom',
+   frequency(4) = 86400.,
+    fields(1,4) = 'THETA   ',
+    filename(4) = 'THETA',
+   frequency(5) = 86400.,
+    fields(1,5) = 'UVELMASS',
+    filename(5) = 'UVELMASS',
+   frequency(6) = 86400.,
+    fields(1,6) = 'VVELMASS',
+    filename(6) = 'VVELMASS',
+   frequency(7) = 86400.,
+    fields(1,7) = 'WVELMASS',
+    filename(7) = 'WVELMASS',
+ &
+ &DIAG_STATIS_PARMS
+ &
