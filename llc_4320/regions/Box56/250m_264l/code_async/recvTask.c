@@ -78,7 +78,7 @@ int numRanksPerNode = 0;
 //
 #define NUM_X   2304
 #define NUM_Y   3744L                     // get rid of this someday
-#define NUM_Z   88
+#define NUM_Z   264
 #define MULTDIM  7
 #define twoDFieldSizeInBytes  (NUM_X * NUM_Y * 1 * datumSize)
 #define threeDFieldSizeInBytes  (twoDFieldSizeInBytes * NUM_Z)
