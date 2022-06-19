@@ -54,7 +54,7 @@ C     Nr  :: No. points in Z for full process domain.
      &           nPy =  78,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,
-     &           Nr  = 88 )
+     &           Nr  = 264 )
 
 C     MAX_OLX :: Set to the maximum overlap region size of any array
 C     MAX_OLY    that will be exchanged. Controls the sizing of exch
