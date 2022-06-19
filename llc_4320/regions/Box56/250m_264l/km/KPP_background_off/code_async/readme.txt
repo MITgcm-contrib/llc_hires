@@ -4,7 +4,7 @@ recvTask.c   lines 79-82
 
 #define NUM_X   2304
 #define NUM_Y   3744L                     // get rid of this someday
-#define NUM_Z   88
+#define NUM_Z   264
 #define MULTDIM  7
 
 and
@@ -12,8 +12,8 @@ and
 readtile_mpiio.c    lines 115-119
 
     facetElements1D = 2304;
-    tileSizeX = 48;
-    tileSizeY = 48;
+    tileSizeX = 36;
+    tileSizeY = 52;
     xGhosts = 4;
     yGhosts = 4;
 
