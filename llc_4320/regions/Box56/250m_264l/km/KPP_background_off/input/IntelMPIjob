@@ -1,0 +1,10 @@
+#!/bin/bash -l
+##SBATCH -p dragonfly1,dragonfly2,dragonfly3,dragonfly4,compute
+#SBATCH -N 29
+#SBATCH --ntasks-per-node=40
+#SBATCH -t 00:30:00
+#SBATCH -J test
+source /gpfs/bb0/scinet/bin/intel.sh
+source /gpfs/bb0/scinet/bin/intelmpi.sh
+cd ~/MITgcm/run
+mpiexec.hydra -n 1152 ./mitgcmuv
