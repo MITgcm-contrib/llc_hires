@@ -56,8 +56,8 @@ FFLAGS="$FFLAGS -m64 -convert big_endian -assume byterecl"
 #CFLAGS="$CFLAGS -fPIC"
 #FFLAGS="$FFLAGS -fPIC"
 #-  with FC 19, need to use this without -fPIC (which cancels -mcmodel option):
- CFLAGS="$CFLAGS -mcmodel=medium"
- FFLAGS="$FFLAGS -mcmodel=medium"
+ CFLAGS="$CFLAGS -mcmodel=large"
+ FFLAGS="$FFLAGS -mcmodel=large"
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
 

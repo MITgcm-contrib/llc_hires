@@ -9,25 +9,25 @@
 #
  useOBCSprescribe =.TRUE.,
 #
- OBNsFile='Salt_North',
- OBNtFile='Theta_North',
- OBNuFile='U_North',
- OBNvFile='V_North',
+ OBNsFile='Salt_North_2304.264.2545',
+ OBNtFile='Theta_North_2304.264.2545',
+ OBNuFile='U_North_2304.264.2545',
+ OBNvFile='V_North_2304.264.2545',
 #
- OBSsFile='Salt_South',
- OBStFile='Theta_South',
- OBSuFile='U_South',
- OBSvFile='V_South',
+ OBSsFile='Salt_South_2304.264.2545',
+ OBStFile='Theta_South_2304.264.2545',
+ OBSuFile='U_South_2304.264.2545',
+ OBSvFile='V_South_2304.264.2545',
 #
- OBEsFile='Salt_East',
- OBEtFile='Theta_East',
- OBEuFile='U_East',
- OBEvFile='V_East',
+ OBEsFile='Salt_East_3744.264.2545',
+ OBEtFile='Theta_East_3744.264.2545',
+ OBEuFile='U_East_3744.264.2545',
+ OBEvFile='V_East_3744.264.2545',
 #
- OBWsFile='Salt_West',
- OBWtFile='Theta_West',
- OBWuFile='U_West',
- OBWvFile='V_West',
+ OBWsFile='Salt_West_3744.264.2545',
+ OBWtFile='Theta_West_3744.264.2545',
+ OBWuFile='U_West_3744.264.2545',
+ OBWvFile='V_West_3744.264.2545',
  &
 # *****************************************
 # Sponge Layer Parameters.

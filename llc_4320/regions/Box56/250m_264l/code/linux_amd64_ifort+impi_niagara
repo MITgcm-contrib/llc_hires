@@ -52,7 +52,6 @@ if test "x$IEEE" = x ; then     #- with optimisation:
     FOPTIM="-g -align -ip -fp-model source $PROCF"
 else
   if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
-#    FOPTIM="-O0 -fp-model source -noalign $PROCF"
     FOPTIM="-O0 -fp-model source -noalign $PROCF"
   else                          #- development/check options:
    #FFLAGS="$FFLAGS -debug all -debug-parameters all -fp-model strict"
