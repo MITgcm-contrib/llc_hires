@@ -2,10 +2,10 @@
 # Open boundaries
 # ***************
  &OBCS_PARM01
- OB_Jnorth = 2304*-1,
- OB_Jsouth = 2304*1,
- OB_Ieast  = 3744*-1,
- OB_Iwest  = 3744*1,
+ OB_Jnorth = 2304*-8,
+ OB_Jsouth = 2304*8,
+ OB_Ieast  = 3744*-8,
+ OB_Iwest  = 3744*8,
 #
  useOBCSprescribe =.TRUE.,
 #
