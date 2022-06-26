@@ -12,7 +12,7 @@ To build and run on SciNet/Niagara, enter the following commands:
  module load openmpi
  module load hdf5/1.8.21
  module load netcdf/4.6.3
- MOD="../../llc_hires/llc_4320/regions/Box56/250m_264l/code_async"
+ MOD="../../llc_hires/llc_4320/regions/Box56/250m_264l/km/KPP_background_off/code_async"
  ../tools/genmake2 -of $MOD/linux_amd64_ifort+mpi_niagara -mo $MOD -mpi
  make depend
  make -j 8
