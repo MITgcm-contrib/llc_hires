@@ -44,23 +44,18 @@ MPI_Info  ioHints;
 
 
 int
-getSizeOfMPIType(MPI_Datatype mpi_type)
+getSizeOfMPIType(MPI_Datatype my_mpi_type)
 {
-    switch (mpi_type) {
-
-      case MPI_INT:  case MPI_FLOAT:  case MPI_REAL4:
+    if ( (MPI_INT == my_mpi_type) ||
+         (MPI_FLOAT == my_mpi_type) ||
+         (MPI_REAL4 == my_mpi_type) )
         return 4;
-      break;
-
-      case MPI_LONG_INT:  case MPI_DOUBLE:  case MPI_REAL8:
+    else if ( (MPI_LONG_INT == my_mpi_type) ||
+              (MPI_DOUBLE == my_mpi_type) ||
+              (MPI_REAL8 == my_mpi_type) )
         return 8;
-      break;
 
-      default:
-        assert(("unexpected mpi elemental type", 0));
-      break;
-
-    }
+    assert(("unexpected mpi elemental type", 0));
     return -1;
 }
 
@@ -113,8 +108,8 @@ initSizesAndTypes(void)
     // Fundamental values
     fieldElementalTypeMPI = MPI_DOUBLE;
     facetElements1D = 2304;
-    tileSizeX = 24;
-    tileSizeY = 24;
+    tileSizeX = 18;
+    tileSizeY = 13;
     xGhosts = 4;
     yGhosts = 4;
     /////////////////////////////////////////////
