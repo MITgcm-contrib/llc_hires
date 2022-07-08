@@ -73,10 +73,26 @@ subplot(513), plot(V_South/1e6), grid, title('volume flux entering south of doma
 subplot(514), plot(V_North/1e6), grid, title('volume flux exiting north of domain (Sv)')
 subplot(515), plot(W_Top/1e6),   grid, title('volume flux exiting top of domain (Sv)')
 
-figure(2), clf
+figure(2), clf, orient tall, wysiwyg
 TotVolFlux=U_West-U_East+V_South-V_North-W_Top;
 EtaChange=dT*cumsum(TotVolFlux)/sum(sum(RAC(2:end-1,2:end-1)));
-subplot(211), plot(TotVolFlux/1e6), grid, title('total volume flux entering domain (Sv)')
-subplot(212), plot(1:nt,EtaMean-mean(EtaMean),1.5:(nt+.5),EtaChange-mean(EtaChange))
+T1=1:nt;
+T2=1.5:(nt+.5);
+T3=1.5:.5:nt;
+actual=EtaMean-mean(EtaMean);    % actual eta
+actual=interpn(T1,actual,T3);
+bovf=EtaChange'-mean(EtaChange); % based on volume flux
+bovf=interpn(T2,bovf,T3);
+
+subplot(311)
+plot(TotVolFlux/1e6), grid
+title('total volume flux entering domain (Sv)')
+
+subplot(312)
+plot(T3,actual,T3,bovf), grid
 legend('actual eta','based on volume flux','location','best')
-grid, title('domain-averaged sea surface height (m)')
+title('domain-averaged sea surface height (m)')
+
+subplot(313)
+plot(T3,actual-bovf), grid
+title('actual eta minus eta computed based on volume flux (m)')
