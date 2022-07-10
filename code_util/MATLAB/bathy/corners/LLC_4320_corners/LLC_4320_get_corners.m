@@ -2,8 +2,10 @@ clear
 close all;
 
 gridDir = '/Users/carrolld/Documents/research/bathy/grid/LLC_4320/';
-
 saveDir = '/Users/carrolld/Documents/research/bathy/mat/cell_corners/LLC_4320/';
+
+% gridDir = '/Users/dmenemen/projects/llc/llc4320/grid/';
+% saveDir = '/Users/dmenemen/projects/llc/llc4320/grid/';
 
 %% 
 
@@ -12,43 +14,80 @@ numFaces = 13;
 nx = 4320;
 ny = 4320 .* numFaces;
 
-% input grid and landmask
-XGsw = readbin([gridDir 'XG.data'],[nx ny]);
-YGsw = readbin([gridDir 'YG.data'],[nx ny]);
+% input arrays for storing corners
+XGsw = zeros(nx,ny);
+XGse = zeros(nx,ny);
+XGnw = zeros(nx,ny);
+XGne = zeros(nx,ny);
+YGsw = zeros(nx,ny);
+YGse = zeros(nx,ny);
+YGnw = zeros(nx,ny);
+YGne = zeros(nx,ny);
 
-% read tile00?.mitgdrid files
-tile{1}.XG=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
-tile{1}.YG=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
-tile{2}.XG=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
-tile{2}.YG=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
-tile{3}.XG=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',5);
-tile{3}.YG=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',6);
-tile{4}.XG=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
-tile{4}.YG=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
-tile{5}.XG=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
-tile{5}.YG=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
+% find 4 corners for tile 1
+ix=1:nx*nx*3;
+TMP=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
+tmp=TMP(1:end-1,1:end-1); XGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); XGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); XGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); XGne(ix)=tmp(:);
+TMP=readbin([gridDir 'tile001.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
+tmp=TMP(1:end-1,1:end-1); YGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); YGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); YGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); YGne(ix)=tmp(:);
 
-% find the remaining 3 corners
-XGsw=XGsw; XGse=XGsw; XGnw=XGsw; XGne=XGsw;
-YGsw=YGsw; YGse=YGsw; YGnw=YGsw; YGne=XGsw;
-for i=1:length(XGsw(:)), disp(i)
-    for t=1:5
-        [I J] = find( abs(XGsw(i)-tile{t}.XG(1:end-1,1:end-1))<1e-4 & ...
-                      abs(YGsw(i)-tile{t}.YG(1:end-1,1:end-1))<1e-4 );
-        if length(I)>0
-            break
-        end
-    end
-    
-    I=I(1); J=J(1);
-    XGse(i)=tile{t}.XG(I+1,J);
-    XGnw(i)=tile{t}.XG(I,J+1);
-    XGne(i)=tile{t}.XG(I+1,J+1);
-    YGse(i)=tile{t}.YG(I+1,J);
-    YGnw(i)=tile{t}.YG(I,J+1);
-    YGne(i)=tile{t}.YG(I+1,J+1);
-    
-end
+% find 4 corners for tile 2
+ix=nx*nx*3+1:nx*nx*6;
+TMP=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',5);
+tmp=TMP(1:end-1,1:end-1); XGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); XGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); XGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); XGne(ix)=tmp(:);
+TMP=readbin([gridDir 'tile002.mitgrid'],[(nx+1) (nx*3+1)],1,'real*8',6);
+tmp=TMP(1:end-1,1:end-1); YGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); YGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); YGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); YGne(ix)=tmp(:);
+
+% find 4 corners for tile 3
+ix=nx*nx*6+1:nx*nx*7;
+TMP=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',5);
+tmp=TMP(1:end-1,1:end-1); XGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); XGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); XGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); XGne(ix)=tmp(:);
+TMP=readbin([gridDir 'tile003.mitgrid'],[(nx+1) (nx+1)],1,'real*8',6);
+tmp=TMP(1:end-1,1:end-1); YGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); YGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); YGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); YGne(ix)=tmp(:);
+
+% find 4 corners for tile 4
+ix=nx*nx*7+1:nx*nx*10;
+TMP=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
+tmp=TMP(1:end-1,1:end-1); XGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); XGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); XGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); XGne(ix)=tmp(:);
+TMP=readbin([gridDir 'tile004.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
+tmp=TMP(1:end-1,1:end-1); YGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); YGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); YGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); YGne(ix)=tmp(:);
+
+% find 4 corners for tile 5
+ix=nx*nx*10+1:nx*nx*13;
+TMP=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',5);
+tmp=TMP(1:end-1,1:end-1); XGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); XGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); XGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); XGne(ix)=tmp(:);
+TMP=readbin([gridDir 'tile005.mitgrid'],[(nx*3+1) (nx+1)],1,'real*8',6);
+tmp=TMP(1:end-1,1:end-1); YGsw(ix)=tmp(:);
+tmp=TMP(2:end  ,1:end-1); YGse(ix)=tmp(:);
+tmp=TMP(1:end-1,2:end  ); YGnw(ix)=tmp(:);
+tmp=TMP(2:end  ,2:end  ); YGne(ix)=tmp(:);
 
 %% 
 
@@ -58,7 +97,7 @@ vars = {'XGsw';'XGse';'XGnw';'XGne'; ...
 for i = 1:length(vars)
     
     eval(['facet{1}.' vars{i} ' = reshape(' vars{i} '(1:nx*nx*3),[nx nx*3]);']);
-    eval(['facet{2}.' vars{i} ' = reshape(' vars{i}  '(nx*nx*3+1:nx*nx*6),[nx nx*3]);']);
+    eval(['facet{2}.' vars{i} ' = reshape(' vars{i} '(nx*nx*3+1:nx*nx*6),[nx nx*3]);']);
     eval(['facet{3}.' vars{i} ' = reshape(' vars{i} '(nx*nx*6+1:nx*nx*7),[nx nx]);']);
     eval(['facet{4}.' vars{i} ' = reshape(' vars{i} '(nx*nx*7+1:nx*nx*10),[nx*3 nx]);']);
     eval(['facet{5}.' vars{i} ' = reshape(' vars{i} '(nx*nx*10+1:nx*nx*13),[nx*3 nx]);']);
