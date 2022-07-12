@@ -60,7 +60,7 @@ for t=1:nt, mydisp(t)
 
 
     start_range = 9;
-    end_range = 9;
+    end_range = 8;
 
     
     
