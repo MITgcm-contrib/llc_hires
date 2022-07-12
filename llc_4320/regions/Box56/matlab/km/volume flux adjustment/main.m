@@ -64,10 +64,17 @@ U_East=readbin('grid/Highres/U_East',[ny_hr, nz_hr, nt]);
 V_South=readbin('grid/Highres/V_South',[nx_hr, nz_hr, nt]);
 V_North=readbin('grid/Highres/V_North',[nx_hr, nz_hr, nt]);
 
-start_x = factor+1;
-end_x = factor-1;
-start_range = factor-1;
-end_range = factor+1;
+
+
+
+
+
+
+%%
+start_x = 9;
+end_x = 0;
+start_range = 9;
+end_range = 9;
     
     
 for t=1:nt, mydisp(t)
@@ -116,7 +123,7 @@ for t=1:nt, mydisp(t)
     tmp=readbin('grid/Highres/V_North',[nx_hr,nz_hr],1,'real*4',t-1).*hFac_hr;
     V_North_hr(t)=DXG_hr(start_range:(end-end_range),end-end_x)'*tmp(start_range:(end-end_range),:)*DRF_hr;
     %adjustment
-    V_North(:,:,t) = V_North(:,:,t) + ((V_North_lr(t)-V_North_hr(t))/(DXG_hr(start_range:(end-end_range),end_x)' * hFac_hr(start_range:(end-end_range),:) * DRF_hr));
+    V_North(:,:,t) = V_North(:,:,t) + ((V_North_lr(t)-V_North_hr(t))/(DXG_hr(start_range:(end-end_range),end-end_x)' * hFac_hr(start_range:(end-end_range),:) * DRF_hr));
 end
 
 
