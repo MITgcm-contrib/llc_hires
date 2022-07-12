@@ -26,12 +26,6 @@ _$*
 *.ln
 core
 # CVS default ignores end
-.DS_Store
-llc_4320/.DS_Store
-llc_4320/regions/.DS_Store
-llc_4320/regions/Box56/.DS_Store
-llc_4320/regions/Box56/250m_264l/.DS_Store
-llc_4320/regions/Box56/matlab/.DS_Store
-llc_4320/regions/Box56/matlab/km/.DS_Store
-llc_4320/regions/Box56/matlab/km/volume flux adjustment/.DS_Store
-llc_4320/regions/Box56/matlab/km/volume flux adjustment/plot/.DS_Store
+*.DS_Store
+*.bin
+
