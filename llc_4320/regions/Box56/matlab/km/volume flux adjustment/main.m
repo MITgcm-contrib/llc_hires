@@ -72,7 +72,7 @@ V_North=readbin('grid/Highres/V_North',[nx_hr, nz_hr, nt]);
 
 %%
 start_x = 9;
-end_x = 0;
+end_x = 7;
 start_range = 9;
 end_range = 8;
     
