@@ -94,16 +94,16 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=51840.,
- endtime=1728000.,
- deltaT = 10.,
+ nIter0=69120.,
+ endtime=2160000.,
+ deltaT = 25.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- dumpfreq = 86400.,
+ dumpfreq = 0.,
  chkptFreq   = 86400.,
- monitorFreq = 10.,
- dumpInitAndLast=.TRUE.,
+ monitorFreq = 25.,
+ dumpInitAndLast=.FALSE.,
  /
 
 # Gridding parameters
