@@ -77,9 +77,8 @@
  debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.FALSE.,
+ useSingleCPUio=.TRUE.,
  useSingleCpuInput=.TRUE.,
- globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
@@ -95,15 +94,15 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=51840.,
- endtime=1728000.,
- deltaT = 10.,
+ nIter0=259200.,
+ endtime=6912000.,
+ deltaT = 25.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- dumpfreq = 86400.,
- chkptFreq   = 86400.,
- monitorFreq = 10.,
+ dumpfreq = 0.,
+ chkptFreq   = 216000.,
+ monitorFreq = 25.,
  dumpInitAndLast=.FALSE.,
  /
 
