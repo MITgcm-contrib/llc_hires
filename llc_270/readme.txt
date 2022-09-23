@@ -23,6 +23,25 @@ mv drive/files/Version5/Alpha/input_ecco    llc_270/
 mv drive/files/Version5/Alpha/input_init    llc_270/
 mv drive/files/Version5/Alpha/XX            llc_270/
 rm -r drive/
+# or on pfe just links folders/files to make input_forcing input_ecco input_init
+cd llc_270
+ln -s /nobackup/hzhang1/forcing/era_xx input_forcing
+mkdir -p input_ecco input_init XX
+cd input_ecco
+for i in grace insitu  nul pri_err si_IAN  ssh  sst  ts
+do
+        ln -sf /nobackup/hzhang1/obs/$i/* .
+done
+cd ../input_init
+ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/* .
+ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/19920101/* .
+rm data* eedata
+ln -s sigma_MDT_glob_eccollc_llc270.bin sigma_MDT_glob_eccollc.bin
+ln -s sigma_iceconc_eccollc_270.bin sigma_iceconc_eccollc.bin
+ln -s slaerr_gridscale_r1_llc270.err slaerr_gridscale_r1.err
+ln -s slaerr_largescale_r1_ll270.err slaerr_largescale_r1.err
+cd ..
+touch XX/xx
 
 # ================
 # 2. Build executable
@@ -33,9 +52,9 @@ mkdir build run
 cd build
 
    module purge
-   module load comp-intel/2016.2.181 mpi-sgi/mpt.2.14r19 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+   module load comp-intel mpi-hpe hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
    ../tools/genmake2 -of ../../llc_270/code_ad/linux_amd64_ifort+mpi_ice_nas \
-   -mo ../../llc_270/code_ad
+   -mo ../../llc_270/code_ad -mpi
    make depend
    make -j 16
  

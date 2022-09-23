@@ -9,7 +9,7 @@
 
 module purge
 #module load comp-intel/2012.0.032 mpi-sgi/mpt netcdf/4.0
-module load comp-intel mpi-sgi/mpt
+module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 module list
 
 umask 027
