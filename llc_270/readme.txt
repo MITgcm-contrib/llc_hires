@@ -32,16 +32,17 @@ for i in grace insitu  nul pri_err si_IAN  ssh  sst  ts
 do
         ln -sf /nobackup/hzhang1/obs/$i/* .
 done
-cd ../input_init
-ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/* .
-ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/19920101/* .
-rm data* eedata
 ln -s sigma_MDT_glob_eccollc_llc270.bin sigma_MDT_glob_eccollc.bin
 ln -s sigma_iceconc_eccollc_270.bin sigma_iceconc_eccollc.bin
 ln -s slaerr_gridscale_r1_llc270.err slaerr_gridscale_r1.err
 ln -s slaerr_largescale_r1_ll270.err slaerr_largescale_r1.err
+cd ../input_init
+ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/* .
+ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/19920101/* .
+rm data* eedata
 cd ..
 touch XX/xx
+cd ..
 
 # ================
 # 2. Build executable
