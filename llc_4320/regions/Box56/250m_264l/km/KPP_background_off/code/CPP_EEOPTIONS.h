@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_4320/code/CPP_EEOPTIONS.h,v 1.2 2016/04/14 03:51:44 dimitri Exp $
-C $Name:  $
-
 CBOP
 C     !ROUTINE: CPP_EEOPTIONS.h
 C     !INTERFACE:
@@ -65,9 +62,6 @@ C--   Control use of "double" precision constants.
 C     Use D0 where it means REAL*8 but not where it means REAL*16
 #define D0 d0
 
-C--   Enable some old macro conventions for backward compatibility
-#undef USE_OLD_MACROS_R4R8toRSRL
-
 C=== IO related options ===
 C--   Flag used to indicate whether Fortran formatted write
 C     and read are threadsafe. On SGI the routines can be thread
@@ -85,6 +79,12 @@ C--   Flag to turn off the writing of error message to ioUnit zero
 C--   Alternative formulation of BYTESWAP, faster than
 C     compiler flag -byteswapio on the Altix.
 #undef FAST_BYTESWAP
+
+C--   Flag to turn on old default of opening scratch files with the
+C     STATUS='SCRATCH' option. This method, while perfectly FORTRAN-standard,
+C     caused filename conflicts on some multi-node/multi-processor platforms
+C     in the past and has been replace by something (hopefully) more robust.
+#undef USE_FORTRAN_SCRATCH_FILES
 
 C--   Flag defined for eeboot_minimal.F, eeset_parms.F and open_copy_data_file.F
 C     to write STDOUT, STDERR and scratch files from process 0 only.
@@ -147,6 +147,9 @@ C     (calling S/R STOP_IF_ERROR) before stopping.
 C--   Control use of communication with other component:
 C     allow to import and export from/to Coupler interface.
 #undef COMPONENT_MODULE
+
+C--   Activate some pieces of code for coupling to GEOS AGCM
+#undef HACK_FOR_GMAO_CPL
 
 #endif /* _CPP_EEOPTIONS_H_ */
 
