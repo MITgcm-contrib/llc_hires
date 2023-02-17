@@ -9,6 +9,10 @@
  &
 #
  &EXF_NML_02
+ hfluxfile         = 'oceQnet.bin',
+ sfluxfile         = 'oceSflux.bin',
+ ustressfile       = 'oceTAUX.bin',
+ vstressfile       = 'oceTAUY.bin',
  apressurefile     = 'EOG_pres_tide',
  aqhfile           = 'EOG_spfh2m',
  atempfile         = 'EOG_tmp2m_degC',
