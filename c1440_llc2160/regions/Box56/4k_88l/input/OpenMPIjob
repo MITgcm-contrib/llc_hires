@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH --mail-type=ALL
+#SBATCH -N 116
+#SBATCH --ntasks-per-node=40
+#SBATCH -t 24:00:00
+#SBATCH -J 250m-264l_KPP-off
+cd $SLURM_SUBMIT_DIR
+module load NiaEnv/2019b
+module load intel/2019u4
+module load openmpi/4.0.1
+module load hdf5/1.8.21
+module load netcdf/4.6.3
+cd run/
+mpirun -n 4608 ./mitgcmuv
