@@ -1,0 +1,24 @@
+# Packages
+ &PACKAGES
+ useCAL   = .TRUE.,
+ useEXF   = .TRUE.,
+#useRBCS  = .TRUE.,
+ useGMRedi= .TRUE.,
+# useKPP   = .TRUE.,
+# useSBO   = .TRUE.,
+#useMNC   = .TRUE.,
+ useSeaice= .TRUE.,
+ useGGL90=.TRUE.,
+ useSALT_PlUME=.TRUE.,
+# useDOWN_SLOPE=.TRUE.,
+ useDiagnostics=.TRUE.,
+# useECCO=.TRUE.,
+# useCTRL=.TRUE.,
+# useProfiles=.TRUE.,
+# useSMOOTH=.TRUE.,
+#useGrdchk=.TRUE.,
+#useLayers=.TRUE.,
+#
+#usePtracers=.TRUE.,
+#useBBL=.TRUE.,
+ /
