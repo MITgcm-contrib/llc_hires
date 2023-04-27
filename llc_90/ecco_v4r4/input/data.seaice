@@ -51,6 +51,15 @@
       SEAICE_wetIceAlb_south   = 0.66
       SEAICE_drySnowAlb_south  = 0.84
       SEAICE_wetSnowAlb_south  = 0.7 
+
+#changes needed due to pkg/seaice changes
+#from checkpoint67c to checkpoint67d
+      SEAICEscaleSurfStress=.FALSE.,
+      SEAICEaddSnowMass=.FALSE.,
+      SEAICE_OLx=0,
+      SEAICE_OLy=0,
+      SEAICEetaZmethod=0,
+      SEAICE_waterDrag=5.34499514091350826D-3,
  /
 #
  &SEAICE_PARM02

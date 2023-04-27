@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ggl90/GGL90_OPTIONS.h,v 1.7 2015/02/19 15:44:12 mlosch Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/GGL90_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
 C $Name:  $
 
 C     *=============================================================*
@@ -23,9 +23,6 @@ C     Enable horizontal diffusion of TKE.
 C     Use horizontal averaging for viscosity and diffusivity as
 C     originally implemented in OPA.
 #define ALLOW_GGL90_SMOOTH
-
-C     allow IDEMIX model
-#undef ALLOW_GGL90_IDEMIX
 
 #endif /* ALLOW_GGL90 */
 #endif /* GGL90_OPTIONS_H */

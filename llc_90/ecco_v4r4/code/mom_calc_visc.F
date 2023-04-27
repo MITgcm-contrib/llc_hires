@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/mom_common/mom_calc_visc.F,v 1.49 2015/09/10 17:53:04 jmc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/mom_calc_visc.F,v 1.1 2017/05/04 17:46:37 ou.wang Exp $ 
 C $Name:  $
 
 #include "MOM_COMMON_OPTIONS.h"
@@ -81,10 +81,10 @@ C     == Global variables ==
 #include "EEPARAMS.h"
 #include "PARAMS.h"
 #include "MOM_VISC.h"
-#ifdef ALLOW_AUTODIFF
+#ifdef ALLOW_AUTODIFF_TAMC
 #include "tamc.h"
 #include "tamc_keys.h"
-#endif /* ALLOW_AUTODIFF */
+#endif /* ALLOW_AUTODIFF_TAMC */
 
 C     !INPUT/OUTPUT PARAMETERS:
 C     myThid               :: my thread Id number
@@ -114,8 +114,7 @@ C     !LOCAL VARIABLES:
       _RL leith2fac, leith4fac
       _RL leithD2fac, leithD4fac
       _RL viscAhRe_max, viscA4Re_max
-      _RL Alin, grdVrt,grdDiv, keZpt
-      _RL deepFac3, deepFac4
+      _RL Alin,grdVrt,grdDiv, keZpt
       _RL L2, L3, L5, L2rdt, L4rdt, recip_dt
       _RL Uscl,U4scl
       _RL divDx(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
@@ -166,9 +165,7 @@ c     IF ( useVariableVisc ) THEN
 C---- variable viscosity :
 
        recip_dt = 1. _d 0
-       IF ( deltaTMom.NE.0. ) recip_dt = 1. _d 0/deltaTMom
-       deepFac3 = deepFac2C(k)*deepFacC(k)
-       deepFac4 = deepFac2C(k)*deepFac2C(k)
+       IF ( deltaTmom.NE.0. ) recip_dt = 1. _d 0/deltaTmom
 
        IF ( useHarmonicVisc .AND. viscAhReMax.NE.0. ) THEN
         viscAhRe_max=SQRT(2. _d 0)/viscAhReMax
@@ -265,8 +262,7 @@ C        to compute d/dx(hDiv), fill corners with appropriate values:
          ENDIF
          DO j=2-OLy,sNy+OLy-1
           DO i=2-OLx,sNx+OLx-1
-            divDx(i,j) = (hDiv(i,j)-hDiv(i-1,j))
-     &                  *recip_dxC(i,j,bi,bj)*recip_deepFacC(k)
+            divDx(i,j) = (hDiv(i,j)-hDiv(i-1,j))*recip_dxC(i,j,bi,bj)
           ENDDO
          ENDDO
 
@@ -278,8 +274,7 @@ C        to compute d/dy(hDiv), fill corners with appropriate values:
          ENDIF
          DO j=2-OLy,sNy+OLy-1
           DO i=2-OLx,sNx+OLx-1
-            divDy(i,j) = (hDiv(i,j)-hDiv(i,j-1))
-     &                  *recip_dyC(i,j,bi,bj)*recip_deepFacC(k)
+            divDy(i,j) = (hDiv(i,j)-hDiv(i,j-1))*recip_dyC(i,j,bi,bj)
           ENDDO
          ENDDO
 
@@ -288,7 +283,7 @@ C-       gradient in x direction:
          DO j=2-OLy,sNy+OLy
           DO i=2-OLx,sNx+OLx-1
             vrtDx(i,j) = (vort3(i+1,j)-vort3(i,j))
-     &                  *recip_dxG(i,j,bi,bj)*recip_deepFacC(k)
+     &                  *recip_dxG(i,j,bi,bj)
      &                  *maskS(i,j,k,bi,bj)
 #ifdef ALLOW_OBCS
      &                  *maskInS(i,j,bi,bj)
@@ -299,7 +294,7 @@ C-       gradient in y direction:
          DO j=2-OLy,sNy+OLy-1
           DO i=2-OLx,sNx+OLx
             vrtDy(i,j) = (vort3(i,j+1)-vort3(i,j))
-     &                  *recip_dyG(i,j,bi,bj)*recip_deepFacC(k)
+     &                  *recip_dyG(i,j,bi,bj)
      &                  *maskW(i,j,k,bi,bj)
 #ifdef ALLOW_OBCS
      &                  *maskInW(i,j,bi,bj)
@@ -314,7 +309,7 @@ C--   end if calcLeith
         DO i=2-OLx,sNx+OLx-1
 CCCCCCCCCCCCCCC Divergence Point CalculationsCCCCCCCCCCCCCCCCCCCC
 
-#ifdef ALLOW_AUTODIFF_TAMC
+#ifdef    ALLOW_AUTODIFF_TAMC
 # ifndef AUTODIFF_DISABLE_LEITH
            lockey_2 = i+olx + (sNx+2*olx)*(j+oly-1)
      &                      + (sNx+2*olx)*(sNy+2*oly)*(lockey_1-1)
@@ -323,13 +318,13 @@ CADJ &     = comlev1_mom_ijk_loop , key=lockey_2, byte=isbyte
 CADJ STORE viscAh_ZSmg(i,j)
 CADJ &     = comlev1_mom_ijk_loop , key=lockey_2, byte=isbyte
 # endif
-#endif /* ALLOW_AUTODIFF_TAMC */
+#endif    /* ALLOW_AUTODIFF_TAMC */
 
 C These are (powers of) length scales
-         L2 = L2_D(i,j,bi,bj)*deepFac2C(k)
+         L2 = L2_D(i,j,bi,bj)
          L2rdt = 0.25 _d 0*recip_dt*L2
-         L3 = L3_D(i,j,bi,bj)*deepFac3
-         L4rdt = L4rdt_D(i,j,bi,bj)*deepFac4
+         L3 = L3_D(i,j,bi,bj)
+         L4rdt = L4rdt_D(i,j,bi,bj)
          L5 = (L2*L3)
 
 #ifndef AUTODIFF_DISABLE_REYNOLDS_SCALE
@@ -408,10 +403,7 @@ C  Harmonic on Div.u points
          Alin=viscAhD+viscAhGrid*L2rdt
      &          +viscAh_DLth(i,j)+viscAh_DSmg(i,j)
 #ifdef ALLOW_3D_VISCAH
-     &          +viscAhDfld(i,j,k,bi,bj)
-#ifdef ALLOW_AUTODIFF
-     &          *viscFacAdj
-#endif
+     &          +viscFacAdj*viscAhDfld(i,j,k,bi,bj)
 #endif
          viscAh_DMin(i,j)=MAX(viscAhGridMin*L2rdt,Uscl)
          viscAh_D(i,j)=MAX(viscAh_DMin(i,j),Alin)
@@ -430,10 +422,7 @@ C  BiHarmonic on Div.u points
          Alin=viscA4D+viscA4Grid*L4rdt
      &          +viscA4_DLth(i,j)+viscA4_DSmg(i,j)
 #ifdef ALLOW_3D_VISCA4
-     &          +viscA4Dfld(i,j,k,bi,bj)
-#ifdef ALLOW_AUTODIFF
-     &          *viscFacAdj
-#endif
+     &          +viscFacAdj*viscA4Dfld(i,j,k,bi,bj)
 #endif
          viscA4_DMin(i,j)=MAX(viscA4GridMin*L4rdt,U4scl)
          viscA4_D(i,j)=MAX(viscA4_DMin(i,j),Alin)
@@ -442,10 +431,10 @@ C  BiHarmonic on Div.u points
 
 CCCCCCCCCCCCC Vorticity Point CalculationsCCCCCCCCCCCCCCCCCC
 C These are (powers of) length scales
-         L2 = L2_Z(i,j,bi,bj)*deepFac2C(k)
+         L2 = L2_Z(i,j,bi,bj)
          L2rdt = 0.25 _d 0*recip_dt*L2
-         L3 = L3_Z(i,j,bi,bj)*deepFac3
-         L4rdt = L4rdt_Z(i,j,bi,bj)*deepFac4
+         L3 = L3_Z(i,j,bi,bj)
+         L4rdt = L4rdt_Z(i,j,bi,bj)
          L5 = (L2*L3)
 
 #ifndef AUTODIFF_DISABLE_REYNOLDS_SCALE
@@ -524,7 +513,7 @@ C  Harmonic on Zeta points
          Alin=viscAhZ+viscAhGrid*L2rdt
      &           +viscAh_ZLth(i,j)+viscAh_ZSmg(i,j)
 #ifdef ALLOW_3D_VISCAH
-     &          +viscAhZfld(i,j,k,bi,bj)
+     &          +viscFacAdj*viscAhZfld(i,j,k,bi,bj)
 #endif
          viscAh_ZMin(i,j)=MAX(viscAhGridMin*L2rdt,Uscl)
          viscAh_Z(i,j)=MAX(viscAh_ZMin(i,j),Alin)
@@ -543,7 +532,7 @@ C  BiHarmonic on Zeta points
          Alin=viscA4Z+viscA4Grid*L4rdt
      &           +viscA4_ZLth(i,j)+viscA4_ZSmg(i,j)
 #ifdef ALLOW_3D_VISCA4
-     &          +viscA4Zfld(i,j,k,bi,bj)
+     &          +viscFacAdj*viscA4Zfld(i,j,k,bi,bj)
 #endif
          viscA4_ZMin(i,j)=MAX(viscA4GridMin*L4rdt,U4scl)
          viscA4_Z(i,j)=MAX(viscA4_ZMin(i,j),Alin)

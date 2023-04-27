@@ -1,13 +1,13 @@
 # ECCOV4r4 set-up
 https://www.ecco-group.org/products-ECCO-V4r4.htm
 https://ecco-group.org/docs/v4r4_reproduction_howto.pdf
-#code base: c66g
+#code base: c67d
 
 # ========
 # 1. Get code
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
-git checkout checkpoint66g
+git checkout checkpoint67d
 
 # ================
 # 2. Build executable
@@ -39,4 +39,5 @@ cp ${MOD}/input_v4r4/* .
 # qsub job_v4r4
 module purge
 module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+limit stacksize unlimited
 mpiexec -np 96 ./mitgcmuv

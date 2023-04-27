@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/model/inc/CPP_OPTIONS.h,v 1.54 2016/11/28 22:55:00 jmc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/CPP_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -43,9 +43,6 @@ C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE
 
-C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
-#undef ALLOW_SOLVE4_PS_AND_DRAG
-
 C o Include/exclude AdamsBashforth-3rd-Order code
 #define ALLOW_ADAMSBASHFORTH_3
 
@@ -61,6 +58,14 @@ C   (3-D generalisation of oceanic real-fresh water flux)
 
 C o Include pressure loading code
 #define ATMOSPHERIC_LOADING
+#ifdef ATMOSPHERIC_LOADING
+#define ALLOW_IB_CORR 
+#endif
+
+C o Calculate Phi-Hydrostatic at r-lower boundary during initialization.
+C   Needed for obp cost. Otherwise, the first record of m_bp is wrong,
+C   because phiHydLow is zero.
+#define CALC_PHI_RLOW_INI
 
 C o exclude/allow external forcing-fields load
 C   this allows to read & do simple linear time interpolation of oceanic
@@ -83,6 +88,7 @@ C   so that d/dt(eta) is exactly equal to - Div.Transport
 C o Allow the use of Non-Linear Free-Surface formulation
 C   this implies that surface thickness (hFactors) vary with time
 #define NONLIN_FRSURF
+# undef DISABLE_RSTAR_CODE
 #define DISABLE_SIGMA_CODE
 
 C o Include/exclude code for single reduction Conjugate-Gradient solver
@@ -133,14 +139,5 @@ C o Use old EXTERNAL_FORCING_U,V,T,S subroutines (for backward compatibility)
 C o Execution environment support options
 #include "CPP_EEOPTIONS.h"
 
-C o Include/exclude single header file containing multiple packages options
-C   (AUTODIFF, COST, CTRL, ECCO, EXF ...) instead of the standard way where
-C   each of the above pkg get its own options from its specific option file.
-C   Although this method, inherited from ECCO setup, has been traditionally
-C   used for all adjoint built, work is in progress to allow to use the
-C   standard method also for adjoint built.
-c#ifdef PACKAGES_CONFIG_H
-c# include "ECCO_CPPOPTIONS.h"
-c#endif
-
 #endif /* CPP_OPTIONS_H */
+

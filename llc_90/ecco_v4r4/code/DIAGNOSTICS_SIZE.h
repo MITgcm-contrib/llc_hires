@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/diagnostics/DIAGNOSTICS_SIZE.h,v 1.5 2008/02/05 15:31:19 jmc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/DIAGNOSTICS_SIZE.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
 C $Name:  $
 
 

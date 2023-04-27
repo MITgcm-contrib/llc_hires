@@ -1,7 +1,8 @@
-C $Header: /u/gcmpack/MITgcm/pkg/gmredi/GMREDI_OPTIONS.h,v 1.19 2014/05/18 02:49:52 m_bates Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/GMREDI_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
 C $Name:  $
 
 C CPP options file for GM/Redi package
+C
 C Use this file for selecting options within the GM/Redi package
 
 #ifndef GMREDI_OPTIONS_H
@@ -22,6 +23,7 @@ chzh]
 
 C Designed to simplify the Ajoint code:
 #define GMREDI_WITH_STABLE_ADJOINT
+
 C -- exclude the clipping/tapering part of the code that is not used
 #define GM_EXCLUDE_CLIPPING
 #define GM_EXCLUDE_FM07_TAP
@@ -35,7 +37,7 @@ C Use old calculation (before 2007/05/24) of Visbeck etal K_GM+Redi
 C (which depends on tapering scheme)
 #undef OLD_VISBECK_CALC
 
-C This allows the Bates et al formulation to calculate the 
+C This allows the Bates et al formulation to calculate the
 C bolus transport and K for Redi
 #undef GM_K3D
 #undef GM_K3D_PASSIVE
