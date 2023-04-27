@@ -1,7 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/DIAGNOSTICS_SIZE.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
-C $Name:  $
-
-
 C     Diagnostics Array Dimension
 C     ---------------------------
 C     ndiagMax   :: maximum total number of available diagnostics

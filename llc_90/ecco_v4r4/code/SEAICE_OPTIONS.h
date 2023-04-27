@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/SEAICE_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
-C $Name:  $
-
 C     *==========================================================*
 C     | SEAICE_OPTIONS.h
 C     | o CPP options file for sea ice package.
@@ -86,15 +83,20 @@ C--   grease ice uses SItracer:
 # define ALLOW_SITRACER_ADVCAP
 #endif
 
-C--   By default the seaice model is discretized on a B-Grid (for
-C     historical reasons). Define the following flag to use a new
-C     (not thoroughly) test version on a C-grid
+C--   Historically, the seaice model was discretized on a B-Grid. This
+C     discretization should still work but it is not longer actively tested
+C     and supported. The following flag should always be set in order to use
+C     the operational C-grid discretization.
 #define SEAICE_CGRID
 
 C--   Only for the C-grid version it is possible to
 #ifdef SEAICE_CGRID
+C     enable advection of sea ice momentum
+# undef SEAICE_ALLOW_MOM_ADVECTION
 C     enable JFNK code by defining the following flag
 # undef  SEAICE_ALLOW_JFNK
+C     enable Krylov code by defining the following flag
+# undef SEAICE_ALLOW_KRYLOV
 C     enable LSR to use global (multi-tile) tri-diagonal solver
 # undef SEAICE_GLOBAL_3DIAG_SOLVER
 C     enable EVP code by defining the following flag
@@ -104,26 +106,40 @@ C--   When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
 #  undef SEAICE_ALLOW_CLIPZETA
 # endif /* SEAICE_ALLOW_EVP */
+C     smooth regularization (without max-function) of delta for
+C     better differentiability
+# undef SEAICE_DELTA_SMOOTHREG
 C     regularize zeta to zmax with a smooth tanh-function instead
 C     of a min(zeta,zmax). This improves convergence of iterative
 C     solvers (Lemieux and Tremblay 2009, JGR). No effect on EVP
 # undef SEAICE_ZETA_SMOOTHREG
 C     allow the truncated ellipse rheology (runtime flag SEAICEuseTEM)
 # undef SEAICE_ALLOW_TEM
+C     allow the use of the Mohr Coulomb rheology (runtime flag SEAICEuseMCS)
+C     as defined in (Ip 1991) /!\ This is known to give unstable results,
+C     use with caution
+# undef SEAICE_ALLOW_MCS
+C     allow the use of Mohr Coulomb with elliptical plastic potential
+C     (runtime flag SEAICEuseMCE)
+# undef SEAICE_ALLOW_MCE
+C     allow the teardrop and parabolic lens  rheology
+C     (runtime flag SEAICEuseTD and SEAICEusePL)
+# undef SEAICE_ALLOW_TEARDROP
 C     Use LSR vector code; not useful on non-vector machines, because it
 C     slows down convergence considerably, but the extra iterations are
 C     more than made up by the much faster code on vector machines. For
 C     the only regularly test vector machine these flags a specified
 C     in the build options file SUPER-UX_SX-8_sxf90_awi, so that we comment
 C     them out here.
-C# define SEAICE_VECTORIZE_LSR
-C# ifdef SEAICE_VECTORIZE_LSR
-C     Use modified LSR vector code that splits vector loop into two with
-C     step size 2. This modification improves the convergence of the vector
-C     code dramatically, so that is may actually be useful in general, but
-C     that needs to be tested.
-C#  define SEAICE_VECTORIZE_LSR_ZEBRA
-C# endif
+# undef SEAICE_VECTORIZE_LSR
+C     Use zebra-method (alternate lines) for line-successive-relaxation
+C     This modification improves the convergence of the vector code
+C     dramatically, so that is may actually be useful in general, but
+C     that needs to be tested. Can be used without vectorization options.
+# undef SEAICE_LSR_ZEBRA
+C     Use parameterisation of grounding ice for a better representation
+C     of fastice in shallow seas
+# undef SEAICE_ALLOW_BOTTOMDRAG
 #else /* not SEAICE_CGRID, but old B-grid */
 C--   By default for B-grid dynamics solver wind stress under sea-ice is
 C     set to the same value as it would be if there was no sea-ice.
@@ -152,6 +168,10 @@ C     the ocean at the end of seaice_growth in a conservative manner.
 C     SEAICE_CAP_SUBLIM is not needed as of now, but kept just in case.
 #undef SEAICE_CAP_SUBLIM
 
+C--   Use the adjointable sea-ice thermodynamic model
+C     in seaice_growth_adx.F instead of seaice_growth.F
+#undef SEAICE_USE_GROWTH_ADX
+
 C--   Enable free drift code
 #define SEAICE_ALLOW_FREEDRIFT
 
@@ -160,15 +180,6 @@ c       >>> Sea-ice volume (requires pkg/cost)
 #undef ALLOW_COST_ICE
 c       >>> Sea-ice misfit to obs (requires pkg/cost and ecco)
 #undef ALLOW_SEAICE_COST_SMR_AREA
-
-C--   enforce cfl condition without cuting sensitivity flow
-c#define ALLOW_CFL_FIX
-
-C--   cut the adjoint dependency to hactual, etc.
-c# undef SEAICE_SIMPLIFY_GROWTH_ADJ
-
-C--   go through heff and open ocean
-c#define SEAICE_MODIFY_GROWTH_ADJ
 
 #endif /* ALLOW_SEAICE */
 #endif /* SEAICE_OPTIONS_H */

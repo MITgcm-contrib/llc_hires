@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/EXF_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
-C $Name:  $
-
 CBOP
 C !ROUTINE: EXF_OPTIONS.h
 C !INTERFACE:
@@ -29,6 +26,7 @@ C   are specific to this package are assumed to be set in ECCO_CPPOPTIONS.h
 
 C-- Package-specific Options & Macros go here
 
+C   --------------------
 C   pkg/exf CPP options:
 C   (see also table below on how to combine options)
 
@@ -92,6 +90,9 @@ C   >>> ATMOSPHERIC_LOADING <<<
 C       If defined, atmospheric pressure can be read-in from files.
 C   WARNING: this flag is set (define/undef) in CPP_OPTIONS.h
 C            and cannot be changed here (in EXF_OPTIONS.h)
+C
+C   >>> EXF_ALLOW_TIDES <<<
+C       If defined, 2-D tidal geopotential can be read-in from files
 C
 C   >>> EXF_SEAICE_FRACTION <<<
 C       If defined, seaice fraction can be read-in from files (areaMaskFile)
@@ -178,7 +179,7 @@ C  Note: To use ALLOW_READ_TURBFLUXES, ALLOW_ATM_TEMP needs to
 C        be defined but ALLOW_BULKFORMULAE needs to be undef
 #  define ALLOW_READ_TURBFLUXES
 # endif
-#endif
+#endif /* ALLOW_ATM_TEMP */
 
 C-  Other forcing fields
 #define ALLOW_RUNOFF
@@ -194,7 +195,6 @@ C       and ATMOSPHERIC_LOADING need to be defined
 C-  Zenith Angle/Albedo related flags.
 #ifdef ALLOW_DOWNWARD_RADIATION
 # define ALLOW_ZENITHANGLE
-# undef ALLOW_ZENITHANGLE_BOUNDSWDOWN
 #endif
 
 C-  Use ocean_emissivity*lwdown in lwFlux. This flag should be defined
@@ -206,6 +206,9 @@ C   unless to reproduce old results (obtained with inconsistent old code)
 C-  Relaxation to monthly climatologies.
 #define ALLOW_CLIMSST_RELAXATION
 #define ALLOW_CLIMSSS_RELAXATION
+
+C-  Allows to read-in (2-d) tidal geopotential forcing
+#undef EXF_ALLOW_TIDES
 
 C-  Allows to read-in seaice fraction from files (areaMaskFile)
 #undef EXF_SEAICE_FRACTION
@@ -221,7 +224,7 @@ C   (no pole symmetry, single vector-comp interp, reset to 0 zonal-comp @ N.pole
 #undef EXF_USE_OLD_INTERP_POLE
 
 #define EXF_INTERP_USE_DYNALLOC
-#if ( defined (EXF_INTERP_USE_DYNALLOC) && defined (USING_THREADS) )
+#if ( defined USE_EXF_INTERPOLATION && defined EXF_INTERP_USE_DYNALLOC && defined USING_THREADS )
 # define EXF_IREAD_USE_GLOBAL_POINTER
 #endif
 
