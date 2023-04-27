@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/SEAICE_OPTIONS.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/seaice/SEAICE_OPTIONS.h,v 1.80 2016/06/14 20:36:07 jmc Exp $
 C $Name:  $
 
 C     *==========================================================*
@@ -33,6 +33,10 @@ C     open-ocean.  When this flag is set, these variables are computed
 C     in a separate external package, for example, pkg/exf, and then
 C     modified for sea-ice effects by pkg/seaice.
 #define SEAICE_EXTERNAL_FLUXES
+
+C--   Exclude Wind-Stress common block (in SEAICE.h). This option
+C     should ALWAYS been left undef (just listed here for the record)
+#undef SEAICE_EXCLUDE_WIND_STRESS
 
 C--   This CPP flag has been retired.  The number of ice categories
 C     used to solve for seaice flux is now specified by run-time
@@ -95,6 +99,8 @@ C--   Only for the C-grid version it is possible to
 #ifdef SEAICE_CGRID
 C     enable JFNK code by defining the following flag
 # undef  SEAICE_ALLOW_JFNK
+C     enable Krylov code by defining the following flag
+# undef SEAICE_ALLOW_KRYLOV
 C     enable LSR to use global (multi-tile) tri-diagonal solver
 # undef SEAICE_GLOBAL_3DIAG_SOLVER
 C     enable EVP code by defining the following flag
@@ -104,6 +110,9 @@ C--   When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
 #  undef SEAICE_ALLOW_CLIPZETA
 # endif /* SEAICE_ALLOW_EVP */
+C     smooth regularization (without max-function) of delta for
+C     better differentiability
+# undef SEAICE_DELTA_SMOOTHREG
 C     regularize zeta to zmax with a smooth tanh-function instead
 C     of a min(zeta,zmax). This improves convergence of iterative
 C     solvers (Lemieux and Tremblay 2009, JGR). No effect on EVP
@@ -116,14 +125,15 @@ C     more than made up by the much faster code on vector machines. For
 C     the only regularly test vector machine these flags a specified
 C     in the build options file SUPER-UX_SX-8_sxf90_awi, so that we comment
 C     them out here.
-C# define SEAICE_VECTORIZE_LSR
-C# ifdef SEAICE_VECTORIZE_LSR
-C     Use modified LSR vector code that splits vector loop into two with
-C     step size 2. This modification improves the convergence of the vector
-C     code dramatically, so that is may actually be useful in general, but
-C     that needs to be tested.
-C#  define SEAICE_VECTORIZE_LSR_ZEBRA
-C# endif
+# undef SEAICE_VECTORIZE_LSR
+C     Use zebra-method (alternate lines) for line-successive-relaxation
+C     This modification improves the convergence of the vector code
+C     dramatically, so that is may actually be useful in general, but
+C     that needs to be tested. Can be used without vectorization options.
+# undef SEAICE_LSR_ZEBRA
+C     Use parameterisation of grounding ice for a better representation
+C     of fastice in shallow seas
+# undef SEAICE_ALLOW_BOTTOMDRAG
 #else /* not SEAICE_CGRID, but old B-grid */
 C--   By default for B-grid dynamics solver wind stress under sea-ice is
 C     set to the same value as it would be if there was no sea-ice.
@@ -160,15 +170,6 @@ c       >>> Sea-ice volume (requires pkg/cost)
 #undef ALLOW_COST_ICE
 c       >>> Sea-ice misfit to obs (requires pkg/cost and ecco)
 #undef ALLOW_SEAICE_COST_SMR_AREA
-
-C--   enforce cfl condition without cuting sensitivity flow
-c#define ALLOW_CFL_FIX
-
-C--   cut the adjoint dependency to hactual, etc.
-c# undef SEAICE_SIMPLIFY_GROWTH_ADJ
-
-C--   go through heff and open ocean
-c#define SEAICE_MODIFY_GROWTH_ADJ
 
 #endif /* ALLOW_SEAICE */
 #endif /* SEAICE_OPTIONS_H */

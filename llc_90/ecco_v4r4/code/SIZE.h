@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm_contrib/ecco_utils/ecco_v4_release3_devel/code/SIZE.h,v 1.1 2017/05/04 17:46:37 ou.wang Exp $
+C $Header: /u/gcmpack/MITgcm/model/inc/SIZE.h,v 1.28 2009/05/17 21:15:07 jmc Exp $
 C $Name:  $
 
 CBOP
@@ -7,15 +7,15 @@ C    !INTERFACE:
 C    include SIZE.h
 C    !DESCRIPTION: \bv
 C     *==========================================================*
-C     | SIZE.h Declare size of underlying computational grid.
+C     | SIZE.h Declare size of underlying computational grid.     
 C     *==========================================================*
-C     | The design here support a three-dimensional model grid
-C     | with indices I,J and K. The three-dimensional domain
-C     | is comprised of nPx*nSx blocks of size sNx along one axis
-C     | nPy*nSy blocks of size sNy along another axis and one
-C     | block of size Nz along the final axis.
-C     | Blocks have overlap regions of size OLx and OLy along the
-C     | dimensions that are subdivided.
+C     | The design here support a three-dimensional model grid    
+C     | with indices I,J and K. The three-dimensional domain      
+C     | is comprised of nPx*nSx blocks of size sNx along one axis 
+C     | nPy*nSy blocks of size sNy along another axis and one     
+C     | block of size Nz along the final axis.                    
+C     | Blocks have overlap regions of size OLx and OLy along the 
+C     | dimensions that are subdivided.                           
 C     *==========================================================*
 C     \ev
 CEOP
@@ -55,14 +55,11 @@ C     Nr  :: No. points in Z for full process domain.
      &           Ny  = sNy*nSy*nPy,
      &           Nr  =  50 )
 
-C     MAX_OLX  - Set to the maximum overlap region size of any array
+C     MAX_OLX :: Set to the maximum overlap region size of any array
 C     MAX_OLY    that will be exchanged. Controls the sizing of exch
-C                routine buufers.
+C                routine buffers.
       INTEGER MAX_OLX
       INTEGER MAX_OLY
       PARAMETER ( MAX_OLX = OLx,
      &            MAX_OLY = OLy )
-
-      integer     nobcs
-      parameter ( nobcs = 4 )
 
