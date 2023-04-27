@@ -25,8 +25,8 @@
   GM_Kmin_horiz      = 100.,
   GM_Scrit           = 4.D-3,
   GM_Sd              = 1.D-3,
-  GM_background_K3dFile='eccov4_r4_kapgm.data',
-  GM_isopycK3dFile='eccov4_r4_kapredi.data',
+  GM_K3dGMFile       = 'eccov4_r4_kapgm.data',
+  GM_K3dRediFile     = 'eccov4_r4_kapredi.data',
 
 #
 ###  GM_Visbeck_alpha   = 1.5D-2,

@@ -9,14 +9,6 @@ C Use this file for selecting options within the GM/Redi package
 #ifdef ALLOW_GMREDI
 C     Package-specific Options & Macros go here
 
-C initialize KapGM and KapRedi from a file
-chzh[
-#define ALLOW_KAPGM_CONTROL
-#define ALLOW_KAPREDI_CONTROL
-chzh]
-#define ALLOW_KAPGM_3DFILE
-#define ALLOW_KAPREDI_3DFILE
-
 C Designed to simplify the Ajoint code:
 #define GMREDI_WITH_STABLE_ADJOINT
 C -- exclude the clipping/tapering part of the code that is not used
@@ -25,6 +17,11 @@ C -- exclude the clipping/tapering part of the code that is not used
 #define GM_EXCLUDE_AC02_TAP
 C #define GM_EXCLUDE_TAPERING
 #define GM_EXCLUDE_SUBMESO
+
+C Allows to read-in background 3-D Redi and GM diffusivity coefficients
+C Note: need these to be defined for use as control (pkg/ctrl) parameters
+#define GM_READ_K3D_REDI
+#define GM_READ_K3D_GM
 
 C This allows to use Visbeck et al formulation to compute K_GM+Redi
 #undef GM_VISBECK_VARIABLE_K

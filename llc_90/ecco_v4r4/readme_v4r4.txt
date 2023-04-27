@@ -1,13 +1,13 @@
 # ECCOV4r4 set-up
 https://www.ecco-group.org/products-ECCO-V4r4.htm
 https://ecco-group.org/docs/v4r4_reproduction_howto.pdf
-#code base: c68i
+#code base: c68k
 
 # ========
 # 1. Get code
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
-git checkout checkpoint68i
+git checkout checkpoint68k
 
 # ================
 # 2. Build executable
