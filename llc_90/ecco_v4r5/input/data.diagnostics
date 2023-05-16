@@ -1,0 +1,195 @@
+# Diagnostic Package Choices
+#-----------------
+# for each output-stream:
+#  filename(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  frequency(n):< 0 : write snap-shot output every multiple of |frequency| (iter)
+#               > 0 : write time-average output every multiple of frequency (iter)
+#  levels(:,n) : list of levels to write to file (Notes: declared as REAL)
+#                 when this entry is missing, select all common levels of this list
+#  fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics" file 
+#                 for the list of all available diag. in this particular config)
+#--------------------------------------------------------------------
+#
+ &diagnostics_list
+#
+   dumpatlast = .TRUE.,
+#---
+  frequency(1) = 2635200.0,
+   fields(1:25,1) = 'ETAN    ','SIarea  ','SIheff ','SIhsnow ',
+#stuff that is not quite state variables (and may not be quite
+#synchroneous) but are added here to reduce number of files
+                 'DETADT2 ','PHIBOT  ','sIceLoad',
+                 'MXLDEPTH','oceSPDep',
+                 'SIatmQnt','SIatmFW ','oceQnet ','oceFWflx',
+                 'oceTAUX ','oceTAUY ',
+                 'ADVxHEFF','ADVyHEFF','DFxEHEFF','DFyEHEFF',
+                 'ADVxSNOW','ADVySNOW','DFxESNOW','DFyESNOW',
+                 'SIuice  ','SIvice  ',
+   filename(1) = 'diags/state_2d_set1',
+#---
+  frequency(2) = 2635200.0,
+   fields(1:3,2) = 'THETA   ','SALT    ',
+#stuff that is not quite state variables (and may not be quite
+#synchronous) but are added here to reduce file number
+                 'DRHODR  ',
+#                'KPPviscA','KPPdiffT','KPPdiffTS',
+#                'GGL90TKE','GGL90Lmx','GGL90Prl',
+#                'GGL90ArU','GGL90ArV','GGL90Kr ',
+   filename(2) = 'diags/state_3d_set1',
+#---
+  frequency(3) = 2635200.0,
+   fields(1:5,3) = 'UVELMASS','VVELMASS','WVELMASS',
+                 'GM_PsiX ','GM_PsiY ',
+#uvel is approximately uvelmass divided by initial hfac, so we dont output the former
+#                'UVEL    ','VVEL    ','WVEL     ',
+#full 3D temperature fluxes : 'DFxE_TH ','DFyE_TH ','DFrE_TH ','DFrI_TH ','ADVx_TH ','ADVy_TH ','ADVr_TH ',
+#but for present computations I only need the vertically integrated horizontal components (see trsp_3d_set2)
+   filename(3) = 'diags/trsp_3d_set1',
+#---
+  frequency(4) = 2635200.0,
+   fields(1:8,4) = 'DFxE_TH ','DFyE_TH ','ADVx_TH ','ADVy_TH ',
+                 'DFxE_SLT','DFyE_SLT','ADVx_SLT','ADVy_SLT',
+   filename(4) = 'diags/trsp_3d_set2',
+#vertically integrate fields we only use to compute vertically integr.
+#meridional transports (also omit vertical transports, both to save space)
+#---
+  frequency(5) = -2635200.0,
+   fields(1:6,5) = 'ETAN    ','SIheff  ','SIhsnow ',
+                 'SIarea  ','sIceLoad','PHIBOT  ',
+   filename(5) = 'diags/budg2d_snap_set1',
+   timePhase(5)= 0.,
+   fileFlags(5) = 'D       ',
+#---
+  frequency(6) = -2635200.0,
+   fields(1:2,6) = 'THETA   ','SALT    ',
+   filename(6) = 'diags/budg2d_snap_set2',
+   timePhase(6)= 0.,
+   fileFlags(6) = 'DI      ',
+#---
+  frequency(7) = 2635200.0,
+   fields(1:7,7) = 'oceFWflx','SIatmFW ','TFLUX   ','SItflux ',
+                   'SFLUX   ','oceQsw  ','oceSPflx',
+   filename(7) = 'diags/budg2d_zflux_set1',
+   fileFlags(7) = 'D       ',
+#---
+  frequency(8) = 2635200.0,
+   fields(1:13,8) ='UVELMASS','VVELMASS',
+                 'ADVx_TH ','ADVy_TH ','DFxE_TH ','DFyE_TH ',
+                 'ADVx_SLT','ADVy_SLT','DFxE_SLT','DFyE_SLT',
+#the following are not transports but tendencies
+                 'oceSPtnd','AB_gT   ','AB_gS   ',
+   filename(8) = 'diags/budg2d_hflux_set2',
+   fileFlags(8) = 'DI      ',
+#---
+  frequency(9) = 2635200.0,
+   fields(1:8,9) ='ADVxHEFF','ADVyHEFF','DFxEHEFF','DFyEHEFF',
+                 'ADVxSNOW','ADVySNOW','DFxESNOW','DFyESNOW',
+   filename(9) = 'diags/budg2d_hflux_set1',
+   fileFlags(9) = 'D       ',
+#---
+# this one is important because it activates the vertical advection diags
+  frequency(10) = 2635200.0,
+   fields(1:7,10) = 'ADVr_TH ','DFrE_TH ','DFrI_TH ',
+                  'ADVr_SLT','DFrE_SLT','DFrI_SLT',
+                  'WVELMASS',
+   filename(10) = 'diags/budg2d_zflux_set3_11',
+   levels(1, 10)= 11.,
+   fileFlags(10) = 'D       ',
+#---
+  frequency(11) = 2635200.0,
+   fields(1:10,11) ='SRELAX  ','TRELAX  ','WTHMASS ','WSLTMASS',
+                 'oceSflux','oceQnet ','SIatmQnt',
+                 'SIaaflux','SIsnPrcp','SIacSubl',
+   filename(11) = 'diags/budg2d_zflux_set2',
+   fileFlags(11) = 'D       ',
+#---
+  frequency(12) = 2635200.0,
+   fields(1:13,12) ='UVELMASS','VVELMASS',
+                 'ADVx_TH ','ADVy_TH ','DFxE_TH ','DFyE_TH ',
+                 'ADVx_SLT','ADVy_SLT','DFxE_SLT','DFyE_SLT',
+                 'oceSPtnd','AB_gT   ','AB_gS   ',
+   filename(12) = 'diags/budg2d_hflux_set3_11',
+   levels(1:40,12) = 11.,12.,13.,14.,15.,16.,17.,18.,19.,20.,
+                     21.,22.,23.,24.,25.,26.,27.,28.,29.,30.,
+                     31.,32.,33.,34.,35.,36.,37.,38.,39.,40.,
+                     41.,42.,43.,44.,45.,46.,47.,48.,49.,50.,
+   fileFlags(12) = 'DI      ',
+#---
+  frequency(13) = -2635200.0,
+   fields(1:2,13) = 'THETA   ','SALT    ',
+   filename(13) = 'diags/budg2d_snap_set3_11',
+   timePhase(13)= 0.,
+   levels(1:40,13) = 11.,12.,13.,14.,15.,16.,17.,18.,19.,20.,
+                     21.,22.,23.,24.,25.,26.,27.,28.,29.,30.,
+                     31.,32.,33.,34.,35.,36.,37.,38.,39.,40.,
+                     41.,42.,43.,44.,45.,46.,47.,48.,49.,50.,
+   fileFlags(13) = 'DI      ',
+#---
+  frequency(14) = 2635200.0,
+   fields(1:8,14) = 'DFxE_TH ','DFyE_TH ','ADVx_TH ','ADVy_TH ',
+                 'DFxE_SLT','DFyE_SLT','ADVx_SLT','ADVy_SLT',
+   filename(14) = 'diags/trsp_2d_set1',
+#vertically integrate fields we only use to compute vertically integr.
+#meridional transports (also omit vertical transports, both to save space)
+   fileFlags(14) = ' I      ',
+#---
+  frequency(15) = 2635200.0,
+   fields(1:3,15) = 'RHOAnoma','PHIHYD  ','oceSPtnd',
+   filename(15) = 'diags/state_3d_set2',
+#---
+  frequency(16) = 2635200.0,
+   fields(1:7,16) = 'ADVr_TH ','DFrE_TH ','DFrI_TH ',
+        'ADVr_SLT','DFrE_SLT','DFrI_SLT','WVELMASS',
+   filename(16) = 'diags/trsp_3d_set3',
+#---
+  frequency(17) = 2635200.0,
+   fields(1:7,17) = 'TFLUX   ','SItflux ','SFLUX   ',
+        'oceQsw  ','oceSPflx','SIsnPrcp','SIacSubl',
+   filename(17) = 'diags/state_2d_set2',
+#---
+#  frequency(18) = 604800.0,
+#   fields(1:2,18) = 'VISCA4D ',
+#   filename(18) = 'diags/visc_3d_set1',
+#---
+#  frequency(19) = -604800.0,
+#   fields(1:2,19) = 'VISCA4D ',
+#   filename(19) = 'diags/visc_3d_set2',
+#   timePhase(19)= 0.,
+ /
+#
+#
+# Parameter for Diagnostics of per level statistics:
+#-----------------
+# for each output-stream:
+#  stat_fname(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  stat_freq(n):< 0 : write snap-shot output every |stat_freq| seconds
+#               > 0 : write time-average output every stat_freq seconds
+#  stat_phase(n)    : write at time = stat_phase + multiple of |stat_freq|
+#  stat_region(:,n) : list of "regions" (default: 1 region only=global)
+#  stat_fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics.log"
+#                 file for the list of all available diag. in this particular config)
+#-----------------
+ &DIAG_STATIS_PARMS
+# diagSt_regMaskFile='basin_masks_eccollc_90x50.bin',
+# nSetRegMskFile=1,
+# set_regMask(1)= 1,  1,  1,  1,  1,  1,  1,  1,  1,
+#                 1,  1,  1,  1,  1,  1,  1,  1
+# val_regMask(1)= 1., 2., 3., 4., 5., 6., 7., 8., 9.,
+#                10.,11.,12.,13.,14.,15.,16.,17.
+##---
+# stat_fields(1,1)= 'ETAN    ','ETANSQ  ','DETADT2 ',
+#                   'UVEL    ','VVEL    ','WVEL    ',
+#                   'THETA   ','SALT    ',
+#    stat_fname(1)= 'dynStDiag',
+#     stat_freq(1)= 3153600.,
+# stat_region(1,1)=  1, 2, 3, 4, 5, 6, 7, 8, 9,
+#                   10,11,12,13,14,15,16,17
+##---
+# stat_fields(1,2)= 'oceTAUX ','oceTAUY ',
+#                   'surForcT','surForcS','TFLUX   ','SFLUX   ',
+#                   'oceQnet ','oceSflux','oceFWflx',
+#    stat_fname(2)= 'surfStDiag',
+#     stat_freq(2)= 3153600.,
+# stat_region(1,2)=  1, 2, 3, 4, 5, 6, 7, 8, 9,
+#                   10,11,12,13,14,15,16,17
+ /

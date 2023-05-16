@@ -1,0 +1,119 @@
+# *********************
+# External Forcing Data
+# *********************
+#
+ &EXF_NML_01
+#
+ useAtmWind        = .FALSE.,
+#NCEP VALUES:
+# exf_albedo        = 0.15,
+# exf_scal_BulkCdn  = 1.015,
+#
+#TO COMBINE WITH ALLOW_ZENITH_ANGLE:
+ exf_albedo        = 0.1,
+ useExfZenIncoming = .TRUE., 
+ select_ZenAlbedo  = 1,
+#
+ ocean_emissivity = 0.97,
+ ice_emissivity = 0.95,
+ snow_emissivity = 0.95,
+#
+ exf_iprec         = 32,
+#exf_yftype        = 'RL',
+ useExfYearlyFields= .TRUE.,
+ useExfCheckRange  = .FALSE.,
+
+ readStressOnAgrid = .TRUE.,
+ rotateStressOnAgrid = .TRUE.,
+ /
+#
+ &EXF_NML_02
+ ustressfile       = 'TBADJ/eccov4r5_ustr',
+ vstressfile       = 'TBADJ/eccov4r5_vstr',
+ atempfile         = 'TBADJ/eccov4r5_tmp2m',
+ aqhfile           = 'TBADJ/eccov4r5_spfh2m',
+ precipfile        = 'TBADJ/eccov4r5_rain',
+ wspeedfile        = 'TBADJ/eccov4r5_wspeed',
+ swdownfile        = 'TBADJ/eccov4r5_dsw',
+ lwdownfile        = 'TBADJ/eccov4r5_dlw',
+ apressurefile     = 'TBADJ/eccov4r5_pres',
+
+#
+ ustressstartdate1   = 19920101,
+ ustressstartdate2   = 003000,
+ ustressperiod       = 3600.0,
+#
+ vstressstartdate1   = 19920101,
+ vstressstartdate2   = 003000,
+ vstressperiod       = 3600.0,
+#
+ atempstartdate1   = 19920101,
+ atempstartdate2   = 000000,
+ atempperiod       = 3600.0,
+#
+ aqhstartdate1     = 19920101,
+ aqhstartdate2     = 000000,
+ aqhperiod         = 3600.0,
+#
+ precipstartdate1  = 19920101,
+ precipstartdate2  = 003000,
+ precipperiod      = 3600.0,
+#
+ runofffile        = 'runoff-2d-Fekete-1deg-mon-V4-SMOOTH_S60scalving_v3.bin'
+ runoffperiod      = -12,
+#
+ uwindstartdate1   = 19920101,
+ uwindstartdate2   = 000000,
+ uwindperiod       = 3600.0,
+#
+ vwindstartdate1   = 19920101,
+ vwindstartdate2   = 000000,
+ vwindperiod       = 3600.0,
+#
+ wspeedstartdate1   = 19920101,
+ wspeedstartdate2   = 000000,
+ wspeedperiod       = 3600.0,
+#
+ swdownstartdate1  = 19920101,
+ swdownstartdate2  = 003000,
+ swdownperiod      = 3600.0,
+#
+ lwdownstartdate1  = 19920101,
+ lwdownstartdate2  = 003000,
+ lwdownperiod      = 3600.0,
+#
+ apressurestartdate1   = 19920101,
+ apressurestartdate2   = 000000,
+ apressureperiod       = 3600.0,
+#
+ climsstperiod     = -12.,
+ climsssperiod     = -12.,
+ /
+#
+ &EXF_NML_03
+#NOT FOR EIG exf_offset_atemp  = 273.3971,
+#exf_offset_atemp  = 273.15,
+#NOT FOR NEW RUNOFF FIELD exf_inscal_runoff = 3.1710e-08,
+#exf_inscal_swdown = -1.0,
+#exf_inscal_lwdown = -1.0,
+#exf_inscal_ustress = -1.0,
+#exf_inscal_vstress = -1.0,
+ exf_inscal_precip = 0.001,
+# to compensate for sea level rise for nlfs/realFWF
+#precip_exfremo_intercept = 1.073E-9,
+#precip_exfremo_slope = -3.340E-18,
+ /
+#
+ &EXF_NML_04
+ runoff_interpMethod = 0,
+ ustress_interpMethod = 0,
+ vstress_interpMethod = 0,
+ atemp_interpMethod = 0,
+ aqh_interpMethod = 0,
+ precip_interpMethod = 0,
+ wspeed_interpMethod = 0,
+ swdown_interpMethod = 0,
+ lwdown_interpMethod = 0,
+ apressure_interpMethod = 0,
+#
+ /
