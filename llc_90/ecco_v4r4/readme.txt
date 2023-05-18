@@ -225,3 +225,5 @@ bash-4.2$ grep advcfl_W STDOUT.0000 | head
 (PID.TID 0000.0001) %MON advcfl_W_hf_max              =   1.1562535418491E-01
 (PID.TID 0000.0001) %MON advcfl_W_hf_max              =   1.8154132763620E-01
 (PID.TID 0000.0001) %MON advcfl_W_hf_max              =   2.1529001980648E-01
+
+comparison between c66g and c68o shown by c66g_c68o_eta.png
