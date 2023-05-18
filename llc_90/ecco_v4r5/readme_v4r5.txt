@@ -1,13 +1,13 @@
 # ECCOV4r5 set-up
-#version 2 @https://github.com/MITgcm-contrib/ecco_darwin/blob/master/v05/1deg/readme_v4r5.txt
-#code base: c68g
+#based on version 2 @https://github.com/MITgcm-contrib/ecco_darwin/blob/master/v05/1deg/readme_v4r5.txt
+#code base: c68o
 
 # ========
 # 1. Get code
 git clone https://github.com/MITgcm-contrib/llc_hires.git
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
-git checkout checkpoint68g
+git checkout checkpoint68o
 
 # ================
 # 2. Build executable
