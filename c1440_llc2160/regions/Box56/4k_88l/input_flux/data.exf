@@ -1,0 +1,102 @@
+# *********************
+# External Forcing Data
+# *********************
+#
+ &EXF_NML_01
+ useAtmWind        = .FALSE.,
+ exf_albedo        = 0.15,
+ exf_scal_BulkCdn  = 1.015,
+ exf_iprec         = 32,
+ exf_yftype        = 'RL',
+ useExfYearlyFields= .TRUE.,
+ useExfCheckRange  = .FALSE.,
+
+ readStressOnAgrid = .FALSE.,
+ readStressOnCgrid = .TRUE.,
+ rotateStressOnAgrid = .FALSE.,
+ &
+#
+ &EXF_NML_02
+ ustressfile       = 'oceTAUX',
+ vstressfile       = 'oceTAUY',
+ hfluxfile         = 'oceQnet',
+ swfluxfile        = 'oceQsw',
+ sfluxfile         = 'oceFWflx',
+ saltflxfile       = 'oceSflux',
+ apressurefile     = 'PS',
+#
+ ustressstartdate1 = 19920101,
+ ustressstartdate2 = 010000,
+ ustressperiod     = 3600.0,
+#
+ vstressstartdate1 = 19920101,
+ vstressstartdate2 = 010000,
+ vstressperiod     = 3600.0,
+#
+ hfluxstartdate1   = 19920101,
+ hfluxstartdate2   = 010000,
+ hfluxperiod       = 3600.0,
+#
+ swfluxstartdate1  = 19920101,
+ swfluxstartdate2  = 010000,
+ swfluxperiod      = 3600.0,
+#
+ sfluxstartdate1   = 19920101,
+ sfluxstartdate2   = 003000,
+ sfluxperiod       = 3600.0,
+#
+# runofffile        = 'runoff1p2472-360x180x12.bin',
+# runoffperiod      = -12,
+#
+ saltflxstartdate1 = 19920101,
+ saltflxstartdate2 = 003000,
+ saltflxperiod     = 3600.0,
+#
+ apressurestartdate1   = 19920101,
+ apressurestartdate2   = 010000,
+ apressureperiod       = 3600.0,
+ &
+#
+ &EXF_NML_03
+ exf_inscal_sflux   = 1.d-3,
+ &
+#
+ &EXF_NML_04
+ ustress_interpMethod = 0,
+ vstress_interpMethod = 0,
+ hflux_interpMethod = 0,
+ swflux_interpMethod = 0,
+ sflux_interpMethod = 0,
+ saltflx_interpMethod = 0,
+#
+ apressure_lon0    = -167.09375,
+ apressure_lon_inc = 0.0625,
+ apressure_lat0    = 23.90625,
+ apressure_lat_inc = 129*0.0625,
+ apressure_nlon    = 100,
+ apressure_nlat    = 130,
+#
+# runoff_lon0       = 0.50D0,
+# runoff_lon_inc    = 1.0D0,
+# runoff_lat0       = -89.5D0,
+# runoff_lat_inc    = 179*1.,
+# runoff_nlon       = 360,
+# runoff_nlat       = 180,
+ &
+ &EXF_NML_OBCS
+ obcsNstartdate1   = 20200120,
+ obcsNstartdate2   = 000000,
+ obcsNperiod       = 3600.0,
+#
+ obcsSstartdate1   = 20200120,
+ obcsSstartdate2   = 000000,
+ obcsSperiod       = 3600.0,
+#
+ obcsEstartdate1   = 20200120,
+ obcsEstartdate2   = 000000,
+ obcsEperiod       = 3600.0,
+#
+ obcsWstartdate1   = 20200120,
+ obcsWstartdate2   = 000000,
+ obcsWperiod       = 3600.0,
+ &

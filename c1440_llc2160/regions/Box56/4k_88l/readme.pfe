@@ -1,0 +1,73 @@
+#three config of Box56 forced with C1440-LLC2160 output
+
+#1 force with standard MITgcm bulk formulae, as
+#https://github.com/MITgcm-contrib/llc_hires/blob/master/llc_4320/regions/Box56/2k_88l
+
+#2 force with surface fluxes
+
+#3 force with the new GEOS bulk formulae, as
+#https://github.com/christophernhill/gmao_mitgcm_couplng/tree/master/geos_bulkformulae/global_ocean.cs32x15
+
+#working on PFE
+module purge
+module load comp-intel mpi-hpe
+module load hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module list
+
+git clone https://github.com/MITgcm/MITgcm.git
+git clone https://github.com/MITgcm-contrib/llc_hires.git
+
+cd MITgcm
+mkdir geos_blkf
+svn checkout https://github.com/christophernhill/gmao_mitgcm_couplng/trunk/geos_bulkformulae/global_ocean.cs32x15/geos_blkf geos_blkf/
+MOD="../../llc_hires/c1440_llc2160/regions/Box56/4k_88l"
+
+#1 code_bulk + input_bulk ==> build_bulk + run_bulk
+mkdir build_bulk run_bulk
+cd build_bulk
+../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+    -mo ${MOD}/code_bulk -mpi
+make depend
+make -j 16
+
+cd ../run_bulk
+ln -s ../build_bulk/mitgcmuv
+cp ${MOD}/input_bulk/* .
+ln -sf /nobackup/dmenemen/forcing/ncep_rgau/runoff1p2472-360x180x12.bin
+ln -sf /nobackupp17/dmenemen/DYAMOND/c1440_llc2160/regions/Box56/run_template/* .
+ln -sf /nobackup/hzhang1/pub/llc2160_dyamond/Box56/* .
+qsub job_box56
+
+
+#2 code_flux + input_flux ==> build_flux + run_flux
+mkdir build_flux run_flux
+cd build_flux
+../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+    -mo ${MOD}/code_flux -mpi
+make depend
+make -j 16
+
+cd ../run_flux
+ln -s ../build_flux/mitgcmuv
+cp ${MOD}/input_flux/* .
+ln -sf /nobackupp17/dmenemen/DYAMOND/c1440_llc2160/regions/Box56/run_template/* .
+ln -sf /nobackup/hzhang1/pub/llc2160_dyamond/Box56/* .
+qsub job_box56
+
+
+#3 geos_blkf + input_bulk ==> build_geos_blkf + run_geos_blkf
+mkdir build_geos_blkf run_geos_blkf
+cd build_geos_blkf
+../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
+    -mo "../geos_blkf ${MOD}/code_bulk" -mpi
+make depend
+make -j 16
+
+cd ../run_geos_blkf
+ln -s ../build_geos_blkf/mitgcmuv
+cp ${MOD}/input_bulk/* .
+ln -sf /nobackup/dmenemen/forcing/ncep_rgau/runoff1p2472-360x180x12.bin
+ln -sf /nobackupp17/dmenemen/DYAMOND/c1440_llc2160/regions/Box56/run_template/* .
+ln -sf /nobackup/hzhang1/pub/llc2160_dyamond/Box56/* .
+qsub job_box56
+

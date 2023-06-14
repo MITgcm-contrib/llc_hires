@@ -1,0 +1,148 @@
+# *********************
+# External Forcing Data
+# *********************
+#
+ &EXF_NML_01
+ exf_albedo        = 0.15,
+ exf_scal_BulkCdn  = 1.015,
+ exf_iprec         = 32,
+ exf_yftype        = 'RL',
+ useExfYearlyFields= .TRUE.,
+ useExfCheckRange  = .FALSE.,
+ useRelativeWind   = .TRUE.,
+ &
+#
+ &EXF_NML_02
+ apressurefile     = 'PS',
+ aqhfile           = 'QV2M',
+ atempfile         = 'T2M',
+ uwindfile         = 'U10M',
+ precipfile        = 'PRECTOT',
+ swdownfile        = 'SWGDWN',
+ lwdownfile        = 'LWGDWN',
+ vwindfile         = 'V10M',
+#
+ uwindstartdate1   = 19920101,
+ uwindstartdate2   = 010000,
+ uwindperiod       = 3600.0,
+#
+ vwindstartdate1   = 19920101,
+ vwindstartdate2   = 010000,
+ vwindperiod       = 3600.0,
+#
+ atempstartdate1   = 19920101,
+ atempstartdate2   = 010000,
+ atempperiod       = 3600.0,
+#
+ aqhstartdate1     = 19920101,
+ aqhstartdate2     = 010000,
+ aqhperiod         = 3600.0,
+#
+ precipstartdate1  = 19920101,
+ precipstartdate2  = 003000,
+ precipperiod      = 3600.0,
+#
+ runofffile        = 'runoff1p2472-360x180x12.bin',
+ runoffperiod      = -12,
+#
+ swdownstartdate1  = 19920101,
+ swdownstartdate2  = 003000,
+ swdownperiod      = 3600.0,
+#
+ lwdownstartdate1  = 19920101,
+ lwdownstartdate2  = 003000,
+ lwdownperiod      = 3600.0,
+#
+ apressurestartdate1   = 19920101,
+ apressurestartdate2   = 010000,
+ apressureperiod       = 3600.0,
+ &
+#
+ &EXF_NML_03
+#exf_offset_atemp  = 273.15,
+ exf_inscal_precip = 0.001,
+ exf_inscal_runoff = 3.1710e-08,
+ &
+#
+ &EXF_NML_04
+#
+ uwind_lon0    = -167.09375,
+ uwind_lon_inc = 0.0625,
+ uwind_lat0    = 23.90625,
+ uwind_lat_inc = 129*0.0625,
+ uwind_nlon    = 100,
+ uwind_nlat    = 130,
+#
+ vwind_lon0    = -167.09375,
+ vwind_lon_inc = 0.0625,
+ vwind_lat0    = 23.90625,
+ vwind_lat_inc = 129*0.0625,
+ vwind_nlon    = 100,
+ vwind_nlat    = 130,
+#
+ atemp_lon0    = -167.09375,
+ atemp_lon_inc = 0.0625,
+ atemp_lat0    = 23.90625,
+ atemp_lat_inc = 129*0.0625,
+ atemp_nlon    = 100,
+ atemp_nlat    = 130,
+#
+ aqh_lon0    = -167.09375,
+ aqh_lon_inc = 0.0625,
+ aqh_lat0    = 23.90625,
+ aqh_lat_inc = 129*0.0625,
+ aqh_nlon    = 100,
+ aqh_nlat    = 130,
+#
+ precip_lon0    = -167.09375,
+ precip_lon_inc = 0.0625,
+ precip_lat0    = 23.90625,
+ precip_lat_inc = 129*0.0625,
+ precip_nlon    = 100,
+ precip_nlat    = 130,
+#
+ swdown_lon0    = -167.09375,
+ swdown_lon_inc = 0.0625,
+ swdown_lat0    = 23.90625,
+ swdown_lat_inc = 129*0.0625,
+ swdown_nlon    = 100,
+ swdown_nlat    = 130,
+#
+ lwdown_lon0    = -167.09375,
+ lwdown_lon_inc = 0.0625,
+ lwdown_lat0    = 23.90625,
+ lwdown_lat_inc = 129*0.0625,
+ lwdown_nlon    = 100,
+ lwdown_nlat    = 130,
+# 
+ apressure_lon0    = -167.09375,
+ apressure_lon_inc = 0.0625,
+ apressure_lat0    = 23.90625,
+ apressure_lat_inc = 129*0.0625,
+ apressure_nlon    = 100,
+ apressure_nlat    = 130,
+#
+ runoff_lon0       = 0.50D0,
+ runoff_lon_inc    = 1.0D0,
+ runoff_lat0       = -89.5D0,
+ runoff_lat_inc    = 179*1.,
+ runoff_nlon       = 360,
+ runoff_nlat       = 180,
+ &
+ &EXF_NML_OBCS
+ obcsNstartdate1   = 20200120,
+ obcsNstartdate2   = 000000,
+ obcsNperiod       = 3600.0,
+#
+ obcsSstartdate1   = 20200120,
+ obcsSstartdate2   = 000000,
+ obcsSperiod       = 3600.0,
+#
+ obcsEstartdate1   = 20200120,
+ obcsEstartdate2   = 000000,
+ obcsEperiod       = 3600.0,
+#
+ obcsWstartdate1   = 20200120,
+ obcsWstartdate2   = 000000,
+ obcsWperiod       = 3600.0,
+ &

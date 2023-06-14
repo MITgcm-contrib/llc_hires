@@ -1,0 +1,19 @@
+#!/bin/csh
+#PBS -l select=1:ncpus=24:model=has
+#PBS -q long
+#PBS -l walltime=120:00:00
+##PBS -q devel
+##PBS -l walltime=2:00:00
+#PBS -j oe
+#PBS -m abe
+
+module purge
+module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module list
+umask 022
+
+cd $PBS_O_WORKDIR
+limit stacksize unlimited
+
+mpiexec -np 24 ./mitgcmuv
+
