@@ -42,14 +42,14 @@
  swfluxperiod      = 3600.0,
 #
  sfluxstartdate1   = 19920101,
- sfluxstartdate2   = 003000,
+ sfluxstartdate2   = 010000,
  sfluxperiod       = 3600.0,
 #
 # runofffile        = 'runoff1p2472-360x180x12.bin',
 # runoffperiod      = -12,
 #
  saltflxstartdate1 = 19920101,
- saltflxstartdate2 = 003000,
+ saltflxstartdate2 = 010000,
  saltflxperiod     = 3600.0,
 #
  apressurestartdate1   = 19920101,
@@ -58,7 +58,7 @@
  &
 #
  &EXF_NML_03
- exf_inscal_sflux   = 1.d-3,
+ exf_inscal_sflux   = 1.00020004000800160032d-3,
  &
 #
  &EXF_NML_04
