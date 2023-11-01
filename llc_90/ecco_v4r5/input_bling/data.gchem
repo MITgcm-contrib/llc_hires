@@ -1,0 +1,5 @@
+ &GCHEM_PARM01
+  useDIC=.FALSE.,
+  useBLING=.TRUE.,
+  nsubtime=1,
+ &

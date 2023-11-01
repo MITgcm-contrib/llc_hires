@@ -16,7 +16,7 @@ git checkout checkpoint68o
 mkdir build run
 cd build
 rm *
-module load comp-intel/2020.4.304 mpi-hpe/mpt.2.25 hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 MOD="../../llc_hires/llc_90/ecco_v4r4"
 ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
 		  -mo ${MOD}/code -mpi

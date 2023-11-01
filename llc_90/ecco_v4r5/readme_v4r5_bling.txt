@@ -1,5 +1,4 @@
-# ECCOV4r5 set-up
-#based on version 2 @https://github.com/MITgcm-contrib/ecco_darwin/blob/master/v05/1deg/readme_v4r5.txt
+# ECCOV4r5 + bling set-up
 #code base: c68o
 
 # ========
@@ -18,7 +17,7 @@ rm *
 module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 MOD="../../llc_hires/llc_90/ecco_v4r5"
 ../tools/genmake2 -of ../tools/build_options/linux_amd64_ifort+mpi_ice_nas \
-		  -mo ${MOD}/code -mpi
+		  -mo "${MOD}/code_bling ${MOD}/code" -mpi
 make depend
 make -j 16
 
@@ -34,6 +33,8 @@ INPUTDIR='/nobackup/hzhang1/pub/Release5'
 
 ln -s ${INPUTDIR}/input_bin/* .
 ln -s ${INPUTDIR}/TBADJ .
+ln -s ${INPUTDIR}/input_bling/* .
 cp ${MOD}/input/* .
+cp ${MOD}/input_bling/* .
 
 qsub job_v4r5

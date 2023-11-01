@@ -1,0 +1,65 @@
+# Diagnostic Package Choices
+#-----------------
+# for each output-stream:
+#  filename(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  frequency(n):< 0 : write snap-shot output every multiple of |frequency| (iter)
+#               > 0 : write time-average output every multiple of frequency (iter)
+#  levels(:,n) : list of levels to write to file (Notes: declared as REAL)
+#                 when this entry is missing, select all common levels of this list
+#  fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics" file 
+#                 for the list of all available diag. in this particular config)
+#--------------------------------------------------------------------
+#
+ &diagnostics_list
+#
+  dumpatlast = .TRUE.,
+#---
+#monthly diagnostics
+#---  
+  frequency(32:39) = 8*2635200.,
+   fields(1,32) = 'TRAC01  ',  
+   fields(1,33) = 'TRAC02  ',
+   fields(1,34) = 'TRAC03  ',
+   fields(1,35) = 'TRAC04  ',
+   fields(1,36) = 'TRAC05  ',
+   fields(1,37) = 'TRAC06  ',
+   fields(1,38) = 'TRAC07  ',
+   fields(1,39) = 'TRAC08  ',
+   
+   filename(32)= 'diags/DIC',  
+   filename(33)= 'diags/ALK',
+   filename(34)= 'diags/O2',
+   filename(35)= 'diags/NO3',
+   filename(36)= 'diags/PO4',
+   filename(37)= 'diags/FeT',
+   filename(38)= 'diags/DON',
+   filename(39)= 'diags/DOP',
+#--- 
+  frequency(65) = 2635200.,
+   fields(1,65) = 'BLGCFLX ',
+   filename(65) = 'diags/CO2_flux',
+#---    
+  frequency(70) = 2635200.,
+   fields(1,70) = 'BLGapco2',
+   filename(70) = 'diags/apCO2',
+#---       
+  frequency(72) = 2635200.,
+   fields(1,72) = 'BLGPH3D ',
+   filename(72) = 'diags/pH',
+#---
+ /
+
+# Parameter for Diagnostics of per level statistics:
+#-----------------
+# for each output-stream:
+#  stat_fname(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  stat_freq(n):< 0 : write snap-shot output every |stat_freq| seconds
+#               > 0 : write time-average output every stat_freq seconds
+#  stat_phase(n)    : write at time = stat_phase + multiple of |stat_freq|
+#  stat_region(:,n) : list of "regions" (default: 1 region only=global)
+#  stat_fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics.log"
+#                 file for the list of all available diag. in this particular config)
+#-----------------
+ &DIAG_STATIS_PARMS
+
+ /

@@ -1,0 +1,36 @@
+# BLING parameters 
+ &ABIOTIC_PARMS
+ /
+
+ &BIOTIC_PARMS
+  Pc_0             = 1.0E-5,
+  alpfe = 1.,
+#  
+ /
+
+ &BLING_FORCING
+  BLING_silicaFile = 'llc90_SiO2_surf_clim.bin',
+#
+  BLING_ironFile   = 'llc90_Mahowald_2009_soluble_iron_dust.bin',
+#
+  apco2file        = 'apCO2',
+  apco2startdate1  = 19920101,
+  apco2startdate2  = 000000,
+  apco2period      = 86400.,
+  apco2_lon0    = 0.0D0,
+  apco2_lon_inc = 360.0D0,
+  apco2_lat0    = -89.4628220D0,
+  apco2_lat_inc = 0.6958694,0.6999817,0.7009048,0.7012634,0.7014313,
+                245*0.7017418,
+                0.7014313,0.7012634,0.7009048,0.6999817,0.6958694
+  apco2_nlon    = 2,
+  apco2_nlat    = 256,
+#
+#  bling_psmFile   = 'phytoSm_init_blingv2_tpose6.bin', 
+#  bling_plgFile   = 'phytoLg_init_blingv2_tpose6.bin', 
+#  bling_PdiazFile = 'phytoDiaz_init_blingv2_tpose6.bin',
+#
+ bling_forcingPeriod = 2629800.,
+ bling_forcingCycle  = 31557600.,
+#
+ /

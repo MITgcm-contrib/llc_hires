@@ -1,0 +1,72 @@
+   345 |BLGPSM  | 50 |       |SM P    MR|mol C/m3        |Small phytoplankton biomass (mol C/m3/s)
+   346 |BLGPLG  | 50 |       |SM P    MR|mol C/m3        |Large phytoplankton biomass (mol C/m3/s)
+   347 |BLGPDIA | 50 |       |SM P    MR|mol C/m3        |Diazotroph phytoplankton biomass (mol C/m3/s)
+   348 |BLGCHL  | 50 |       |SM P    MR|mg/m3           |Chlorophyll concentration
+   349 |BLGCHL2C| 50 |       |SM P    MR|mol Chl/mol C   |Chlorophyll to Carbon ratio
+   350 |BLGC2CHL| 50 |       |SM P    MR|g C/g Chl       |Carbon to Chlorophyll ratio
+   351 |BLGPOC  | 50 |       |SM P    MR|mol C/m3        |Particulate Organic Carbon concentration
+   352 |BLGPOCF | 50 |       |SM P    MR|mol C/m3/s      |Particulate Organic Carbon Flux
+   353 |BLGNPP  | 50 |       |SM P    MR|mol C/m3/s      |Net Primary Production
+   354 |BLGNCP  | 50 |       |SM P    MR|mol C/m3/s      |Net Community Production
+   355 |BLGPCM  | 50 |       |SM P    MR|1/s             |Maximum photosynthesis rate
+   356 |BLGMU   | 50 |       |SM P    MR|1/s             |Phytoplankton growth rate
+   357 |BLGMUDIA| 50 |       |SM P    MR|1/s             |Diazotroph growth rate
+   358 |BLGIRRK | 50 |       |SM P    MR|W/m2            |Nutrient-limited photosynthesis efficiency
+   359 |BLGLLIM | 50 |       |SM P    MR|-               |Light limitation
+   360 |BLGNLIM | 50 |       |SM P    MR|-               |N limitation
+   361 |BLGPLIM | 50 |       |SM P    MR|-               |P limitation
+   362 |BLGFELIM| 50 |       |SM P    MR|-               |Fe limitation
+   363 |BLGP2N  | 50 |       |SM P    MR|-               |P to N stoichiometric ratio
+   364 |BLGFE2N | 50 |       |SM P    MR|-               |Fe to N stoichiometric ratio
+   365 |BLGPCO2 |  1 |       |SM P    M1|atm             |Surface ocean partial pressure of CO2
+   366 |BLGPH3D | 50 |       |SM P    MR|dimensionless   |pH
+   367 |BLGOMAR | 50 |       |SM P    MR|dimensionless   |Aragonite saturation
+   368 |BLGCFLX |  1 |       |SM P    L1|mol/m2/sec      |Flux of CO2 due to air-sea exch (mol/m2/s)
+   369 |BLGapco2|  1 |       |SM      U1|10^-6 ppm       |Atmospheric partial pressure of CO2
+   370 |BLGOFLX |  1 |       |SM P    L1|mol/m2/sec      |Flux of O2 due to air-sea exch (mol/m2/s)
+   371 |BLGO2SAT|  1 |       |SM P    L1|percent         |surface O2 saturation (percent)
+   372 |BLGSURFE|  1 |       |SM P    L1|mol/m2/sec      |Surface deposition of Fe (mol/m2/s)
+   373 |BLGFEUP | 50 |       |SM P    MR|mol Fe/m3/s     |Iron uptake by bio
+   374 |BLGFESPM| 50 |       |SM P    MR|mol Fe/m3/s     |Iron sinking particle flux
+   375 |BLGFEREM| 50 |       |SM P    MR|mol Fe/m3/s     |Iron remin of sinking organic matter
+   376 |BLGFERD | 50 |       |SM P    MR|mol Fe/m3/s     |Iron remin from Diel Vertical Migration
+   377 |BLGFEREC| 50 |       |SM P    MR|mol Fe/m3/s     |Iron recycling
+   378 |BLGFEADI| 50 |       |SM P    MR|mol Fe/m3/s     |Iron inorganic adsorption
+   379 |BLGFEADO| 50 |       |SM P    MR|mol Fe/m3/s     |Iron organic adsorption
+   380 |BLGFESED| 50 |       |SM P    MR|mol Fe/m3/s     |Iron sediment source
+   381 |BLGFEBUR|  1 |       |SM P    M1|mol Fe/m3/s     |Iron burial into sediment
+   382 |BLGNUP  | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen uptake by bio
+   383 |BLGNFIX | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen fixation
+   384 |BLGNSPM | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen sinking particle flux
+   385 |BLGNREM | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen remin of sinking org matter
+   386 |BLGNDVM | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen vertical flux due to DVM
+   387 |BLGNRD  | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen remin by Diel Vertical Migration
+   388 |BLGNREC | 50 |       |SM P    MR|mol N/m3/s      |Nitrogen recycling
+   389 |BLGNDENB| 50 |       |SM P    MR|mol N/m3/s      |Benthic denitrification
+   390 |BLGNDENP| 50 |       |SM P    MR|mol N/m3/s      |Pelagic denitrification
+   391 |BLGDONP | 50 |       |SM P    MR|mol N/m3/s      |Dissolved Organic Nitrogen Production
+   392 |BLGDONR | 50 |       |SM P    MR|mol N/m3/s      |Dissolved Organic Nitrogen Remineralization
+   393 |BLGNONEN| 50 |       |SM P    MR|-               |NO3 no neg
+   394 |BLGPUP  | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus uptake by bio
+   395 |BLGPSPM | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus sinking particle flux
+   396 |BLGPREM | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus remin of sinking org matter
+   397 |BLGPDVM | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus vertical flux due to DVM
+   398 |BLGPRD  | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus remin by Diel Vertical Migration
+   399 |BLGPREC | 50 |       |SM P    MR|mol P/m3/s      |Phosphorus recycling
+   400 |BLGDOPP | 50 |       |SM P    MR|mol P/m3/s      |Dissolved Organic Phosphorus Production
+   401 |BLGDOPR | 50 |       |SM P    MR|mol P/m3/s      |Dissolved Organic Phosphorus Remineralization
+   402 |BLGMLD  |  1 |       |SM P    L1|m               |Diagnosed mixed layer depth
+   403 |BLGIRRIS| 50 |       |SM P    MR|W/m2            |Local irradiance
+   404 |BLGIEFF | 50 |       |SM P    MR|W/m2            |Effective irradiance
+   405 |BLGIMEM | 50 |       |SM P    MR|W/m2            |Irradiance memory
+   406 |BLGBIOC | 50 |       |SMRP    MR|mol C/m3/sec    |Tendency of DIC due to biology (mol C/m3/s)
+   407 |BLGBIOAL| 50 |       |SMRP    MR|mol alk/m3/sec  |Tendency of alkalinity due to biology (mol alk/m3/s)
+   408 |BLGBIOO2| 50 |       |SMRP    MR|mol O/m3/sec    |Tendency of oxygen due to biology (mol O/m3/s)
+   409 |BLGBION | 50 |       |SMRP    MR|mol N/m3/sec    |Tendency of nitrate due to biology (mol N/m3/s)
+   410 |BLGBIOP | 50 |       |SMRP    MR|mol P/m3/sec    |Tendency of phosphate due to biology (mol P/m3/s)
+   411 |BLGBIOFE| 50 |       |SMRP    MR|mol Fe/m3/sec   |Tendency of iron due to biology (mol Fe/m3/s)
+   412 |BLGNSED |  1 |       |SM P    M1|mol N/m3/s      |Nitrogen flux in/out of sediments
+   413 |BLGPSED |  1 |       |SM P    M1|mol P/m3/s      |Phosphorus flux in/out of sediments
+   414 |BLGOSED |  1 |       |SM P    M1|mol O/m3/s      |Oxygen flux in/out of sediments
+   415 |BLGCCdis| 50 |       |SM P    MR|mol C/m3/s      |Calcium carbonate dissolution
+   416 |BLGCCpro| 50 |       |SM P    MR|mol C/m3/s      |Calcium carbonate production
