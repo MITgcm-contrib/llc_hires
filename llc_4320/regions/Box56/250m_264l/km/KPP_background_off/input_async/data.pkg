@@ -1,7 +1,0 @@
-# Packages
- &PACKAGES
- useCAL         = .TRUE.,
- useEXF         = .TRUE.,
- useKPP         = .TRUE.,
- useOBCS        = .TRUE.,
- /
