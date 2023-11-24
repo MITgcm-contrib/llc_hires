@@ -6,7 +6,7 @@ CBOP
 C     !ROUTINE: WRITE_PICKUP
 C     !INTERFACE:
       SUBROUTINE WRITE_PICKUP(
-     I                 permPickup,
+     I                 permPickup, suffix,
      I                 myTime, myIter, myThid )
 
 C     !DESCRIPTION:
@@ -40,10 +40,12 @@ C     !USES:
 
 C     !INPUT PARAMETERS:
 C     permPickup      :: Is or is not a permanent pickup.
+C     suffix          :: pickup-name suffix
 C     myTime          :: Current time of simulation ( s )
 C     myIter          :: Iteration number
 C     myThid          :: Thread number for this instance of the routine.
       LOGICAL permPickup
+      CHARACTER*(*) suffix
       _RL     myTime
       INTEGER myIter
       INTEGER myThid
@@ -99,14 +101,6 @@ C-    Initialise:
       ENDDO
 
 C     Write model fields
-      DO j = 1,MAX_LEN_FNAM
-        fn(j:j) = ' '
-      ENDDO
-      IF ( permPickup ) THEN
-        WRITE(fn,'(A,I10.10)') 'pickup.',myIter
-      ELSE
-        WRITE(fn,'(A,A)') 'pickup.',checkPtSuff(nCheckLev)
-      ENDIF
 
 C     Going to really do some IO. Make everyone except master thread wait.
 C     this is done within IO routines => no longer needed
@@ -136,6 +130,7 @@ chenze
 
       IF (pickup_write_mdsio) THEN
 
+        WRITE(fn,'(A,A)') 'pickup.', suffix
         fp = precFloat64
         j  = 0
 C     record number < 0 : a hack not to write meta files now:

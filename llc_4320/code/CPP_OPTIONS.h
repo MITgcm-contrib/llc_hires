@@ -40,6 +40,9 @@ C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE
 
+C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
+#undef ALLOW_SOLVE4_PS_AND_DRAG
+
 C o Include/exclude AdamsBashforth-3rd-Order code
 #undef ALLOW_ADAMSBASHFORTH_3
 

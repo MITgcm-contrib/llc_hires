@@ -31,6 +31,10 @@ C     in a separate external package, for example, pkg/exf, and then
 C     modified for sea-ice effects by pkg/seaice.
 #define SEAICE_EXTERNAL_FLUXES
 
+C--   Exclude Wind-Stress common block (in SEAICE.h). This option
+C     should ALWAYS been left undef (just listed here for the record)
+#undef SEAICE_EXCLUDE_WIND_STRESS
+
 C--   This CPP flag has been retired.  The number of ice categories
 C     used to solve for seaice flux is now specified by run-time
 C     parameter SEAICE_multDim.
@@ -63,12 +67,12 @@ C--   To try avoid 'spontaneous generation' of tracer maxima by advdiff.
 #endif
 
 C--   Enable grease ice parameterization
-C     The grease ice parameterization delays formation of solid 
-C     sea ice from frazil ice by a time constant and provides a 
-C     dynamic calculation of the initial solid sea ice thickness 
-C     HO as a function of winds, currents and available grease ice 
-C     volume. Grease ice does not significantly reduce heat loss 
-C     from the ocean in winter and area covered by grease is thus 
+C     The grease ice parameterization delays formation of solid
+C     sea ice from frazil ice by a time constant and provides a
+C     dynamic calculation of the initial solid sea ice thickness
+C     HO as a function of winds, currents and available grease ice
+C     volume. Grease ice does not significantly reduce heat loss
+C     from the ocean in winter and area covered by grease is thus
 C     handled like open water.
 C     (For details see Smedsrud and Martin, 2014, Ann.Glac.)
 C     Set SItrName(1) = 'grease' in namelist SEAICE_PARM03 in data.seaice
@@ -90,6 +94,8 @@ C     (not thoroughly) test version on a C-grid
 
 C--   Only for the C-grid version it is possible to
 #ifdef SEAICE_CGRID
+C     enable advection of sea ice momentum
+# undef SEAICE_ALLOW_MOM_ADVECTION
 C     enable JFNK code by defining the following flag
 # define SEAICE_ALLOW_JFNK
 C     enable Krylov code by defining the following flag
@@ -123,7 +129,10 @@ C     Use zebra-method (alternate lines) for line-successive-relaxation
 C     This modification improves the convergence of the vector code
 C     dramatically, so that is may actually be useful in general, but
 C     that needs to be tested. Can be used without vectorization options.
-#  undef SEAICE_LSR_ZEBRA
+# undef SEAICE_LSR_ZEBRA
+C     Use parameterisation of grounding ice for a better representation
+C     of fastice in shallow seas
+# undef SEAICE_ALLOW_BOTTOMDRAG
 #else /* not SEAICE_CGRID, but old B-grid */
 C--   By default for B-grid dynamics solver wind stress under sea-ice is
 C     set to the same value as it would be if there was no sea-ice.

@@ -28,6 +28,8 @@ C      |-- INI_PARMS
 C      |
 C      |-- PACKAGES_BOOT
 C      |
+C      |-- CPL_IMPORT_CPLPARMS
+C      |
 C      |-- PACKAGES_READPARMS
 C      |  |- ${PKG}_READPARMS
 C      |
@@ -114,6 +116,16 @@ C--   Configure packages
 #endif
       CALL PACKAGES_BOOT( myThid )
 
+#ifdef COMPONENT_MODULE
+C--   Import coupling exchange parameters from coupler
+      IF ( useCoupler ) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('CPL_IMPORT_CPLPARMS',myThid)
+# endif
+        CALL CPL_IMPORT_CPLPARMS( myThid )
+      ENDIF
+#endif /* COMPONENT_MODULE */
+
 C--   Read configuration parameters for packages
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('PACKAGES_READPARMS',myThid)
@@ -138,7 +150,7 @@ C     Variables defining model grid spacing are defined.
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_GRID',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_GRID( myThid )
 #else
       CALL INI_GRID( myThid )
@@ -172,7 +184,7 @@ C--   Initialise map of depths
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_DEPTHS',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_DEPTHS( myThid )
 #else
       CALL INI_DEPTHS( myThid )
@@ -183,7 +195,7 @@ C     Volumes and areas are set according to grid and depth map.
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_MASKS_ETC',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_MASKS_ETC( myThid )
 #else
       CALL INI_MASKS_ETC( myThid )
@@ -208,7 +220,7 @@ C--   Set Bo_surf => define the Linear Relation: Phi_surf(eta)
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_LINEAR_PHISURF',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_LINEAR_PHISURF( myThid )
 #else
       CALL INI_LINEAR_PHISURF( myThid )
@@ -218,7 +230,7 @@ C--   Set coriolis operators
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_CORI',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_CORI( myThid )
 #else
       CALL INI_CORI( myThid )
@@ -228,7 +240,7 @@ C--   Set laplace operators for use in 2D conjugate gradient solver.
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_CALL('INI_CG2D',myThid)
 #endif
-#ifdef ALLOW_AUTODIFF_OPENAD
+#ifdef ALLOW_OPENAD
       CALL OpenAD_INI_CG2D( myThid )
 #else
       CALL INI_CG2D( myThid )
