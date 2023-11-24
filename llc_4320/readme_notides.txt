@@ -1,3 +1,5 @@
+use llc_hires/llc_4320/input/data.exf_notides
+
 #############################
 # 72x72x29297 configuration
 
