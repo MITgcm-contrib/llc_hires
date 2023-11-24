@@ -36,12 +36,36 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
 cp ../../llc_hires/llc_4320/input/* .
 cp data_noKPPbg data
+cp data.exch2_180x180x5015 data.exch2
 ln -sf /nobackup/dmenemen/llc/llc_4320/MITgcm/run/pickup_0000485568.data pickup.0000485568.data
 ln -sf /nobackup/dmenemen/llc/llc_4320/MITgcm/run/pickup_0000485568.meta pickup.0000485568.meta
 ln -sf /nobackup/dmenemen/llc/llc_4320/MITgcm/run/pickup_seaice_0000485568.data pickup_seaice.0000485568.data
 ln -sf /nobackup/dmenemen/llc/llc_4320/MITgcm/run/pickup_seaice_0000485568.meta pickup_seaice.0000485568.meta
-cp data.exch2_180x180x5015 data.exch2
 mpiexec -n 5360 ./mitgcmuv_180x180x5015
 
 cd ~/llc_4320/MITgcm/run_noKPPbg
 tail -f STDOUT.00000 | grep advcfl_W
+
+#############################
+# ran above for 36 hours to pickup*0000490752.data
+# recompiled with most up to date MITgcm + asyncio
+module purge
+module load comp-intel/2020.4.304 mpi-hpe/mpt
+cd ~/llc_4320/MITgcm/build
+rm *
+cp ../../llc_hires/llc_4320/code-async/SIZE.h_180x180x5015 SIZE.h
+../tools/genmake2 -of \
+ ../../llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
+ '../../llc_hires/llc_4320/code ../../llc_hires/llc_4320/code-async'
+make depend
+make -j
+cp mitgcmuv ../run_noKPPbg/mitgcmuv_180x180x5015_v2
+cd ~/llc_4320/MITgcm/run_noKPPbg
+cp ../../llc_hires/llc_4320/input/* .
+cp data_noKPPbg data
+cp data.exch2_180x180x5015 data.exch2
+ln -sf pickup_0000490752.data pickup.0000490752.data
+ln -sf pickup_0000490752.meta pickup.0000490752.meta
+ln -sf pickup_seaice_0000490752.data pickup_seaice.0000490752.data
+ln -sf pickup_seaice_0000490752.meta pickup_seaice.0000490752.meta
+mpiexec -n 5360 ./mitgcmuv_180x180x5015_v2
