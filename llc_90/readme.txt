@@ -49,7 +49,7 @@ cd ../run2
 cp ../build/mitgcmuv .
 ln -sf /nobackup/dmenemen/tarballs/llc_90/* .
 ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
-ln -sf /nobackupp2/dmenemen//llc_4320/run_template/runoff1p2472-360x180x12.bin .
+ln -sf /nobackup/dmenemen/llc_4320/run_template/runoff1p2472-360x180x12.bin .
 cp ../../llc_hires/llc_90/input/* .
 mv data_async data
 mpiexec -n 136 ./mitgcmuv
