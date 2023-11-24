@@ -1,3 +1,8 @@
+#ifndef EXF_OPTIONS_H
+#define EXF_OPTIONS_H
+#include "PACKAGES_CONFIG.h"
+#include "CPP_OPTIONS.h"
+
 CBOP
 C !ROUTINE: EXF_OPTIONS.h
 C !INTERFACE:
@@ -9,11 +14,6 @@ C | CPP options file for EXternal Forcing (EXF) package:
 C | Control which optional features to compile in this package code.
 C *==================================================================*
 CEOP
-
-#ifndef EXF_OPTIONS_H
-#define EXF_OPTIONS_H
-#include "PACKAGES_CONFIG.h"
-#include "CPP_OPTIONS.h"
 
 #ifdef ALLOW_EXF
 #ifdef ECCO_CPPOPTIONS_H
@@ -91,16 +91,19 @@ C       If defined, atmospheric pressure can be read-in from files.
 C   WARNING: this flag is set (define/undef) in CPP_OPTIONS.h
 C            and cannot be changed here (in EXF_OPTIONS.h)
 C
+C   >>> EXF_ALLOW_TIDES <<<
+C       If defined, 2-D tidal geopotential can be read-in from files
+C
 C   >>> EXF_SEAICE_FRACTION <<<
 C       If defined, seaice fraction can be read-in from files (areaMaskFile)
 C
 C   >>> ALLOW_CLIMSST_RELAXATION <<<
-C       Allow the relaxation to a monthly climatology of sea surface
-C       temperature, e.g. the Reynolds climatology.
+C       Allow the relaxation of surface level temperature to SST (climatology),
+C       e.g. the Reynolds climatology.
 C
 C   >>> ALLOW_CLIMSSS_RELAXATION <<<
-C       Allow the relaxation to a monthly climatology of sea surface
-C       salinity, e.g. the Levitus climatology.
+C       Allow the relaxation of surface level salinity to SSS (climatology),
+C       e.g. the Levitus climatology.
 C
 C   >>> USE_EXF_INTERPOLATION <<<
 C       Allows to provide input field on arbitrary Lat-Lon input grid
@@ -169,7 +172,10 @@ C-  Bulk formulae related flags.
 #ifdef ALLOW_ATM_TEMP
 C Note: To use ALLOW_BULKFORMULAE or EXF_READ_EVAP, needs #define ALLOW_ATM_TEMP
 # define ALLOW_BULKFORMULAE
+C use Large and Yeager (2004) modification to Large and Pond bulk formulae
 # undef  ALLOW_BULK_LARGEYEAGER04
+C use drag formulation of Large and Yeager (2009), Climate Dyn., 33, pp 341-364
+# undef  ALLOW_DRAG_LARGEYEAGER09
 # undef  EXF_READ_EVAP
 # ifndef ALLOW_BULKFORMULAE
 C  Note: To use ALLOW_READ_TURBFLUXES, ALLOW_ATM_TEMP needs to
@@ -181,7 +187,7 @@ C        be defined but ALLOW_BULKFORMULAE needs to be undef
 C-  Other forcing fields
 #define ALLOW_RUNOFF
 #undef  ALLOW_RUNOFTEMP
-#define ALLOW_SALTFLX
+#undef ALLOW_SALTFLX
 
 #if (defined (ALLOW_BULKFORMULAE) && defined (ATMOSPHERIC_LOADING))
 C Note: To use EXF_CALC_ATMRHO, both ALLOW_BULKFORMULAE
@@ -200,9 +206,12 @@ C   unless to reproduce old results (obtained with inconsistent old code)
 # define EXF_LWDOWN_WITH_EMISSIVITY
 #endif
 
-C-  Relaxation to monthly climatologies.
+C-  Surface level relaxation to prescribed fields (e.g., climatologies)
 #undef ALLOW_CLIMSST_RELAXATION
 #undef ALLOW_CLIMSSS_RELAXATION
+
+C-  Allows to read-in (2-d) tidal geopotential forcing
+#undef EXF_ALLOW_TIDES
 
 C-  Allows to read-in seaice fraction from files (areaMaskFile)
 #undef EXF_SEAICE_FRACTION
@@ -221,6 +230,10 @@ C   (no pole symmetry, single vector-comp interp, reset to 0 zonal-comp @ N.pole
 #if ( defined USE_EXF_INTERPOLATION && defined EXF_INTERP_USE_DYNALLOC && defined USING_THREADS )
 # define EXF_IREAD_USE_GLOBAL_POINTER
 #endif
+
+C-  Not recommended (not tested nor maintained) and un-documented Options:
+#undef ALLOW_BULK_OFFLINE
+#undef ALLOW_CLIMSTRESS_RELAXATION
 
 #endif /* ndef ECCO_CPPOPTIONS_H */
 #endif /* ALLOW_EXF */
