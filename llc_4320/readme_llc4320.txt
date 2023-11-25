@@ -11,13 +11,6 @@ They are available 24/7 and they are very helpful.
 
 On Linux and Mac, a fast and robust vnc client is TigerVNC (tigervnc.org).
 
-An example script that starts vnc on mac and linux:
-https://www.dropbox.com/s/717lllbwr2o1ekt/vnc_pfe?dl=0
-
-Some animations created by C. Henze are available here:
-/nobackupp2/chenze/ECCO
-http://people.nas.nasa.gov/~chenze/ECCO48th/
-
 ============
 
 The output files have been compressed by removing land points
