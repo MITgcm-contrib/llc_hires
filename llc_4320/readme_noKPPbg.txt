@@ -48,12 +48,15 @@ tail -f STDOUT.00000 | grep advcfl_W
 
 #############################
 # ran above for 36 hours to pickup*0000490752.data
-# recompiled with most up to date MITgcm + asyncio
+# recompiled with Joe Skitka's Leith modifications
+# and most up to date MITgcm + asyncio
 module purge
 module load comp-intel/2020.4.304 mpi-hpe/mpt
 cd ~/llc_4320/MITgcm/build
 rm *
 cp ../../llc_hires/llc_4320/code-async/SIZE.h_180x180x5015 SIZE.h
+cp ../../llc_hires/llc_4320/code/mom_vi_del2uv.F_jms mom_vi_del2uv.F
+cp ../../llc_hires/llc_4320/code/mom_vi_hdissip.F_jms mom_vi_hdissip.F
 ../tools/genmake2 -of \
  ../../llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../llc_hires/llc_4320/code ../../llc_hires/llc_4320/code-async'

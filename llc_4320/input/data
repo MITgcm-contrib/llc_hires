@@ -85,7 +85,7 @@
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- chkptFreq   = 43200.0,
+ chkptFreq   = 28800.0,
  dumpfreq = 3600.,
  monitorFreq = 360.,
  dumpInitAndLast=.FALSE.,
