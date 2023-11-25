@@ -2,7 +2,7 @@ llc_4320 : global simulation on 1/48th-degree lat-lon-cap grid
 
 For running python, matlab, and other graphical programs on pfe,
 I reccommend that you use ssh passthrough and vnc, see instructions here:
-h/u/bcnelson/MITgcm/extract/latest/ttp://www.nas.nasa.gov/hecc/support/kb/Setting-Up-SSH-Passthrough_232.html
+http://www.nas.nasa.gov/hecc/support/kb/Setting-Up-SSH-Passthrough_232.html
 http://www.nas.nasa.gov/hecc/support/kb/An-Introduction-to-Virtual-Network-Computing-(VNC)-for-Connecting-to-NAS-High-End-Computers_257.html
 
 For NASA Ames system related questions contact NAS Support
@@ -23,13 +23,13 @@ http://people.nas.nasa.gov/~chenze/ECCO48th/
 The output files have been compressed by removing land points
 and can be found in ~dmenemen/llc_4320/compressed
 
-Use /u/bcnelson/MITgcm/extract/latest/extract4320
+Use ~dmenemen/llc_4320/extract/extract4320
 to extract regions from the compressed fields.
-Instructions are in /u/bcnelson/MITgcm/extract/latest/README.extract
+Instructions are in ~dmenemen/llc_4320/extract/README.extract
 
-Use /u/bcnelson/MITgcm/extract/latest/uncompress4320
+Use ~dmenemen/llc_4320/extract/uncompress4320
 to uncompress files to original size.
-Instructions are in /u/bcnelson/MITgcm/extract/latest/README.uncompress
+Instructions are in ~dmenemen/llc_4320/extract/README.uncompress
 
 ============
 Grid information is in:

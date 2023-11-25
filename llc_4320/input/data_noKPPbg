@@ -79,7 +79,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=490752,
+ nIter0=597888,
  endtime=63072000.,
  deltaT = 25.,
  abEps = 0.1,
@@ -117,9 +117,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='bathy4320_g5_r4',
- hydrogThetaFile='THETA_llc2160_10sep2011_4320x56160x90_r4',
- hydrogSaltFile ='SALT_llc2160_10sep2011_4320x56160x90_r4',
- uVelInitFile   ='UVEL_llc2160_10sep2011_4320x56160x90_r4',
- vVelInitFile   ='VVEL_llc2160_10sep2011_4320x56160x90_r4',
- pSurfInitFile  ='ETAN_llc2160_10sep2011_4320x56160_r4',
+ hydrogThetaFile='0000597888_Theta.data',
+ hydrogSaltFile ='0000597888_Salt.data',
+ uVelInitFile   ='0000597888_U.data',
+ vVelInitFile   ='0000597888_V.data',
+ pSurfInitFile  ='0000597888_Eta.data',
  /
