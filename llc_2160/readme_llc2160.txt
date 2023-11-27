@@ -9,7 +9,10 @@ For NASA Ames system related questions contact NAS Support
 650-604-4444 or support@nas.nasa.gov
 They are available 24/7 and they are very helpful.
 
-On Linux and Mac, a fast and robust vnc client is TigerVNC (tigervnc.org).
+On Linux, Mac, and Windows, a fast and robust vnc client is TigerVNC (tigervnc.org).
+
+An example script that starts vnc on mac and linux:
+https://github.com/MITgcm-contrib/llc_hires/blob/master/code_util/vnc_pfe
 
 ============
 
