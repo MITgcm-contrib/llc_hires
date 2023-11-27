@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# change to pfe node with vncserver ------------------vv
+xterm -e ssh -x -t -L 5904:127.0.0.1:5904 dmenemen@pfe23 &
+# change X desktop number -------------^^
+# change username ------------------------^^^^^^^^
+
+# On pfe?? customize .vnc/xstartup
+# for an example see ~dmenemen/.vnc/xstartup
+#
+# To start vncserver:
+# vncserver -localhost
+#
+# To kill vncserver (where number after ":" is X desktop number, here "4"):
+# vncserver -kill :4
+#
+# To clean up locaks if vncserver died without being kiilled, e.g., a reboot
+# rm /tmp/.X4-lock
+# rm /tmp/.X11-unix/X4
+#
+# the script below assumes that the vnc password, ~/.vnc/passwd on pleiades,
+# has been copied to ~/bin/passwd on the local machine
+
+sleep 1s
+read -p "Press any key when pfe log in is completed ..."
+
+if [ "$OSTYPE" == 'darwin18' ] || [ "$OSTYPE" == 'darwin19' ] || [ "$OSTYPE" == 'darwin20' ]
+then
+
+    # On macOS there is a native vnc viewer, which runs fine on fast connections:
+    # open /System/Library/CoreServices/Applications/Screen\ Sharing.app vnc://localhost:5904
+
+    # For slower connections I recommend TigerVNC viewer (http://tigervnc.org):
+    /Applications/TigerVNC\ Viewer\ 1.13.0.app/Contents/MacOS/TigerVNC\ Viewer localhost:5904 -passwd ~/bin/passwd &
+
+elif [ "$OSTYPE" == 'darwin21' ] || [ "$OSTYPE" == 'darwin22' ]
+then
+         
+    # For slower connections I recommend TigerVNC viewer (http://tigervnc.org):
+    /Applications/TigerVNC\ Viewer\ 1.13.1.app/Contents/MacOS/TigerVNC\ Viewer localhost:5904 -passwd ~/bin/passwd &
+
+else
+
+    # On Linux I recommend TigerVNC viewer (http://tigervnc.org):
+    vncviewer localhost:5904 -passwd ~/bin/passwd &
+fi
