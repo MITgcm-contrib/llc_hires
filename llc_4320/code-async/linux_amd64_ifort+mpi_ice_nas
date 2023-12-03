@@ -86,3 +86,5 @@ if [ "x$NETCDF" != x ] ; then
     #INCLUDEDIRS="$INCLUDEDIRS ${NETCDF}/include"
     LIBS="$LIBS -L${NETCDF}/lib"
 fi
+
+LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"

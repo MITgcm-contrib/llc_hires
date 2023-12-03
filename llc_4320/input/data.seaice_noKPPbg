@@ -2,18 +2,18 @@
  &SEAICE_PARM01
       SEAICE_multDim     = 7
 #
-      SEAICE_dryIceAlb   = 0.7,
-      SEAICE_wetIceAlb   = 0.7060,
-      SEAICE_drySnowAlb  = 0.8652,
-      SEAICE_wetSnowAlb  = 0.8085,
+      SEAICE_dryIceAlb   = 0.84,
+      SEAICE_wetIceAlb   = 0.78,
+      SEAICE_drySnowAlb  = 0.90,
+      SEAICE_wetSnowAlb  = 0.8 ,
       SEAICE_waterDrag   = 0.0054138,
       SEAICE_drag        = 0.00114,
       HO                 = 0.05,
 #
-      SEAICE_dryIceAlb_south  = 0.8509,
-      SEAICE_wetIceAlb_south  = 0.7284,
-      SEAICE_drySnowAlb_south = 0.7754,
-      SEAICE_wetSnowAlb_south = 0.7753,
+      SEAICE_dryIceAlb_south   = 0.75
+      SEAICE_wetIceAlb_south   = 0.66
+      SEAICE_drySnowAlb_south  = 0.84
+      SEAICE_wetSnowAlb_south  = 0.7 
       SEAICE_waterDrag_south  = 0.0054716,
       SEAICE_drag_south       = 0.0012114,
 #

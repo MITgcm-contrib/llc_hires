@@ -47,11 +47,8 @@
  hFacSup=5.,
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
-# viscC4Leith=2.15,
-# viscC4Leithd=2.15,
-# increased to keep stable with modifued Leith
- viscC4Leith=3.0,
- viscC4Leithd=3.0,
+ viscC4Leith=2.15,
+ viscC4Leithd=2.15,
  viscA4GridMax=0.8,
  useAreaViscLength=.TRUE.,
  highOrderVorticity  = .TRUE.,
