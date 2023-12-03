@@ -96,8 +96,7 @@ CEOP
 
       IF (
      &     DIFFERENT_MULTIPLE(dumpFreq,myTime,deltaTClock)
-     &  .OR. dumpInitAndLast.AND.( myTime.EQ.endTime .OR.
-     &                             myTime.EQ.startTime  )
+     &     .AND. myIter .NE. nIter0
      &   ) THEN
         IF ( dumpFreq .EQ. 0.0 ) THEN
           iRec = 1

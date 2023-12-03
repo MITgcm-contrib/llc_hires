@@ -1,6 +1,9 @@
 # llc4320 with:
+# - latest (checkpoint68t) MITgcm
 # - ERA5 forcing
 # - no KPP background diffusivity and viscosity
+# - Leithd = 0
+# - Joe Skitka's Leith modifications
 # - Bron's latest asyncio code
 # - Oliver's pkg/tides
 #   https://github.com/jahn/MITgcm/tree/tides
@@ -20,6 +23,8 @@ ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
 cd ~/llc_4320/MITgcm/build
 rm *
 cp ../../llc_hires/llc_4320/code-async/SIZE.h_180x180x5015 SIZE.h
+cp ../../llc_hires/llc_4320/code/mom_vi_del2uv.F_jms mom_vi_del2uv.F
+cp ../../llc_hires/llc_4320/code/mom_vi_hdissip.F_jms mom_vi_hdissip.F
 ../tools/genmake2 -of \
  ../../llc_hires/llc_4320/code-async/linux_amd64_ifort+mpi_ice_nas -mpi -mods \
  '../../llc_hires/llc_4320/code ../../llc_hires/llc_4320/code-async'
