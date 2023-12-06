@@ -36,6 +36,8 @@ ln -s sigma_MDT_glob_eccollc_llc270.bin sigma_MDT_glob_eccollc.bin
 ln -s sigma_iceconc_eccollc_270.bin sigma_iceconc_eccollc.bin
 ln -s slaerr_gridscale_r1_llc270.err slaerr_gridscale_r1.err
 ln -s slaerr_largescale_r1_ll270.err slaerr_largescale_r1.err
+ln -s T_monthly_woa09_llc270 T_OWPv1_M_eccollc_90x50.bin
+ln -s S_monthly_woa09_llc270 S_OWPv1_M_eccollc_90x50.bin
 cd ../input_init
 ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/* .
 ln -sf /nobackup/hzhang1/pub/llc270_FWD/input/19920101/* .
