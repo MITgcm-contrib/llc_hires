@@ -1,0 +1,57 @@
+#data.exf: atemp/aqh/uwind/vwind: 0/6/12/18 instantaneously
+#	   precip/lwdown/swdown: 0-6-12-18-24 6houly mean @3/9/15/21  
+#
+ &diagnostics_list
+#
+  dumpatlast = .TRUE.,
+#---
+   frequency(1)  = 1209600.0,
+    fields(1,1)  = 'EXFatemp',
+    filename(1)  = 'diags/EXFatemp',
+   frequency(2)  = 1209600.0,
+    fields(1,2)  = 'EXFaqh  ',
+    filename(2)  = 'diags/EXFaqh',
+   frequency(3)  = 1209600.0,
+    fields(1,3)  = 'EXFuwind',
+    filename(3)  = 'diags/EXFuwind',
+   frequency(4)  = 1209600.0,
+    fields(1,4)  = 'EXFvwind',
+    filename(4)  = 'diags/EXFvwind',
+   frequency(5)  = 1209600.0,
+    fields(1,5)  = 'EXFpreci',
+    filename(5)  = 'diags/EXFpreci',
+   frequency(6)  = 1209600.0,
+    fields(1,6)  = 'EXFlwdn ',
+    filename(6)  = 'diags/EXFlwdn',
+   frequency(7)  = 1209600.0,
+    fields(1,7)  = 'EXFswdn ',
+    filename(7)  = 'diags/EXFswdn',
+   frequency(8)  = 2635200.0,
+    fields(1,8)  = 'THETA   ',
+    filename(8)  = 'diags/THETA',
+   frequency(9)  = 2635200.0,
+    fields(1,9)  = 'SALT    ',
+    filename(9)  = 'diags/SALT',
+ &
+
+# Parameter for Diagnostics of per level statistics:
+#-----------------
+# for each output-stream:
+#  stat_fname(n) : prefix of the output file name (only 8.c long) for
+#outp.stream n
+#  stat_freq(n):< 0 : write snap-shot output every |stat_freq| seconds
+#               > 0 : write time-average output every stat_freq seconds
+#  stat_phase(n)    : write at time = stat_phase + multiple of |stat_freq|
+#  stat_region(:,n) : list of "regions" (default: 1 region only=global)
+#  stat_fields(:,n) : list of diagnostics fields (8.c) (see
+#"available_diagnostics.log"
+#                 file for the list of all available diag. in this particular
+#config)
+#-----------------
+ &DIAG_STATIS_PARMS
+#- an example just to check the agreement with MONITOR output:
+#stat_fields(1,1)= 'ETAN    ','UVEL    ','VVEL    ','WVEL    ', 'THETA   ',
+#   stat_fname(1)= 'dynStDiag',
+#    stat_freq(1)= -864000.,
+#   stat_phase(1)= 0.,
+ &

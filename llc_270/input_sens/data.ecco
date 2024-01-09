@@ -1,0 +1,18 @@
+# *******************
+# ECCO cost functions
+# *******************
+ &ECCO_COST_NML
+#
+ &
+# ***************************
+# ECCO generic cost functions
+# ***************************
+ &ECCO_GENCOST_NML
+ gencost_avgperiod(1)  = 'month',
+ gencost_barfile(1) = 'm_boxmean_theta',
+ gencost_mask(1) = 'GIN_MASK',
+ gencost_name(1) = 'boxmean_GIN',
+ gencost_outputlevel(1)=1,
+ mult_gencost(1) = 1.,
+#
+ &

@@ -1,0 +1,75 @@
+# *********************
+# ECCO control variables
+# *********************
+ &ctrl_nml
+ doSinglePrecTapelev=.TRUE.,
+ ctrlSmoothCorrel2D=.FALSE.,
+ ctrlSmoothCorrel3D=.FALSE.,
+#to start from given xx*00.data files
+  doinitxx = .TRUE.,
+  doMainUnpack = .FALSE.,
+  doMainPack = .FALSE.,
+#to start from given ecco_ctrl... files
+# doinitxx = .FALSE.,
+ &
+#
+# *********************
+# names for ctrl_pack/unpack
+# *********************
+ &ctrl_packnames
+ &
+#
+# *********************
+# names for CTRL_GENARR2D,3D CTRL_GENTIM2D
+# *********************
+ &CTRL_NML_GENARR
+ xx_gentim2d_weight(1) = 'unit.data',
+ xx_gentim2d_file(1)='xx_precip',
+ xx_gentim2d_startdate1(1)=19920101,
+ xx_gentim2d_period(1)=1209600.0,
+ mult_gentim2d(1) = 0.,
+#
+ xx_gentim2d_weight(2) = 'unit.data',
+ xx_gentim2d_file(2)='xx_lwdown',
+ xx_gentim2d_startdate1(2)=19920101,
+ xx_gentim2d_period(2)=1209600.0,
+ mult_gentim2d(2) = 0.,
+#
+ xx_gentim2d_weight(3) = 'unit.data',
+ xx_gentim2d_file(3)='xx_swdown',
+ xx_gentim2d_startdate1(3)=19920101,
+ xx_gentim2d_period(3)=1209600.0,
+ mult_gentim2d(3) = 0.,
+#
+ xx_gentim2d_weight(4) = 'unit.data',
+ xx_gentim2d_file(4)='xx_aqh',
+ xx_gentim2d_startdate1(4)=19920101,
+ xx_gentim2d_period(4)=1209600.0,
+ mult_gentim2d(4) = 0.,
+#
+ xx_gentim2d_weight(5) = 'unit.data',
+ xx_gentim2d_file(5)='xx_atemp',
+ xx_gentim2d_startdate1(5)=19920101,
+ xx_gentim2d_period(5)=1209600.0,
+ mult_gentim2d(5) = 0.,
+#
+ xx_gentim2d_weight(6) = 'unit.data',
+ xx_gentim2d_file(6)='xx_uwind',
+ xx_gentim2d_startdate1(6)=19920101,
+ xx_gentim2d_period(6)=1209600.0,
+ mult_gentim2d(6) = 0.,
+#
+ xx_gentim2d_weight(7) = 'unit.data',
+ xx_gentim2d_file(7)='xx_vwind',
+ xx_gentim2d_startdate1(7)=19920101,
+ xx_gentim2d_period(7)=1209600.0,
+ mult_gentim2d(7) = 0.,
+#
+ xx_gentim2d_weight(8) = 'unit.data',
+ xx_gentim2d_file(8)='xx_runoff',
+ xx_gentim2d_startdate1(8)=19920101,
+ xx_gentim2d_period(8)=1209600.0,
+ xx_gentim2d_preproc(1,8)='noscaling',
+ mult_gentim2d(8) = 0.,
+#
+ &
