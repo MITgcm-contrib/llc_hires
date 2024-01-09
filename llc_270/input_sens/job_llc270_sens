@@ -1,0 +1,24 @@
+#!/bin/csh
+##PBS -l select=32:ncpus=24:model=has
+
+#PBS -l select=20:ncpus=40:model=sky_ele
+#PBS -W group_list=s2406
+#PBS -q R17455101
+
+##PBS -l walltime=120:00:00
+##PBS -q long
+
+##PBS -l walltime=2:00:00
+##PBS -q devel
+
+#PBS -j oe
+#PBS -m abe
+
+module purge
+module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+module list
+
+umask 022
+cd $PBS_O_WORKDIR
+limit stacksize unlimited
+mpiexec -np 767 ./mitgcmuv_ad
