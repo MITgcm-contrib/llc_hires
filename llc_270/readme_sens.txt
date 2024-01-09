@@ -37,6 +37,7 @@ mkdir diags tapes
 ln -sf ../build/mitgcmuv_ad .
 ln -sf /nobackupp19/dmenemen/public/llc_270/iter42/input/* .
 ln -sf /nobackup/hzhang1/forcing/era_xx_it42_v2 .
-cp ../../llc_hires/llc270/input_sens/* .
-qsub job_lc270_sens
+cp ../../llc_hires/llc_270/input_sens/* .
+matlab < mk_maskTK.m
+qsub job_llc270_sens
 
