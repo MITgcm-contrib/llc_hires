@@ -11,7 +11,10 @@ git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
 git checkout checkpoint64x
 cd ..
-svn checkout https://github.com/MITgcm-contrib/llc_hires/trunk/llc_270
+#svn checkout https://github.com/MITgcm-contrib/llc_hires/trunk/llc_270
+#svn above doesn't work ==> git below 
+git clone https://github.com/MITgcm-contrib/llc_hires.git
+ln -s llc_hires/llc_270
 # For the following requests you need your Earthdata username and WebDAV password (different from Earthdata password)
 # Find it at :https://ecco.jpl.nasa.gov/drive
 wget -r -nH -np --user=USERNAME --ask-password https://ecco.jpl.nasa.gov/drive/files/Version5/Alpha/input_forcing
