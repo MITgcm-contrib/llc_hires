@@ -15,7 +15,7 @@ export WORKING_DIR=~/llc_1080/new/
 cd $WORKING_DIR
 git clone https://github.com/MITgcm-contrib/llc_hires.git
 git clone https://github.com/MITgcm/MITgcm.git
-qsub -I -q long -l select=10:ncpus=40:model=sky_ele,walltime=120:00:00 -m abe
+qsub -I -q devel -l select=10:ncpus=40:model=sky_ele,walltime=2:00:00 -m abe
 
 export WORKING_DIR=~/llc_1080/new/
 module purge
@@ -39,7 +39,8 @@ ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/llc_1080/input/* .
 mv data.exch2_180x180x379 data.exch2
 mpiexec -n 379 ./mitgcmuv
-tail -f STDOUT.00000 | grep advcfl_W
+
+tail -f STDOUT.0000 | grep advcfl_W
 
 
 ==============
