@@ -5,6 +5,42 @@
 #To access to ECCO Drive, a free NASA Earthdata login is required
 #from https://urs.earthdata.nasa.gov/users/new
 
+##############################################
+# Interactive 180x180x379 tile configuration with
+# latest MITgcm no asyncio and Oliver's pkg/tides
+# https://github.com/jahn/MITgcm/tree/tides
+# https://github.com/jahn/ECCO-v4-Configurations/tree/tides/ECCOv4%20Release%204/tides
+
+export WORKING_DIR=~/llc_1080/new/
+cd $WORKING_DIR
+git clone https://github.com/MITgcm-contrib/llc_hires.git
+git clone https://github.com/MITgcm/MITgcm.git
+qsub -I -q long -l select=10:ncpus=40:model=sky_ele,walltime=120:00:00 -m abe
+
+export WORKING_DIR=~/llc_1080/new/
+module purge
+module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd $WORKING_DIR/MITgcm
+mkdir build run
+lfs setstripe -c -1 run
+cd build
+cp ../../llc_hires/llc_1080/code/SIZE.h_180x180x379 SIZE.h
+../tools/genmake2 -of \
+ ../../llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas \
+ -mpi -mods ../../llc_hires/llc_1080/code
+make depend
+make -j
+cd ../run
+cp ../build/mitgcmuv .
+ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/* .
+ln -sf /nobackup/dmenemen/forcing/ECMWF_operational/* .
+ln -sf ~dmenemen/llc_1080/MITgcm/run_2011/pick*354240* .
+ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
+cp ../../llc_hires/llc_1080/input/* .
+mv data.exch2_180x180x379 data.exch2
+mpiexec -n 379 ./mitgcmuv
+tail -f STDOUT.00000 | grep advcfl_W
+
 
 ==============
 # Interactive 90x90x1342 tile configuration with latest MITgcm, no asyncio
