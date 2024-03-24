@@ -61,9 +61,10 @@
  implicitFreeSurface=.TRUE.,
  exactConserv=.TRUE.,
 # debuglevel=-1,
- convertFW2Salt=-1
+ convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
  useSingleCPUio=.TRUE.,
+ useSingleCpuInput=.TRUE.,
  globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,

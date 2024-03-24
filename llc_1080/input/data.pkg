@@ -5,4 +5,5 @@
  useSEAICE      = .TRUE.,
  useKPP         = .TRUE.,
  useFRAZIL      = .TRUE.,
+ useTIDES       = .TRUE.,
  /

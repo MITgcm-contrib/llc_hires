@@ -1,6 +1,5 @@
 # SEAICE parameters
  &SEAICE_PARM01
-      SEAICEwriteState   = .FALSE.,
       SEAICE_multDim     = 7
 #
       SEAICE_dryIceAlb   = 0.7,
