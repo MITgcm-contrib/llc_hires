@@ -20,6 +20,8 @@ qsub -I -q devel -l select=10:ncpus=40:model=sky_ele,walltime=2:00:00 -m abe
 export WORKING_DIR=~/llc_1080/new/
 module purge
 module load comp-intel mpi-hpe/mpt hdf4/4.2.12 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
+cd $WORKING_DIR/MITgcm/pkg
+ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
 cd $WORKING_DIR/MITgcm
 mkdir build run
 lfs setstripe -c -1 run
