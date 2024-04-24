@@ -1,0 +1,60 @@
+make 4 components of SSH
+	        SSH   ::  ETA + snow/ice load
+	SSH_notides   ::  SSH with tides removed
+	         PS   ::  surface pressure
+	   SSH_noIB   ::  SSH_notides with inverse barometer correction
+	 SSH_steric   ::  we use Jinbo?s algorithm to extract steric height
+			  @https://github.com/MITgcm/MITgcm/files/7521065/steric.pdf
+
+1.	Sea Surface Height (SSH) components:
+	SSH = Eta + sIceLoad / rhoConst
+	sIceLoad = SIheff * SEAICE_rhoIce + SIhsnow * SEAICE_rhoSnow
+	SEAICE_rhoIce = 910
+	SEAICE_rhoSnow = 330
+	rhoConst = 1027.5
+	gravity = 9.81
+
+2.	SSH_noIB = SSH_notides + (PS - PS_globalmean)/rhoConst/gravity
+
+3.      SSH_steric = SSH - PhiBot/gravity + (PS/rhoConst   )/gravity;
+        where
+                PhiBot = PhiBot - PhiBotmn; (time mean map)
+                PS = PS - surf_pRef; (101325)
+
+
+PS  	comes from the GEOS model output in
+~dmenemen/c1440_llc2160/holding/inst_15mn_2d_asm_Mx made by 
+mk_geos_ps.m	(PROGRAM 1)
+to interpolate to llc2160 grid
+==>
+/nobackup/dmenemen/public/geos_ecco/c1440_llc2160/mit_output/PS
+	
+mk_TIDE_SSH_NxT.m (PROGRAM 2) 
+	to make SSH (=ETA + snow/ice load)
+	==> TIDE_SSH_NxT.bin
+
+mk_TIDE_SSH_TxN.m (PROGRAM 3)
+	transpoe above TIDE_SSH_NxT.bin
+	==> TIDE_SSH_TxN.bin
+
+mk_TIDE_detide_by_seg.m (PROGRAM 4)
+	detide above TIDE_SSH_TxN.bin by using "t_tide"
+	==> TIDE_????????_????????.bin
+
+mk_collect.m (PROGRAM 5)
+	assemble abve TIDE_????????_????????.bin
+	==> TIDE_SSH_NxT_detide.bin
+
+mk_SSH_4components_by_seg.m (PROGRAM 6)
+	distribute / calculate 4 components of SSH:
+	(using TIDE_SSH_NxT.bin, TIDE_SSH_NxT_detide.bin, PS/, PhiBot/)
+	==>     SSH/
+	SSH_notides/
+	   SSH_noIB/
+	 SSH_steric/
+/nobackup/dmenemen/public/geos_ecco/c1440_llc2160/mit_output/SSH
+/nobackup/dmenemen/public/geos_ecco/c1440_llc2160/mit_output/SSH_notides
+/nobackup/dmenemen/public/geos_ecco/c1440_llc2160/mit_output/SSH_noIB
+/nobackup/dmenemen/public/geos_ecco/c1440_llc2160/mit_output/SSH_steric
+
+
