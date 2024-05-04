@@ -36,10 +36,30 @@ C o When set, smooth vertical diffusivity horizontally
 C o Get rid of vertical resolution dependence of dVsq term by
 C   estimating a surface velocity that is independent of first
 C   level thickness in the model.
-#undef KPP_ESTIMATE_UREF
+#define KPP_ESTIMATE_UREF
+
+C o The default matching of diffusivity as described in Large et al. (1994)
+C can be turned off here, which sometimes helps to remove a noise problem
+C at the bottom of the mixing layer when interior mixing is noisy. This
+C is documented somehow in van Roekel et al. (2018), 10.1029/2018MS001336
+C For better backward compatibility, the flags are defined as negative
+#define KPP_DO_NOT_MATCH_DIFFUSIVITIES
+#ifndef KPP_DO_NOT_MATCH_DIFFUSIVITIES
+C only makes sense if the diffusitivies are matched
+# undef KPP_DO_NOT_MATCH_DERIVATIVES
+#endif /*  KPP_DO_NOT_MATCH_DIFFUSIVITIES */
+
+C o Include/exclude smooth regularization at the cost of changed results.
+C   With this flag defined, some MAX(var,phepsi) are replaced by var+phepsi
+#define KPP_SMOOTH_REGULARISATION
+
+C o reduce shear mxing by shsq**2/(shsq**2+1e-16) according to
+C   Polzin (1996), JPO, 1409-1425), so that there will be no shear mixing
+C   with very small shear
+#define KPP_SCALE_SHEARMIXING
 
 C o Include/exclude KPP non/local transport terms
-#undef KPP_GHAT
+#define KPP_GHAT
 
 C o Exclude Interior shear instability mixing
 #undef EXCLUDE_KPP_SHEAR_MIX

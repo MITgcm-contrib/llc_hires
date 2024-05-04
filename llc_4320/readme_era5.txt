@@ -56,3 +56,26 @@ mpiexec -n 5360 ./mitgcmuv_180x180x5015
 
 cd ~/llc_4320/MITgcm/run_era5
 tail -f STDOUT.00000 | grep advcfl_W
+
+#############################
+# instability crash on time step 623030
+# restart from 622944 adding some background KPP diffusivity
+emacs data
+ viscAr= 5.e-5,
+ diffKrT=5.e-6,
+ diffKrS=5.e-6,
+ nIter0=622944,
+ hydrogThetaFile='Theta.0000622944.data',
+ hydrogSaltFile ='Salt.0000622944.data',
+ uVelInitFile   ='U.0000622944.data',
+ vVelInitFile   ='V.0000622944.data',
+ pSurfInitFile  ='Eta.0000622944.data',
+emacs data.seaice
+      AreaFile           = 'SIarea.0000622944.data',
+      HsnowFile          = 'SIhsnow.0000622944.data',
+      HsaltFile          = 'SIhsalt.0000622944.data',
+      HeffFile           = 'SIheff.0000622944.data',
+      UiceFile           = 'SIuice.0000622944.data',
+      ViceFile           = 'SIvice.0000622944.data',
+mv STDOUT.00000 STDOUT.0000622944
+mpiexec -n 5360 ./mitgcmuv_180x180x5015
