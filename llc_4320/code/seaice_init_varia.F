@@ -262,12 +262,13 @@ C--   Now lets look at all these beasts
       ENDIF
 
 C--   Set model variables to initial/restart conditions
+CDM Begin: start from files rather than pickup
 CDM      IF ( .NOT. ( startTime .EQ. baseTime .AND.  nIter0 .EQ. 0
-CMD     &     .AND. pickupSuff .EQ. ' ') ) THEN
-CMD
-CMD         CALL SEAICE_READ_PICKUP ( myThid )
-CMD
-CMD      ELSE
+CDM     &     .AND. pickupSuff .EQ. ' ') ) THEN
+CDM
+CDM         CALL SEAICE_READ_PICKUP ( myThid )
+
+CDM      ELSE
 
        DO bj=myByLo(myThid),myByHi(myThid)
         DO bi=myBxLo(myThid),myBxHi(myThid)
@@ -419,7 +420,8 @@ C--   Read initial sea ice age from file if available.
        ENDDO
 #endif /* ALLOW_SITRACER */
 
-CMD      ENDIF
+CDM      ENDIF
+CDM End: start from files rather than pickup
 
 #ifdef ALLOW_OBCS
 C--   In case we use scheme with a large stencil that extends into overlap:

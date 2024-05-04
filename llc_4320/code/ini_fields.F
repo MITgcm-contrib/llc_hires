@@ -24,6 +24,7 @@ C     !INPUT PARAMETERS:
 CEOP
 
 C     Set model variables to initial/restart conditions
+CDM Begin: start from files rather than pickup
 CDM      IF ( startTime .EQ. baseTime .AND.  nIter0 .EQ. 0
 CDM     &     .AND. pickupSuff .EQ. ' ' ) THEN
         CALL INI_VEL( myThid )
@@ -37,6 +38,7 @@ CDM     &     .AND. pickupSuff .EQ. ' ' ) THEN
 CDM      ELSEIF ( .NOT.useOffLine .OR. nonlinFreeSurf.GT.0 ) THEN
 CDM        CALL READ_PICKUP( nIter0, myThid )
 CDM      ENDIF
+CDM End: start from files rather than pickup
 
 #ifdef ALLOW_NONHYDROSTATIC
       IF ( nonHydrostatic ) THEN

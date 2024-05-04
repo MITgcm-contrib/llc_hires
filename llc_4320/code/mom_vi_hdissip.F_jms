@@ -143,12 +143,17 @@ C and should be less than 1/8, for example viscAh=0.01
           Zpj1=dxV(i+1, j ,bi,bj)*hFacZ(i+1, j )*zStar(i+1, j )
 #else
 C ######### Skitka - remove hdiv factor ##########
-C ######### Skitka - This is actually not strictly correct.  Removes component that is Div part [ nu * Rot part ]  ##########
-C ######### Skitka - Maybe it would be better to instead remove the div part in nu, leaving div[rot*rot] intact.   ##########
-C ######### Skitka - For now though, this should substantially reduce the dissipation.  Why is it not doing that?  ##########
-          Dim=dStar( i ,j-1)-dStar( i ,j-1)
-          Dij=dStar( i , j )-dStar( i , j )
-          Dmj=dStar(i-1, j )-dStar(i-1, j )
+C ######### Skitka - This is not exact.  Removes component that is Div part [ nu * Rot part ]  ##########
+          IF ((rC(k)>leithDivDmask).AND.
+     &          (R_low(i,j,bi,bj)>leithDivFmask)) THEN
+             Dim=viscC4leithDiv*dStar( i ,j-1 )
+             Dij=viscC4leithDiv*dStar( i , j )
+             Dmj=viscC4leithDiv*dStar(i-1, j )
+          ELSE
+             Dim=dStar( i ,j-1 )
+             Dij=dStar( i , j )
+             Dmj=dStar(i-1, j )
+          ENDIF
 
           Zip1=hFacZ( i ,j+1)*zStar( i ,j+1)
           Zij1=hFacZ( i , j )*zStar( i , j )
@@ -211,9 +216,16 @@ C ######### Skitka - For now though, this should substantially reduce the dissip
           Zpj1=dxV(i+1, j ,bi,bj)*hFacZ(i+1, j )*zStar(i+1, j )
 #else
 C ######### Skitka - remove hdiv factor ##########
-          Dim=dStar( i ,j-1)-dStar( i ,j-1)
-          Dij=dStar( i , j )-dStar( i , j )
-          Dmj=dStar(i-1, j )-dStar(i-1, j )
+          IF ((rC(k)>leithDivDmask).AND.
+     &          (R_low(i,j,bi,bj)>leithDivFmask)) THEN
+             Dim=viscC4leithDiv*dStar( i ,j-1)
+             Dij=viscC4leithDiv*dStar( i , j )
+             Dmj=viscC4leithDiv*dStar(i-1, j )
+          ELSE
+             Dim=dStar( i ,j-1)
+             Dij=dStar( i , j )
+             Dmj=dStar(i-1, j )
+          ENDIF
 
           Zip1=hFacZ( i ,j+1)*zStar( i ,j+1)
           Zij1=hFacZ( i , j )*zStar( i , j )
@@ -275,13 +287,13 @@ C ######### Skitka - remove hdiv factor ##########
 
 C $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 C $$$$$$$$$$$$$$$$$$ BEGIN DIAGNOSTICS $$$$$$$$$$$$$$$$$$$$$
-      IF ( k .EQ. 5 ) THEN
-         WRITE(msgBuf,'(a)')
-     &        'JS - In Modified mom_vi_hdissip()'
-         CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
-     &           SQUEEZE_RIGHT , myThid )
-      ENDIF
 c$$$      IF ( k .EQ. 5 ) THEN
+c$$$         WRITE(msgBuf,'(a)')
+c$$$     &        'JS - In Modified mom_vi_hdissip()'
+c$$$         CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
+c$$$     &           SQUEEZE_RIGHT , myThid )
+c$$$      ENDIF
+C$$$      If ( k .EQ. 5 ) THEN
 c$$$         WRITE(msgBuf,'(a,1PE23.14)')
 c$$$     &        'JS - uDissip aGV(3,4,5) =',uDissip(3,4)
 c$$$         CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
