@@ -19,13 +19,13 @@ computed using the vector invariant formulation.  Otherwise this will not
 work!!
 
 The following parameters control how Leith that acts on the divergent part of the flow.
-     viscC4leithDiv (default = 1) - set anywhere from 0 to 1, where 1 is the 
+     viscC4leithDiv (default = 1) - Set anywhere from 0 to 1, where 1 is the 
                                     full amount of dissipation acting on the
                                     divergent part of the flow and 0 is off.
-     leithDivDmask  (default = 0) - Leith is disabled from acting on Div. flow at depths
-                                    less than (i.e. shallower than) leithDivDmask (units
-                                    of meters).
-     leithDivFmask  (default = 0) - Leith is disabled from acting on Div. flow at in
+     leithDivDmask  (default = 0) - Leith is fully enabled to act on divergent flow at
+                                    depths less than (i.e. shallower than) leithDivDmask
+                                    (units of meters).
+     leithDivFmask  (default = 0) - Leith is fully enabled to act on divergent flow in
                                     regions where the ocean floor is shallower than
                                     leithDivFmask (units of meters).
 
