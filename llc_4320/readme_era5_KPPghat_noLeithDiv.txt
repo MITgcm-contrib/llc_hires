@@ -42,7 +42,7 @@ cd ~/llc_4320/MITgcm/run_era5_KPPghat_noLeithDiv
 #~/llc_4320/extract/uncompress4320 597888 Eta,Salt,Theta,U,V
 #~/llc_4320/extract/uncompress4320 597888 SIarea,SIheff,SIhsalt,SIhsnow,SIuice,SIvice
 
-ln -sf ../run_era5_noKPPbg_newLeith/0000597888* .
+ln -sf ../run_noKPPbg_newLeith/0000597888* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/bathy4320_g5_r4 .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
