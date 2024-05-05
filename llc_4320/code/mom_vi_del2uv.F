@@ -96,31 +96,29 @@ c      DO i=1,sNx+1
       DO j=2-OLy,sNy+OLy-1
        DO i=2-OLx,sNx+OLx-1
 C ######### Skitka - scale hdiv factor ##########
-          IF ((rC(k)>leithDivDmask).AND.
-     &          (R_low(i,j,bi,bj)>leithDivFmask)) THEN
-             del2u(i,j) =
-     &            (viscC4leithDiv*( hDiv(i,j)-hDiv(i-1,j) )
-     &                 *recip_dxC(i,j,bi,bj)
-     &            -recip_hFacW(i,j,k,bi,bj)*
-     &            ( hFacZ(i,j+1)*vort3(i,j+1) - hFacZ(i,j)*vort3(i,j) )
-     &                 *recip_dyG(i,j,bi,bj)
-     &            )*maskW(i,j,k,bi,bj)*recip_deepFacC(k)
+        IF ((rC(k)           >leithDivDmask).AND.
+     &      (R_low(i,j,bi,bj)>leithDivFmask)) THEN
+         del2u(i,j) = ( viscC4leithDiv *
+     &          ( hDiv(i,j) - hDiv(i-1,j) )*recip_dxC(i,j,bi,bj)
+     &         -_recip_hFacW(i,j,k,bi,bj)*
+     &          ( hFacZ(i,j+1)*vort3(i,j+1) - hFacZ(i,j)*vort3(i,j) )
+     &                                     *recip_dyG(i,j,bi,bj)
+     &       )*maskW(i,j,k,bi,bj)*recip_deepFacC(k)
 #ifdef ALLOW_OBCS
-     &       *maskInW(i,j,bi,bj)
+     &        *maskInW(i,j,bi,bj)
 #endif
-          ELSE
-             del2u(i,j) =
-     &            (( hDiv(i,j)-hDiv(i-1,j) )
-     &                 *recip_dxC(i,j,bi,bj)
-     &            -recip_hFacW(i,j,k,bi,bj)*
-     &            ( hFacZ(i,j+1)*vort3(i,j+1) - hFacZ(i,j)*vort3(i,j) )
-     &                 *recip_dyG(i,j,bi,bj)
-     &            )*maskW(i,j,k,bi,bj)*recip_deepFacC(k)
+        ELSE
+         del2u(i,j) =
+     &       (  ( hDiv(i,j) - hDiv(i-1,j) )*recip_dxC(i,j,bi,bj)
+     &         -_recip_hFacW(i,j,k,bi,bj)*
+     &          ( hFacZ(i,j+1)*vort3(i,j+1) - hFacZ(i,j)*vort3(i,j) )
+     &                                     *recip_dyG(i,j,bi,bj)
+     &       )*maskW(i,j,k,bi,bj)*recip_deepFacC(k)
 #ifdef ALLOW_OBCS
-     &            *maskInW(i,j,bi,bj)
+     &        *maskInW(i,j,bi,bj)
 #endif
 
-          ENDIF
+        ENDIF
        ENDDO
       ENDDO
 
@@ -138,28 +136,26 @@ c      DO i=1,sNx
       DO j=2-OLy,sNy+OLy-1
        DO i=2-OLx,sNx+OLx-1
 C ######### Skitka - remove hdiv factor ##########
-          IF ((rC(k)>leithDivDmask).AND.
+        IF ((rC(k)>leithDivDmask).AND.
      &          (R_low(i,j,bi,bj)>leithDivFmask)) THEN
-             del2v(i,j) =
-     &            (viscC4leithDiv*(hDiv(i,j)-hDiv(i,j-1))
-     &                 *recip_dyC(i,j,bi,bj)
-     &            +recip_hFacS(i,j,k,bi,bj)*
+           del2v(i,j) = ( viscC4leithDiv *
+     &            ( hDiv(i,j) - hDiv(i,j-1) )*recip_dyC(i,j,bi,bj)
+     &           +_recip_hFacS(i,j,k,bi,bj)*
      &            ( hFacZ(i+1,j)*vort3(i+1,j) - hFacZ(i,j)*vort3(i,j) )
-     &                 *recip_dxG(i,j,bi,bj)
-     &            )*maskS(i,j,k,bi,bj)*recip_deepFacC(k)
+     &                                       *recip_dxG(i,j,bi,bj)
+     &       )*maskS(i,j,k,bi,bj)*recip_deepFacC(k)
 #ifdef ALLOW_OBCS
-     &       *maskInS(i,j,bi,bj)
+     &        *maskInS(i,j,bi,bj)
 #endif
-          ELSE
-             del2v(i,j) =
-     &            ((hDiv(i,j)-hDiv(i,j-1))
-     &                 *recip_dyC(i,j,bi,bj)
-     &            +recip_hFacS(i,j,k,bi,bj)*
-     &            ( hFacZ(i+1,j)*vort3(i+1,j) - hFacZ(i,j)*vort3(i,j) )
-     &                 *recip_dxG(i,j,bi,bj)
-     &            )*maskS(i,j,k,bi,bj)*recip_deepFacC(k)
+        ELSE
+         del2v(i,j) =
+     &       (  ( hDiv(i,j) - hDiv(i,j-1) )*recip_dyC(i,j,bi,bj)
+     &         +_recip_hFacS(i,j,k,bi,bj)*
+     &          ( hFacZ(i+1,j)*vort3(i+1,j) - hFacZ(i,j)*vort3(i,j) )
+     &                                     *recip_dxG(i,j,bi,bj)
+     &       )*maskS(i,j,k,bi,bj)*recip_deepFacC(k)
 #ifdef ALLOW_OBCS
-     &            *maskInS(i,j,bi,bj)
+     &        *maskInS(i,j,bi,bj)
 #endif
           ENDIF
        ENDDO
