@@ -1,16 +1,9 @@
 # llc4320 version 2 (v02)
 
-
 aiming for:
 z*
 ggl90
 implicit bottom drag
-
-
-
-CPP_OPTIONS.h
-#define SOLVE_DIAGONAL_LOWMEMORY
-#define EXCLUDE_PCELL_MIX_CODE
 
 data
  viscAr= 1e-6,  (the molecular viscosity value)
@@ -34,15 +27,8 @@ data
  nonlinFreeSurf=4,
  cg2dTargetResidual = 1.E-6,
 
-
 email martin about data.ggl90 and about sea ice dynamics that magically avoids
 to have too thick ice
-
-now it's time for CBC!!!
-
-
-
-
 
 
 

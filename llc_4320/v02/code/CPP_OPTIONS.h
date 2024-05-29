@@ -83,7 +83,7 @@ C o Exclude/allow partial-cell effect (physical or enhanced) in vertical mixing
 C   this allows to account for partial-cell in vertical viscosity and diffusion,
 C   either from grid-spacing reduction effect or as artificially enhanced mixing
 C   near surface & bottom for too thin grid-cell
-#undef EXCLUDE_PCELL_MIX_CODE
+#define EXCLUDE_PCELL_MIX_CODE
 
 C o Exclude/allow to use isotropic 3-D Smagorinsky viscosity as diffusivity
 C   for tracers (after scaling by constant Prandtl number)
@@ -132,7 +132,7 @@ C o Include/exclude code for single reduction Conjugate-Gradient solver
 
 C o Choices for implicit solver routines solve_*diagonal.F
 C   The following has low memory footprint, but not suitable for AD
-#undef SOLVE_DIAGONAL_LOWMEMORY
+#define SOLVE_DIAGONAL_LOWMEMORY
 C   The following one suitable for AD but does not vectorize
 #undef SOLVE_DIAGONAL_KINNER
 
