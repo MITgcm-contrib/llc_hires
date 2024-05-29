@@ -69,7 +69,7 @@ cp ../../llc_hires/llc_4320/v02/code-async/SIZE.h_135x135x8697 SIZE.h
   -mods '../../llc_hires/llc_4320/v02/code ../../llc_hires/llc_4320/v02/code-async'
 make depend
 make -j
-cp mitgcmuv ../run_era5_KPPghat_noLeithDiv/mitgcmuv_135x135x8697
+cp mitgcmuv ../run_v02/mitgcmuv_135x135x8697
 
 cd ~/llc_4320/MITgcm/run_v02
 
@@ -85,13 +85,8 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
-cp ../../llc_hires/llc_4320/input/* .
-mv data_noKPPbg_noLeithDiv data
-mv data.kpp_Riinf_3.5 data.kpp
-mv data.exf_era5 data.exf
-mv data.seaice_noKPPbg data.seaice
+cp ../../llc_hires/llc_4320/v02/input/* .
 mv data.exch2_135x135x8697 data.exch2
-rm data.exch2_* data.exf_*
 mpiexec -n 10752 ./mitgcmuv_135x135x8697
 
 cd ~/llc_4320/MITgcm/run_v02
