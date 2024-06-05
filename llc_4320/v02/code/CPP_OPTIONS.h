@@ -83,7 +83,7 @@ C o Exclude/allow partial-cell effect (physical or enhanced) in vertical mixing
 C   this allows to account for partial-cell in vertical viscosity and diffusion,
 C   either from grid-spacing reduction effect or as artificially enhanced mixing
 C   near surface & bottom for too thin grid-cell
-#define EXCLUDE_PCELL_MIX_CODE
+#undef EXCLUDE_PCELL_MIX_CODE
 
 C o Exclude/allow to use isotropic 3-D Smagorinsky viscosity as diffusivity
 C   for tracers (after scaling by constant Prandtl number)
@@ -92,7 +92,7 @@ C   for tracers (after scaling by constant Prandtl number)
 C-- Time-stepping code options:
 
 C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
-#undef ALLOW_SOLVE4_PS_AND_DRAG
+#define ALLOW_SOLVE4_PS_AND_DRAG
 
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE

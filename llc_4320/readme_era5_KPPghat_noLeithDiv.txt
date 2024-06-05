@@ -57,7 +57,7 @@ mv data.exf_era5 data.exf
 mv data.seaice_noKPPbg data.seaice
 mv data.exch2_120x120x10901 data.exch2
 rm data.exch2_* data.exf_*
-mpiexec -n 11264 ./mitgcmuv_120x120x10901
+mpiexec -n 11904 ./mitgcmuv_120x120x10901
 
 cd ~/llc_4320/MITgcm/run_era5_KPPghat_noLeithDiv
 tail -f STDOUT.00000 | grep advcfl_W

@@ -1,18 +1,33 @@
 # llc4320 version 2 (v02)
 
+~dmenemen/llc_4320/MITgcm/run_v02a
+CPP_OPTIONS.h
+#define SOLVE_DIAGONAL_LOWMEMORY
+
+~dmenemen/llc_4320/MITgcm/run_v02
+CPP_OPTIONS.h
+#define EXCLUDE_PCELL_MIX_CODE
+#define ALLOW_SOLVE4_PS_AND_DRAG
+data
+ &PARM01
+ viscAr= 1e-6,  (the molecular viscosity value)
+ no_slip_sides = .FALSE.,
+ selectImplicitDrag = 2,
+ selectP_inEOS_Zc = 1,
+ &PARM04
+ pCellMix_select = 2,
+ pCellMix_viscAr = 90*4.e-4,
+ pCellMix_diffKr = 90*2.e-4,
+
+>>>>>>>
+
+
 aiming for:
 z*
 ggl90
 implicit bottom drag
 
 data
- viscAr= 1e-6,  (the molecular viscosity value)
- no_slip_sides = .FALSE.,
- selectImplicitDrag = 2,
- pCellMix_select = 2,
- pCellMix_viscAr = 90*4.e-4,
- pCellMix_diffKr = 90*2.e-4,
- selectP_inEOS_Zc = 1
  hFacMin=0.1,
  hFacInf=0.05,
  hFacSup=5.,
@@ -87,7 +102,7 @@ ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/llc_4320/v02/input/* .
 mv data.exch2_135x135x8697 data.exch2
-mpiexec -n 10752 ./mitgcmuv_135x135x8697
+mpiexec -n 11008 ./mitgcmuv_135x135x8697
 
 cd ~/llc_4320/MITgcm/run_v02
 tail -f STDOUT.00000 | grep advcfl_W
