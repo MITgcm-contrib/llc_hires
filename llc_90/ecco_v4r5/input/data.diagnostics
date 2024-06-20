@@ -96,12 +96,12 @@
    levels(1, 10)= 11.,
    fileFlags(10) = 'D       ',
 #---
-  frequency(11) = 2635200.0,
-   fields(1:10,11) ='SRELAX  ','TRELAX  ','WTHMASS ','WSLTMASS',
-                 'oceSflux','oceQnet ','SIatmQnt',
-                 'SIaaflux','SIsnPrcp','SIacSubl',
-   filename(11) = 'diags/budg2d_zflux_set2',
-   fileFlags(11) = 'D       ',
+#  frequency(11) = 2635200.0,
+#   fields(1:10,11) ='SRELAX  ','TRELAX  ','WTHMASS ','WSLTMASS',
+#                 'oceSflux','oceQnet ','SIatmQnt',
+#                 'SIaaflux','SIsnPrcp','SIacSubl',
+#   filename(11) = 'diags/budg2d_zflux_set2',
+#   fileFlags(11) = 'D       ',
 #---
   frequency(12) = 2635200.0,
    fields(1:13,12) ='UVELMASS','VVELMASS',
