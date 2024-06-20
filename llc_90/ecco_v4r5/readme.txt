@@ -107,4 +107,36 @@ to 68o (same as 68n)
 
 comparison between c68g and c68o shown by c68g_c68o_eta.png
 
+to 68p
+disable bloc for SIaaflux @data.diagnostic
+same as 68o
 
+to 68q
+same as 68p
+
+to 68r
+SWFRACB ==> SEAICE_SWFrac @seaice_growth_adx.F
+same as 68q
+
+to 68s
+same as 68r
+
+to 68t
+same as 68s
+
+to 68u
+same as 68t
+
+to 68v
+ini_parms.F ==> as model/src/ but keep shelice part
+SHELFICE.h  ==> add "SHI_update_kTopC"
+same as 68u
+
+to 68w
+same as 68v
+
+to 68x
+same as 68w
+
+to 68y
+same as 68x
