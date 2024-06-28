@@ -59,11 +59,16 @@ Depth.data   :: Model bathymetry (m)
 
 AngleCS.data :: cosine(alpha) relative to geographic direction at grid cell center
 AngleSN.data :: sine(alpha) relative to geographic direction at grid cell center
-                alpha = angle of model uVel direction vs geographical East
-                      = angle of model vVel direction vs geographical North
-                (AngleCS*uVelc - AngleSN*vVelc, AngleSN*uVelc + AngleCN*vVelc)
-                rotates model velocity to geographical coordinates, where
-                (uVelc,vVelc) is model velocity vector at center of grid cell
+                where alpha = angle of model uVel direction vs geographical East
+                            = angle of model vVel direction vs geographical North
+                To rotate model velocity to geographical coordinates:
+                      uVelE = AngleCS * uVelc - AngleSN * vVelc
+                      vVelN = AngleSN * uVelc + AngleCS * vVelc
+                To rotate velocity from geographical to model coordinates:
+                      uVelc = AngleSN * vVelc + AngleCS * uVelc
+                      vVelc = AngleCS * vVelc - AngleSN * uVelc
+                where (uVelc,vVelc) is model velocity vector at grid cell center
+                  and (uVelE,vVelN) is velocity vector vs geographical East/North                
 U2zonDir.data:: cosine of grid orientation angle at U point location
 V2zonDir.data:: minus sine of  orientation angle at V point location
 
