@@ -27,6 +27,7 @@ mkdir build run
 lfs setstripe -c -1 run
 cd build
 cp ../../llc_hires/llc_1080/code/SIZE.h_180x180x379 SIZE.h
+sed "s|useMYPACKAGE|&, useTIDES|" ../model/inc/PARAMS.h>PARAMS.h
 ../tools/genmake2 -of \
  ../../llc_hires/llc_1080/code/linux_amd64_ifort+mpi_ice_nas \
  -mpi -mods ../../llc_hires/llc_1080/code
