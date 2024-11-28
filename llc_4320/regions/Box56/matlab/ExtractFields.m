@@ -92,7 +92,7 @@ writebin(fouty,fldy);
 
 % create commands for extracting model output fields
 pout=['~dmenemen/llc_4320/regions/Boxes/' region_name '/'];
-extract='/home4/bcnelson/MITgcm/extract/v1.10/extract4320 -g ';
+extract='~dmenemen/llc_4320/extract/extract4320 -g ';
 timesteps=[int2str(mints) '-' int2str(maxts) ' '];
 switch fc
   case 4
@@ -101,9 +101,9 @@ switch fc
     startPoint=[int2str(3*nx+min(ix)) ',' int2str(min(jx)) ',1 '];
 end
 
-% get and save regional Eta and PhiBot
+% get and save regional Eta, PhiBot, and oceFWflx
 extent=[int2str(length(ix)) ',' int2str(length(jx)) ',1'];
-for fnm={'Eta','PhiBot'}
+for fnm={'Eta','PhiBot','oceFWflx'}
     eval(['mkdir ' pout fnm{1}])
     disp(['cd ' pout fnm{1}])
     fieldNames=[fnm{1} ' '];
@@ -125,7 +125,7 @@ end
 % note that zonal velocity is U in faces 1/2 and V in faces 4/5
 % and meridional velocity is V in faces 1/2 and -U in faces 4/5
 % there is a -1 index offset -U meridional velocity in faces 4/5
-% example below is for face 4
+% example below is for face 4 or 5
 
 % U
 switch fc
