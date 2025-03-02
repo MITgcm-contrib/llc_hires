@@ -17,6 +17,21 @@ https://github.com/MITgcm-contrib/llc_hires/blob/master/code_util/vnc_pfe
 Some animations created by David Ellsworth are available here:
 https://data.nas.nasa.gov/eccoviz/eccovizdata/llc4320/index.html
 
+From Tom Haine on March 2, 2025
+Status on the LLC4320 data on SciServer.org
+- All the LLC4320 data are now stored on SciServer.
+- The conversion from .shrunk format to zarr, and the associated integrity
+  checking, is underway. All the surface fields have been done, now we’re
+  working on the interior fields. We estimate this will take another 2–4 weeks
+  to complete. Once it’s done, we’ll make all the LLC4320 data publicly
+  available to SciServer Oceanography users.
+- Meanwhile, a 10 day test LLC4320 dataset is already available to SciServer
+  Oceanography users. Check out the Poseidon Project
+  (https://www.poseidon-ocean.net/) for more information on
+  accessing those data. The public, interactive Poseidon Viewer
+  (https://web.idies.jhu.edu/poseidon-viewer/viewer/index.html) can be used with
+  these LLC4320 data too, right now.
+
 ============
 
 The output files have been compressed by removing land points
