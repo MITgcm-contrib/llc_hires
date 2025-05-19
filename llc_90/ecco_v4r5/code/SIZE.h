@@ -1,10 +1,3 @@
-C These lines are here to deliberately cause a compile-time error.
-C If you see these lines in your .F files or the compiler shows them
-C as an error then it means you have not placed your configuration
-C files in the appropriate place.
-C You need to place you own copy of SIZE.h in the include
-C path for the model, and comment out these lines.
-
 CBOP
 C    !ROUTINE: SIZE.h
 C    !INTERFACE:
@@ -68,7 +61,3 @@ C                routine buffers.
       INTEGER MAX_OLY
       PARAMETER ( MAX_OLX = OLx,
      &            MAX_OLY = OLy )
-
-      integer     nobcs
-      parameter ( nobcs = 4 )
-
