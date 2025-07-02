@@ -1,0 +1,58 @@
+# SEAICE parameters
+ &SEAICE_PARM01
+      SEAICE_multDim     = 7
+#
+      SEAICE_dryIceAlb   = 0.7,
+      SEAICE_wetIceAlb   = 0.7060,
+      SEAICE_drySnowAlb  = 0.8652,
+      SEAICE_wetSnowAlb  = 0.8085,
+      SEAICE_waterDrag   = 0.0054138,
+      SEAICE_drag        = 0.00114,
+      HO                 = 0.6074,
+#
+      SEAICE_dryIceAlb_south  = 0.8509,
+      SEAICE_wetIceAlb_south  = 0.7284,
+      SEAICE_drySnowAlb_south = 0.7754,
+      SEAICE_wetSnowAlb_south = 0.7753,
+      SEAICE_waterDrag_south  = 0.0054716,
+      SEAICE_drag_south       = 0.0012114,
+      HO_south                = 1.0697,
+#
+      SEAICE_strength    = 1.64e+04,
+      LSR_ERROR          = 2.e-4,
+      SEAICE_no_slip     = .TRUE.,
+      SEAICEuseMetricTerms = .TRUE.,
+      SEAICEadvScheme    = 7,
+      Diff1              = 0.0,
+#
+      MIN_ATEMP          = -40.,
+      MIN_TICE           = -40.,
+      SEAICEadvSnow      = .TRUE.,
+      SEAICEadvSalt      = .TRUE.,
+      SEAICEadvHeff      = .TRUE.,
+      SEAICEadvArea      = .TRUE.,
+      SEAICEuseFlooding  = .TRUE.,
+#ian new begin
+      SEAICE_area_reg = 0.15,
+      SEAICE_area_floor = 0.00001,
+      SEAICE_hice_reg = 0.1,
+      IMAX_TICE = 6,
+      SEAICE_EPS = 1.E-8,
+#ian new end
+#ph new begin
+      SEAICE_salt0 = 4.0,
+      SEAICE_doOpenWaterGrowth = .TRUE.,
+      SEAICE_doOpenWaterMelt = .TRUE.,
+      SEAICE_areaLossFormula = 1,
+#ph new end
+      SEAICE_wetAlbTemp  = 0.0,
+      SEAICE_mcPheeTaper = 0.92,
+      SEAICE_mcPheePiston= 0.001
+      SEAICE_frazilFrac  = 0.1,
+      SEAICE_saltFrac    = 0.3548,
+#
+      AreaFile           = 'Jan2010_SIarea_1080x14040_r4',
+      HsnowFile          = 'Jan2010_SIhsnow_1080x14040_r4',
+      HsaltFile          = 'Jan2010_SIhsalt_1080x14040_r4',
+      HeffFile           = 'Jan2010_SIheff_1080x14040_r4',
+ &
