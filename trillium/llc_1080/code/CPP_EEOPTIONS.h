@@ -1,3 +1,6 @@
+#ifndef _CPP_EEOPTIONS_H_
+#define _CPP_EEOPTIONS_H_
+
 CBOP
 C     !ROUTINE: CPP_EEOPTIONS.h
 C     !INTERFACE:
@@ -27,9 +30,6 @@ C     |       identified, rebuild the code with the appropriate  |
 C     |       options set at compile time.                       |
 C     *==========================================================*
 CEOP
-
-#ifndef _CPP_EEOPTIONS_H_
-#define _CPP_EEOPTIONS_H_
 
 C     In general the following convention applies:
 C     ALLOW  - indicates an feature will be included but it may
@@ -62,9 +62,6 @@ C--   Control use of "double" precision constants.
 C     Use D0 where it means REAL*8 but not where it means REAL*16
 #define D0 d0
 
-C--   Enable some old macro conventions for backward compatibility
-#undef USE_OLD_MACROS_R4R8toRSRL
-
 C=== IO related options ===
 C--   Flag used to indicate whether Fortran formatted write
 C     and read are threadsafe. On SGI the routines can be thread
@@ -78,10 +75,6 @@ C     a different file for each tile) and read are thread-safe.
 
 C--   Flag to turn off the writing of error message to ioUnit zero
 #undef DISABLE_WRITE_TO_UNIT_ZERO
-
-C--   Alternative formulation of BYTESWAP, faster than
-C     compiler flag -byteswapio on the Altix.
-#undef FAST_BYTESWAP
 
 C--   Flag to turn on old default of opening scratch files with the
 C     STATUS='SCRATCH' option. This method, while perfectly FORTRAN-standard,
@@ -108,7 +101,6 @@ CXXX #undef  ALLOW_USE_MPI
 
 C--   Control use of communication that might overlap computation.
 C     Under MPI selects/deselects "non-blocking" sends and receives.
-#define ALLOW_ASYNC_COMMUNICATION
 #undef  ALLOW_ASYNC_COMMUNICATION
 #undef  ALWAYS_USE_ASYNC_COMMUNICATION
 C--   Control use of communication that is atomic to computation.
@@ -140,7 +132,7 @@ C     but instead, explicit MPI send & recv calls. Expected to be slower.
 
 C--   Alternative way of doing global sum on a single CPU
 C     to eliminate tiling-dependent roundoff errors. Note: This is slow.
-#undef  CG2D_SINGLECPU_SUM
+#undef CG2D_SINGLECPU_SUM
 
 C=== Other options (to add/remove pieces of code) ===
 C--   Flag to turn on checking for errors from all threads and procs
@@ -154,7 +146,7 @@ C     allow to import and export from/to Coupler interface.
 C--   Activate some pieces of code for coupling to GEOS AGCM
 #undef HACK_FOR_GMAO_CPL
 
-#endif /* _CPP_EEOPTIONS_H_ */
-
+C=== And define Macros ===
 #include "CPP_EEMACROS.h"
 
+#endif /* _CPP_EEOPTIONS_H_ */
