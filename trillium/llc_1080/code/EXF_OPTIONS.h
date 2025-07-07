@@ -197,7 +197,7 @@ C       and ATMOSPHERIC_LOADING need to be defined
 
 C-  Zenith Angle/Albedo related flags.
 #ifdef ALLOW_DOWNWARD_RADIATION
-# undef ALLOW_ZENITHANGLE
+# define ALLOW_ZENITHANGLE
 #endif
 
 C-  Use ocean_emissivity*lwdown in lwFlux. This flag should be defined

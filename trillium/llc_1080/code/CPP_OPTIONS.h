@@ -91,7 +91,7 @@ C   for tracers (after scaling by constant Prandtl number)
 C-- Time-stepping code options:
 
 C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
-#undef ALLOW_SOLVE4_PS_AND_DRAG
+#define ALLOW_SOLVE4_PS_AND_DRAG
 
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE
