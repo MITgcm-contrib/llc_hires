@@ -131,7 +131,7 @@ C o Include/exclude code for single reduction Conjugate-Gradient solver
 
 C o Choices for implicit solver routines solve_*diagonal.F
 C   The following has low memory footprint, but not suitable for AD
-#undef SOLVE_DIAGONAL_LOWMEMORY
+#define SOLVE_DIAGONAL_LOWMEMORY
 C   The following one suitable for AD but does not vectorize
 #undef SOLVE_DIAGONAL_KINNER
 

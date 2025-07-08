@@ -101,7 +101,7 @@ CXXX #undef  ALLOW_USE_MPI
 
 C--   Control use of communication that might overlap computation.
 C     Under MPI selects/deselects "non-blocking" sends and receives.
-#undef  ALLOW_ASYNC_COMMUNICATION
+#define ALLOW_ASYNC_COMMUNICATION
 #undef  ALWAYS_USE_ASYNC_COMMUNICATION
 C--   Control use of communication that is atomic to computation.
 C     Under MPI selects/deselects "blocking" sends and receives.
