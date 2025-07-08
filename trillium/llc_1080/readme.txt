@@ -1,3 +1,41 @@
+############# with asyncio
+
+cd ~/llc1080
+git clone https://github.com/MITgcm-contrib/llc_hires
+git clone https://github.com/MITgcm/MITgcm
+cd ~/llc1080/MITgcm
+git checkout checkpoint69e
+cd ~/llc1080/MITgcm/pkg
+ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
+cd ~/llc1080/MITgcm
+mkdir build run
+
+cd ~/llc1080/MITgcm/build
+module purge
+module load comp-intel/2020.4.304
+module load mpi-hpe/mpt.2.30
+cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_216x215x325 SIZE.h
+../tools/genmake2 -of \
+ ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi \
+  -mods '../../llc_hires/trillium/llc_1080/code ../../llc_hires/trillium/llc_1080/code-async'
+make depend
+make -j
+
+cd ~/llc1080/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_216x215x325
+ln -sf /nobackup/kzhang/llc1080/run_template/* .
+ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
+ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
+ln -sf /nobackup/hzhang1/forcing/era5 .
+ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
+cp ../../llc_hires/trillium/llc_1080/input/* .
+mpiexec -n 360 ./mitgcmuv_216x215x325
+
+cd ~/llc1080/MITgcm/run
+tail -f STDOUT.0000 | grep advcfl_W
+
+############# without asyncio
+
 cd ~/llc1080
 git clone https://github.com/MITgcm-contrib/llc_hires
 git clone https://github.com/MITgcm/MITgcm
@@ -35,7 +73,6 @@ mpiexec -n 1300 ./mitgcmuv_108x108x1300
 
 cd ~/llc1080/MITgcm/run
 tail -f STDOUT.0000 | grep advcfl_W
-
 
 #############
 
