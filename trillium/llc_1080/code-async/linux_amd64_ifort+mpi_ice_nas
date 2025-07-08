@@ -43,10 +43,7 @@ CFLAGS="$CFLAGS -mcmodel=medium -shared-intel"
 
 FFLAGS="$FFLAGS -W0 -WB"
 if test "x$IEEE" = x ; then     #- with optimisation:
-#    FOPTIM='-O2 -ipo -fp-model precise -align -axCORE-AVX2 -xSSE4.2 -traceback -ftz'
-# FOPTIM line modified to work with rome nodes
-# https://www.nas.nasa.gov/hecc/support/kb/preparing-to-run-on-aitken-rome-nodes_657.html
-    FOPTIM='-O2 -ipo -fp-model precise -align -march=core-avx2  -traceback -ftz'
+    FOPTIM='-O2 -ipo -fp-model precise -align -axCORE-AVX2 -xSSE4.2 -traceback -ftz'
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
     NOOPTFILES="$NOOPTFILES obcs_init_fixed.F"
 else

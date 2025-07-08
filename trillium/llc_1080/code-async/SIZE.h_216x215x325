@@ -63,16 +63,16 @@
 #if !defined(_MITGCM_MAGIC_CONSTANTS)
 #define _MITGCM_MAGIC_CONSTANTS
 
-#define __sFacet 4320
-#define __sNx    135
-#define __sNy    135
+#define __sFacet 1080
+#define __sNx    216
+#define __sNy    216
 #define __OLx    8
 #define __OLy    8
 #define __nSx    1
 #define __nSy    1
-#define __nPx    13312-4615
+#define __nPx    325
 #define __nPy    1
-#define __Nr     90
+#define __Nr     173
 
 #endif
 
