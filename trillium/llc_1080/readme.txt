@@ -4,7 +4,7 @@ cd ~/llc1080
 git clone https://github.com/MITgcm-contrib/llc_hires
 git clone https://github.com/MITgcm/MITgcm
 cd ~/llc1080/MITgcm
-git checkout checkpoint69e
+git checkout checkpoint69f
 cd ~/llc1080/MITgcm/pkg
 ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
 cd ~/llc1080/MITgcm
