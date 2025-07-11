@@ -1,3 +1,26 @@
+ssh trillium.scinet.utoronto.ca
+ssh tri-login01
+salloc --nodes 1 --time=1:00:00
+ssh tri1060
+module load gcc/13.3
+module load openmpi/5.0.3
+export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
+cd /scratch/dmenemen/
+cd MITgcm/verification
+./testreport -mpi -j 64 -t lab_sea
+
+
+
+debugjob --clean 2
+
+salloc --nodes N --time=M:00:00 --x11
+module load intel openmpi
+https://slurm.schedmd.com/sbatch.html
+
+salloc --nodes 1 --time=1:00:00
+ssh tri1060
+
+
 ############# with asyncio
 
 cd ~/llc1080
@@ -77,6 +100,8 @@ tail -f STDOUT.0000 | grep advcfl_W
 #############
 
 - run with new llc1080 bathymetry no initial conditions
+- run on trillium
+- add asyncio
 - add ice shelves
 - add initial conditions
 
