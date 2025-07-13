@@ -1,3 +1,5 @@
+# downloading and checking that MITgcm runs
+
 ssh trillium.scinet.utoronto.ca
 ssh tri-login01
 salloc --nodes 1 --time=1:00:00
