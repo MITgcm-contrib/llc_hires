@@ -1,15 +1,12 @@
 # downloading and checking that MITgcm runs
   ssh trillium.scinet.utoronto.ca
-# ssh tri-login01
-  cd ~/scratch                   # make sure you are wherever you want to be
+  ssh tri-login01
+  cd $SCRATCH                                  # make sure you are wherever you want to be
   git clone https://github.com/MITgcm/MITgcm
-# https://slurm.schedmd.com/sbatch.html
   salloc --nodes 1 --time=1:00:00
-  ssh tri1060                    # need to replace with available node
   module load gcc/13.3
   module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
-  cd /scratch/dmenemen/
   cd MITgcm/verification
   ./testreport -mpi -j 64 -t lab_sea
 
