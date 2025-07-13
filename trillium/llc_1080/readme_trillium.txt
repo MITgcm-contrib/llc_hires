@@ -12,31 +12,32 @@
 
 
 ############# without asyncio
-# your mission, should you choose to accept it is
-# to adapt  the following commands for trillium
-# and see what happens to flow through Panama!!!
 
-cd ~/llc1080
-git clone https://github.com/MITgcm-contrib/llc_hires
-git clone https://github.com/MITgcm/MITgcm
-cd ~/llc1080/MITgcm
-git checkout checkpoint69e
-cd ~/llc1080/MITgcm/pkg
-ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
-cd ~/llc1080/MITgcm
-mkdir build run
+  mkdir llc1080
+  cd llc1080
+  git clone https://github.com/MITgcm-contrib/llc_hires
+  git clone https://github.com/MITgcm/MITgcm
+  cd MITgcm
+  git checkout checkpoint69e
+  cd pkg
+  ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
+  cd ..
+  mkdir build run
 
-cd ~/llc1080/MITgcm/build
-module purge
-module load comp-intel/2020.4.304
-module load mpi-hpe/mpt.2.30
-# cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_72x72x2925 SIZE.h
-cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_108x108x1300 SIZE.h
-../tools/genmake2 -of \
- ../../llc_hires/trillium/llc_1080/code/linux_amd64_ifort+mpi_ice_nas \
- -mpi -mods ../../llc_hires/trillium/llc_1080/code
-make depend
-make -j
+  cd build
+  module purge
+  module load gcc/13.3
+  module load openmpi/5.0.3
+  # cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_72x72x2925 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_108x108x1300 SIZE.h
+
+  export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
+  ../tools/genmake2 -of \
+  ../../llc_hires/trillium/llc_1080/code/linux_amd64_gfortran \
+  -mpi -mods ../../llc_hires/trillium/llc_1080/code
+  
+  make depend
+  make -j
 
 cd ~/llc1080/MITgcm/run
 #cp ../build/mitgcmuv mitgcmuv_72x72x2925
