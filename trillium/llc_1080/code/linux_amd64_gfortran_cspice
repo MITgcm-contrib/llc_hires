@@ -32,8 +32,8 @@
 
 if test "x$MPI" = xtrue ; then
   CC=${CC:=mpicc}
-  FC=${FC:=mpif77}
-  F90C=${F90C:=mpif90}
+  FC=${FC:=mpifort}
+  F90C=${F90C:=mpifort}
 else
   CC=gcc
   FC=gfortran
@@ -156,14 +156,6 @@ if [ -n "$MPI_HOME" -a -z "$MPI_INC_DIR" ]; then
     MPI_INC_DIR="$MPI_HOME/include"
 fi
 
-# ─────────────────────────────────────────────────────────────────────────────
-CSPICE_ROOT=$HOME/cspice_root
-
-INCLUDES+=" -I${CSPICE_ROOT}/include"
-LIBS+=" -L${CSPICE_ROOT}/lib -lcspice -lcsupport"
-# ─────────────────────────────────────────────────────────────────────────────
-
-
 if [ "x$MPI" = xtrue ] ; then
    if [ -z "$MPI_INC_DIR" ] ; then
       # MPI env variables are not set, trying pkg-config insteal
@@ -185,3 +177,8 @@ if [ "x$MPI" = xtrue ] ; then
       exit 1
    fi
 fi
+
+CSPICE_ROOT=$HOME/cspice_root
+
+INCLUDES+=" -I${CSPICE_ROOT}/include"
+LIBS+=" -L${CSPICE_ROOT}/lib -lcspice -lcsupport"
