@@ -1,7 +1,7 @@
 # downloading and checking that MITgcm runs
   ssh trillium.scinet.utoronto.ca
   ssh tri-login01
-  cd $SCRATCH                                  # make sure you are wherever you want to be
+  cd $SCRATCH
   git clone https://github.com/MITgcm/MITgcm
   salloc --nodes 1 --time=1:00:00
   module load gcc/13.3
@@ -33,14 +33,22 @@
  cd ../..
  rm -rf cspice
 
-############# without asyncio
 
-  mkdir llc1080
-  cd llc1080
-  git clone https://github.com/MITgcm-contrib/llc_hires
-  git clone https://github.com/MITgcm/MITgcm
-  cd MITgcm
-  git checkout checkpoint69e
+############# run without without asyncio
+ cd $SCRATCH
+ git clone https://github.com/MITgcm-contrib/llc_hires
+ cd $SCRATCH/MITgcm
+ git checkout checkpoint69f
+ cd pkg
+ ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
+ ssh tri-login01
+ salloc --nodes 5 --time=24:00:00
+  module load gcc/13.3
+  module load openmpi/5.0.3
+  export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
+  cd MITgcm/verification
+  ./testreport -mpi -j 64 -t lab_sea
+
   cd pkg
   ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
   cd ..
