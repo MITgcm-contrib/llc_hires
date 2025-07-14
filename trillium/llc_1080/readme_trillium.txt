@@ -11,6 +11,28 @@
   ./testreport -mpi -j 64 -t lab_sea
 
 
+############ Install cspice ############ 
+# Go to the NAIF CSPICE download page and grab the Unix/C package:
+# https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z
+
+ tar -xzf cspice.tar.Z
+ cd cspice/
+ csh makeall.csh
+
+ CSPICE_ROOT=$HOME/cspice_root
+
+ mkdir -p $CSPICE_ROOT/{include,lib,bin}
+ cp include/*     $CSPICE_ROOT/include/
+ cp lib/*.a       $CSPICE_ROOT/lib/
+ cp exe/*         $CSPICE_ROOT/bin/
+
+ cd lib
+ ln -s cspice.a libcspice.a
+ ln -s csupport.a libcsupport.a
+
+ cd ../..
+ rm -rf cspice
+
 ############# without asyncio
 
   mkdir llc1080
@@ -33,11 +55,12 @@
 
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_1080/code/linux_amd64_gfortran \
+  ../../llc_hires/trillium/llc_1080/code/linux_amd64_gfortran_cspice \
   -mpi -mods ../../llc_hires/trillium/llc_1080/code
   
   make depend
   make -j
+
 
 cd ~/llc1080/MITgcm/run
 #cp ../build/mitgcmuv mitgcmuv_72x72x2925
