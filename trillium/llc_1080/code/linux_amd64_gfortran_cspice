@@ -181,4 +181,4 @@ fi
 CSPICE_ROOT=$HOME/cspice_root
 
 INCLUDES+=" -I${CSPICE_ROOT}/include"
-LIBS+=" -L${CSPICE_ROOT}/lib -lcspice -lcsupport"
+LIBS+=" -L${CSPICE_ROOT}/lib -l:cspice.a -l:csupport.a
