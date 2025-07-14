@@ -96,9 +96,7 @@
  debuglevel=-1,
  convertFW2Salt=-1.,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.TRUE.,
- useSingleCpuInput=.TRUE.,
- globalFiles=.TRUE.,
+ useSingleCPUio=.FALSE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
@@ -165,9 +163,9 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='LLC1080_GEBCO24_depth_v1.2a.bin',
- hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
- hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
+ bathyFile      ='LLC1080_GEBCO24_depth_v1.bin',
+# hydrogThetaFile='Jan2010_THETA_1080x14040x90_r4',
+# hydrogSaltFile ='Jan2010_SALT_1080x14040x90_r4',
 # uVelInitFile   ='0000597888_U.data',
 # vVelInitFile   ='0000597888_V.data',
 # pSurfInitFile  ='0000597888_Eta.data',
