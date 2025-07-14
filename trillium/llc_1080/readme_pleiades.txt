@@ -81,6 +81,7 @@ tail -f STDOUT.0000 | grep advcfl_W
 - add asyncio
 - add ice shelves
 - add initial conditions
+- add mixing coefficients from https://doi.org/10.1029/2020MS002065
 
 ##############
 
