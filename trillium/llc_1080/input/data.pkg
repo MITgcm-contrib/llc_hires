@@ -6,4 +6,5 @@
  useKPP         = .TRUE.,
  useFRAZIL      = .TRUE.,
  useTIDES       = .TRUE.,
+ useShelfIce    = .TRUE.,
  /
