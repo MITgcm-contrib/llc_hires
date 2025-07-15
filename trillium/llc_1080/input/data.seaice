@@ -31,6 +31,8 @@
       SEAICE_wetAlbTemp  = 0.0,
       SEAICE_saltFrac    = 0.3,
 #
+      SEAICEwriteState   = .TRUE.,
+#
       AreaFile           = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
       HsnowFile          = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
 #      HsaltFile          = '0000597888_SIhsalt.data',
