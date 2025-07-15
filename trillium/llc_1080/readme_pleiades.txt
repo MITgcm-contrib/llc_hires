@@ -1,4 +1,4 @@
-############# without asyncio
+############# initialization
 
 cd ~/llc1080
 git clone https://github.com/MITgcm-contrib/llc_hires
@@ -31,6 +31,7 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/trillium/llc_1080/input/* .
+mv data_day0 data
 mpiexec -n 2925 ./mitgcmuv_72x72x2925
 # mpiexec -n 1300 ./mitgcmuv_108x108x1300
 

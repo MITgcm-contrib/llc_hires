@@ -70,8 +70,8 @@
  rhonil=1029.,
  rhoConstFresh=1000.,
  eosType='JMD95Z',
- hFacMin=0.3,
- hFacInf=0.1,
+ hFacMin=0.1,
+ hFacInf=0.05,
  hFacSup=5.,
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
@@ -104,8 +104,8 @@
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
- select_rStar=2,
- nonlinFreeSurf=4,
+# select_rStar=2,
+# nonlinFreeSurf=4,
  /
 
 # Elliptic solver parameters
@@ -124,7 +124,7 @@
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
  dumpfreq = 86400.,
- monitorFreq = 15.,
+ monitorFreq = 3600.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -167,7 +167,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='LLC1080_GEBCO24_depth_v1.2c.bin',
+ bathyFile      ='LLC1080_GEBCO24_depth_v1.2a.bin',
  hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
  hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
 # uVelInitFile   ='0000597888_U.data',
