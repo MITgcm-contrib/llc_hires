@@ -70,8 +70,8 @@
  rhonil=1029.,
  rhoConstFresh=1000.,
  eosType='JMD95Z',
- hFacMin=0.3,
- hFacInf=0.1,
+ hFacMin=0.1,
+ hFacInf=0.05,
  hFacSup=5.,
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
@@ -163,7 +163,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='LLC1080_GEBCO24_depth_v1.2b.bin',
+ bathyFile      ='LLC1080_GEBCO24_depth_v1.2c.bin',
 # hydrogThetaFile='Jan2010_THETA_1080x14040x90_r4',
 # hydrogSaltFile ='Jan2010_SALT_1080x14040x90_r4',
 # uVelInitFile   ='0000597888_U.data',
