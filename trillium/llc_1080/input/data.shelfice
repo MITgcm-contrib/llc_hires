@@ -3,7 +3,7 @@
 # ******************************
  &SHELFICE_PARM01
  SHELFICEboundaryLayer = .TRUE.,
- SHELFICEtopoFile   = 'LLC1080_bedmachine_GrnV5_AntV2_ice_shelf_v1.2a.bin',
+ SHELFICEtopoFile   = 'LLC1080_bedmachine_GrnV5_AntV2_ice_shelf_v1.2.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
