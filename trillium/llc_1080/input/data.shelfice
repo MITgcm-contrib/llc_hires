@@ -2,11 +2,10 @@
 # Parameter for SHELFICE package
 # ******************************
  &SHELFICE_PARM01
- SHELFICEboundaryLayer = .TRUE.,
+ SHELFICEboundaryLayer = .FALSE.,
  SHELFICEtopoFile   = 'LLC1080_bedmachine_GrnV5_AntV2_ice_shelf_v1.2.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
  SHELFICEuseGammaFrict = .TRUE.,
 /
- &

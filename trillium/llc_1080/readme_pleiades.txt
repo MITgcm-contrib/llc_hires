@@ -86,38 +86,20 @@ tail -f STDOUT.0000 | grep advcfl_W
 
 ##############
 
-CPP_OPTIONS.h
-#define EXCLUDE_PCELL_MIX_CODE
-
 data
  &PARM01
  viscAr= 1e-6,  (the molecular viscosity value)
- no_slip_sides = .FALSE.,
 
->>>>>>>
-
-aiming for:
-z*
-implicit bottom drag
-
-data
- hFacMin=0.1,
- hFacInf=0.05,
- hFacSup=5.,
- highOrderVorticity  = .FALSE.,
- selectVortScheme = 2
- selectCoriScheme = 1
- selectBotDragQuadr = 1
-# multiDimAdvection=.TRUE.,
-# implicitFreeSurface=.TRUE.,
-# convertFW2Salt=-1.,
-
+# aiming for z*
  select_rStar=2,
  nonlinFreeSurf=4,
- cg2dTargetResidual = 1.E-6,
+
+provide shelficeloadanomaly
 
 #define SEAICE_CAP_ICELOAD” in SEAICE_OPTIONS.h
 but modified to be based on depth at that location
 instead of surface level thickness
 
 # - KPP with "Riinfty=3.5"
+
+

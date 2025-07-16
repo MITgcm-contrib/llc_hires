@@ -1,6 +1,7 @@
 # SEAICE parameters
  &SEAICE_PARM01
-      SEAICE_multDim     = 7
+      SEAICEpressReplFac = 0,
+      SEAICE_multDim     = 7,
 #
       SEAICE_dryIceAlb   = 0.84,
       SEAICE_wetIceAlb   = 0.78,
