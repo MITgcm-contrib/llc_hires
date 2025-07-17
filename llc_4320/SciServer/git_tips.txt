@@ -28,5 +28,12 @@
  git commit
  git push
 
+# To rename file <file_name> in github repository:
+ git pull
+ git mv <file_name> <path/new_name>
+ git pull
+ git commit
+ git push
+
 # after you push, things should appear on:
 # https://github.com/MITgcm-contrib/llc_hires/llc_4320/SciServer
