@@ -1,0 +1,32 @@
+# If you don't have an ssh key on github, follow instructions here:
+# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
+# To get the llc_hires repository:
+ git clone git@github.com:MITgcm-contrib/llc_hires.git
+
+# All commands below must be executed somewhere within the repo, e.g.,
+ cd llc_hires
+
+# To update local repository:
+ git pull
+
+# To figure out what has changed, what needs to be commited,
+# what needs to be pushed, etc.
+ git status
+
+# To add file <file_name> to github repository:
+ git pull
+ git add <file_name>
+ git pull
+ git commit
+ git push
+
+# To remove file <file_name> from github repository:
+ git pull
+ git rm <file_name>
+ git pull
+ git commit
+ git push
+
+# after you push, things should appear on:
+# https://github.com/MITgcm-contrib/llc_hires/llc_4320/SciServer
