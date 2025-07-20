@@ -101,8 +101,8 @@
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
-# select_rStar=2,
-# nonlinFreeSurf=4,
+ select_rStar=2,
+ nonlinFreeSurf=4,
  /
 
 # Elliptic solver parameters
@@ -119,14 +119,14 @@
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
  dumpfreq = 86400.,
- monitorFreq = 3600.,
+ monitorFreq = 15.,
  dumpInitAndLast=.FALSE.,
  /
 
 # Gridding parameters
  &PARM04
  usingCurvilinearGrid=.TRUE.,
- pCellMix_select = 22,
+ pCellMix_select = 2,
  pCellMix_viscAr = 173*4.e-4,
  pCellMix_diffKr = 173*2.e-4,
  delR = 3.6311,    3.6933,   3.7563,   3.8201,   3.8845,   3.9495,

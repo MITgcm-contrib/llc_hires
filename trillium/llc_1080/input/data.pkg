@@ -7,4 +7,5 @@
  useFRAZIL      = .TRUE.,
  useTIDES       = .TRUE.,
  useShelfIce    = .TRUE.,
+ useSALT_PLUME  = .TRUE.,
  /
