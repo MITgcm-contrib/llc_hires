@@ -223,8 +223,7 @@ C-    Print an error msg and then stop:
             print*,'XC(2),YC(2),rStarFacW,H,eta(2)',
      &           XC(i-1,j,bi,bj),XC(i,j,bi,bj),
      &           YC(i-1,j,bi,bj),YC(i,j,bi,bj),
-     &           rStarFacC(i,j,bi,bj),
-     &           Ro_surf(i,j,bi,bj)-R_low(i,j,bi,bj),
+     &           rStarFacW(i,j,bi,bj), tmpfldW,
      &           etaFld(i-1,j,bi,bj), etaFld(i,j,bi,bj)
            ENDIF
            IF ( rStarFacS(i,j,bi,bj).LT.hFacInf ) THEN
@@ -233,11 +232,10 @@ C-    Print an error msg and then stop:
      &       ' fail at i,j=',i,j,' ; rStarFacS,H,eta =',
      &        rStarFacS(i,j,bi,bj), tmpfldS,
      &        etaFld(i,j-1,bi,bj), etaFld(i,j,bi,bj)
-            print*,'XC(2),YC(2),rStarFacW,H,eta(2)',
+            print*,'XC(2),YC(2),rStarFacS,H,eta(2)',
      &           XC(i,j-1,bi,bj),XC(i,j,bi,bj),
      &           YC(i,j-1,bi,bj),YC(i,j,bi,bj),
-     &           rStarFacC(i,j,bi,bj),
-     &           Ro_surf(i,j,bi,bj)-R_low(i,j,bi,bj),
+     &           rStarFacS(i,j,bi,bj), tmpfldS,
      &           etaFld(i,j-1,bi,bj), etaFld(i,j,bi,bj)
            ENDIF
           ENDDO
