@@ -44,13 +44,17 @@
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
   ssh tri-login01
   salloc --nodes 16 --time=24:00:00
-  module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
+  # module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
+  module load gcc/13.3
+  module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   mkdir build run
 
   cd build
   module purge
-  module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
+  #module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
+  module load gcc/13.3
+  module load openmpi/5.0.3
   # cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_72x72x2925 SIZE.h
   cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_108x108x1300 SIZE.h
 
