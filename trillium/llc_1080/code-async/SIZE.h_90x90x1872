@@ -64,13 +64,13 @@
 #define _MITGCM_MAGIC_CONSTANTS
 
 #define __sFacet 1080
-#define __sNx    216
-#define __sNy    216
+#define __sNx    90
+#define __sNy    90
 #define __OLx    8
 #define __OLy    8
 #define __nSx    1
 #define __nSy    1
-#define __nPx    325
+#define __nPx    1872
 #define __nPy    1
 #define __Nr     173
 

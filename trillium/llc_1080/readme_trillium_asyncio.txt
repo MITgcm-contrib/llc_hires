@@ -14,7 +14,7 @@
   module load gcc/13.3
   module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
-  cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_90x90x1872 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x90x1872 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_1080/code/linux_amd64_gfortran_cspice -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code ../../llc_hires/trillium/llc_1080/code-async'
