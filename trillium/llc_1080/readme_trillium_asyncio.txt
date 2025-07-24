@@ -34,7 +34,7 @@
  rm -rf cspice
 
 
-############# run without asyncio #############
+############# run with asyncio #############
 ####BUILD####
   cd $SCRATCH
   git clone https://github.com/MITgcm-contrib/llc_hires
