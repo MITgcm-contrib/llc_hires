@@ -47,7 +47,6 @@
   # module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
   module load gcc/13.3
   module load openmpi/5.0.3
-  export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   mkdir build run
 
   cd build
@@ -55,32 +54,24 @@
   #module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 netcdf-fortran-mpi/4.6.1
   module load gcc/13.3
   module load openmpi/5.0.3
-  # cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_72x72x2925 SIZE.h
-  cp ../../llc_hires/trillium/llc_1080/code/SIZE.h_108x108x1300 SIZE.h
-
+  cp ../../llc_hires/trillium/llc_8640/code/SIZE.h_80x80x151632 SIZE.h
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_1080/code/linux_amd64_gfortran_cspice \
-  -mpi -mods ../../llc_hires/trillium/llc_1080/code
-  
+  ../../llc_hires/trillium/llc_8640/code/linux_amd64_gfortran_cspice \
+  -mpi -mods ../../llc_hires/trillium/llc_8640/code  
   make depend
   make -j
 
 
 ####RUN####
   cd ../run
-  #cp ../build/mitgcmuv mitgcmuv_72x72x2925
-  cp ../build/mitgcmuv mitgcmuv_108x108x1300
+  cp ../build/mitgcmuv mitgcmuv_80x80x151632
 
   ln -sf /scratch/dmenemen/era5 .
-  ln -sf /scratch/dmenemen/llc1080_template/* .
+  ln -sf /scratch/dmenemen/llc8640_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
-  cp -rf  --remove-destination ../../llc_hires/trillium/llc_1080/input/* .
+  cp -rf --remove-destination ../../llc_hires/trillium/llc_8640/input/* .
 
-
-  # mv data.exch2_72x72x2925 data.exch2 			#No need to use this for now
-
-  # mpiexec -n 2925 ./mitgcmuv_72x72x2925
-  mpiexec -n 1300 ./mitgcmuv_108x108x1300
+  mpiexec -n 151632 ./mitgcmuv_80x80x151632
 
   tail -f STDOUT.0000 | grep advcfl_W
