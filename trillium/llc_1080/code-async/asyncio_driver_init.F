@@ -7,6 +7,7 @@
       INTEGER sNx, sNy, Nr, OLx, OLy
 
       INTEGER IFNBLNK, ILNBLNK, I0, I1
+      INTEGER  mpiRC
 
 C--   Driver for separate asynchronous I/O processes
 C--   Bron is writing real code for this

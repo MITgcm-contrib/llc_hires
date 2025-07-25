@@ -5,11 +5,11 @@
   git clone https://github.com/MITgcm-contrib/llc_hires
   cd $SCRATCH/MITgcm
   git checkout checkpoint69f
-  cd pkg
-  salloc --nodes 16 --time=24:00:00
+  cd $SCRATCH/MITgcm/pkg
+  ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
+  cd $SCRATCH/MITgcm
   mkdir build run
-
-  cd build
+  cd $SCRATCH/MITgcm/build
   module purge
   module load gcc/13.3
   module load openmpi/5.0.3
@@ -23,10 +23,9 @@
 
 
 ####RUN####
-  cd ../run
-  #cp ../build/mitgcmuv mitgcmuv_72x72x2925
-  cp ../build/mitgcmuv mitgcmuv_108x108x1300
-
+  salloc --nodes 16 --time=24:00:00
+  cd cd $SCRATCH/MITgcm/run
+  cp ../build/mitgcmuv mitgcmuv_90x90x1872
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
