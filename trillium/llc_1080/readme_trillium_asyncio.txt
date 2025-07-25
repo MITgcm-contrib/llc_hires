@@ -3,6 +3,7 @@
 ####BUILD####
   cd $SCRATCH
   git clone https://github.com/MITgcm-contrib/llc_hires
+  git clone https://github.com/MITgcm/MITgcm
   cd $SCRATCH/MITgcm
   git checkout checkpoint69f
   cd $SCRATCH/MITgcm/pkg
@@ -28,6 +29,6 @@
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
-  cp -rf  --remove-destination ../../llc_hires/trillium/llc_1080/input/* .
+  cp ../../llc_hires/trillium/llc_1080/input/* .
   mv data_asyncio data
   mpiexec -n 3072 ./mitgcmuv_90x90x1872

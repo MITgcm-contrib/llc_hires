@@ -93,16 +93,13 @@
  exactConserv=.TRUE.,
  debuglevel=-1,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.TRUE.,
- useSingleCpuInput=.TRUE.,
- globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
- select_rStar=2,
- nonlinFreeSurf=4,
+# select_rStar=2,
+# nonlinFreeSurf=4,
  /
 
 # Elliptic solver parameters
@@ -113,13 +110,13 @@
  &PARM03
  nIter0=0,
  endtime=63158400.,
- deltaT = 90.,
+ deltaT = 1.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
- dumpfreq = 86400.,
- monitorFreq = 3600.,
+ dumpfreq = 5.,
+ monitorFreq = 1.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -162,9 +159,9 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='LLC1080_GEBCO24_depth_v1.2a.bin',
- hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
- hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
+ bathyFile      ='crood_llc8640_bathy.bin',
+# hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
+# hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
 # uVelInitFile   ='0000597888_U.data',
 # vVelInitFile   ='0000597888_V.data',
 # pSurfInitFile  ='0000597888_Eta.data',

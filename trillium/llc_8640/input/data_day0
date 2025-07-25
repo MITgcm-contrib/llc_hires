@@ -93,9 +93,6 @@
  exactConserv=.TRUE.,
  debuglevel=-1,
  useRealFreshWaterFlux=.TRUE.,
- useSingleCPUio=.TRUE.,
- useSingleCpuInput=.TRUE.,
- globalFiles=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
  temp_EvPrRn=0.,
@@ -118,7 +115,7 @@
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
- dumpfreq = 86400.,
+ dumpfreq = 5.,
  monitorFreq = 1.,
  dumpInitAndLast=.FALSE.,
  /
