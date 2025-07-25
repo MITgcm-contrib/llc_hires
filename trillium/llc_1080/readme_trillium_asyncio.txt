@@ -17,7 +17,7 @@
   cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x90x1872 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
-  -mods '../../llc_hires/trillium/llc_1080/code ../../llc_hires/trillium/llc_1080/code-async'
+  -mods '../../llc_hires/trillium/llc_1080/code-async ../../llc_hires/trillium/llc_1080/code'
   make depend
   make -j
 

@@ -9,4 +9,5 @@
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
  SHELFICEuseGammaFrict = .TRUE.,
+ SHELFICE_dumpFreq = 0.0,
 /
