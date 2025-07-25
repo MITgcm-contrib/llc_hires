@@ -45,27 +45,40 @@ MPI_Info  ioHints;
 
 
 
-int
-getSizeOfMPIType(MPI_Datatype mpi_type)
+int getSizeOfMPIType(MPI_Datatype mpi_type)
 {
-    switch (mpi_type) {
-
-      case MPI_INT:  case MPI_FLOAT:  case MPI_REAL4:
+    if (mpi_type == MPI_INT || mpi_type == MPI_FLOAT || mpi_type == MPI_REAL4) {
         return 4;
-      break;
-
-      case MPI_LONG_INT:  case MPI_DOUBLE:  case MPI_REAL8:
-        return 8;
-      break;
-
-      default:
-        assert(("unexpected mpi elemental type", 0));
-      break;
-
     }
-    return -1;
+    else if (mpi_type == MPI_LONG_INT || mpi_type == MPI_DOUBLE || mpi_type == MPI_REAL8) {
+        return 8;
+    }
+    else {
+        assert(!"Unexpected MPI elemental type");
+        return -1;
+    }
 }
 
+//int
+//getSizeOfMPIType(MPI_Datatype mpi_type)
+//{
+//    switch (mpi_type) {
+//
+//      case MPI_INT:  case MPI_FLOAT:  case MPI_REAL4:
+//        return 4;
+//      break;
+//
+//      case MPI_LONG_INT:  case MPI_DOUBLE:  case MPI_REAL8:
+//        return 8;
+//      break;
+//
+//      default:
+//        assert(("unexpected mpi elemental type", 0));
+//      break;
+//
+//    }
+//    return -1;
+//}
 
 
 void

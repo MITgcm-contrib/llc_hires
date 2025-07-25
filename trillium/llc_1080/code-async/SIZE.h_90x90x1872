@@ -7,7 +7,7 @@
   in each *subroutine*, and thus possibly multiple times in a single
   source file if that source file defines multiple subroutines, while C
   demands that the actual definitions only appear once per *file*, even
-  if this header file is (accidently) #include'd multiple times.
+  if this header file is (accidently) #include-d multiple times.
 
   N.B.: Do NOT remove the parentheses in the "enum" or "PARAMETER"
   declarations.  We want the user to be able to use an expression
@@ -47,7 +47,7 @@
     __nPx, __nPy : The full llc decomposition of the earth contains
                      (__sFacet/__sNx) * (__sFacet/__sNy) * 13
                    total tiles.  However, some of these tiles represent
-                   areas that have no water, and so MITgcm doesn't care
+                   areas that have no water, and so MITgcm does not care
                    about them. (These are called "dry" tiles, or "blank"
                    tiles.)  We take that sub-set of the tiles we care
                    about (i.e. the "wet" tiles; the ones we are actually
@@ -115,7 +115,7 @@ enum {
 
 
 ! There are no pre-processor symbols that are guaranteed to be defined
-! for a Fortran compile, so we just assume that since this wasn't C/C++,
+! for a Fortran compile, so we just assume that since this was not C/C++,
 ! it must be Fortran.
 
 CBOP
