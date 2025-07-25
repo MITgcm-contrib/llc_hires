@@ -15,7 +15,7 @@
   module load gcc/13.3
   module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
-  cp ../../llc_hires/trillium/llc_8640/code-async/SIZE.h_108x80x112320
+  cp ../../llc_hires/trillium/llc_8640/code-async/SIZE.h_108x80x112320 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_8640/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
   -mods '../../llc_hires/trillium/llc_8640/code-async ../../llc_hires/trillium/llc_8640/code'
@@ -24,6 +24,9 @@
 
 ####RUN####
   salloc --nodes 722 --time=24:00:00
+  module load gcc/13.3
+  module load openmpi/5.0.3
+  export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   cd $SCRATCH/MITgcm/run
   cp ../build/mitgcmuv mitgcmuv_108x80x112320
   ln -sf /scratch/dmenemen/era5 .
