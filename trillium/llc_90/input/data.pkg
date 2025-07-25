@@ -1,0 +1,8 @@
+# Packages
+ &PACKAGES
+ useCAL         = .TRUE.,
+ useEXF         = .TRUE.,
+ useSEAICE      = .TRUE.,
+ useKPP         = .TRUE.,
+ useFRAZIL      = .TRUE.,
+ /
