@@ -61,26 +61,26 @@ int getSizeOfMPIType(MPI_Datatype mpi_type)
 
 
 
-int
-getSizeOfMPIType(MPI_Datatype mpi_type)
-{
-    switch (mpi_type) {
-
-      case MPI_INT:  case MPI_FLOAT:  case MPI_REAL4:
-        return 4;
-      break;
-
-      case MPI_LONG_INT:  case MPI_DOUBLE:  case MPI_REAL8:
-        return 8;
-      break;
-
-      default:
-        assert(("unexpected mpi elemental type", 0));
-      break;
-
-    }
-    return -1;
-}
+//int
+//getSizeOfMPIType(MPI_Datatype mpi_type)
+//{
+//    switch (mpi_type) {
+//
+//      case MPI_INT:  case MPI_FLOAT:  case MPI_REAL4:
+//        return 4;
+//      break;
+//
+//      case MPI_LONG_INT:  case MPI_DOUBLE:  case MPI_REAL8:
+//        return 8;
+//      break;
+//
+//      default:
+//        assert(("unexpected mpi elemental type", 0));
+//      break;
+//
+//    }
+//    return -1;
+//}
 
 
 
