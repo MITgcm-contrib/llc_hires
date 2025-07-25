@@ -16,7 +16,7 @@
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
   cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x90x1872 SIZE.h
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice -mpi \
+  ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code ../../llc_hires/trillium/llc_1080/code-async'
   make depend
   make -j
