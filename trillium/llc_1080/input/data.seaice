@@ -1,5 +1,6 @@
 # SEAICE parameters
  &SEAICE_PARM01
+      SEAICE_dumpfreq    = 0.0,
       SEAICEpressReplFac = 0,
       SEAICE_multDim     = 7,
 #
