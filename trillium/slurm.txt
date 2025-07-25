@@ -1,0 +1,5 @@
+# example node request:
+  salloc --nodes 16 --time=24:00:00
+
+# this will create $SLURM_JOB_NODELIST
+# which will be used for mpi jobs
