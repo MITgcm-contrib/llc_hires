@@ -45,6 +45,22 @@ MPI_Info  ioHints;
 
 
 
+int getSizeOfMPIType(MPI_Datatype mpi_type)
+{
+    if (mpi_type == MPI_INT || mpi_type == MPI_FLOAT || mpi_type == MPI_REAL4) {
+        return 4;
+    }
+    else if (mpi_type == MPI_LONG_INT || mpi_type == MPI_DOUBLE || mpi_type == MPI_REAL8) {
+        return 8;
+    }
+    else {
+        assert(!"Unexpected MPI elemental type");
+        return -1;
+    }
+}
+
+
+
 int
 getSizeOfMPIType(MPI_Datatype mpi_type)
 {

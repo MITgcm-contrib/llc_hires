@@ -59,6 +59,8 @@ int getSizeOfMPIType(MPI_Datatype mpi_type)
     }
 }
 
+
+
 //int
 //getSizeOfMPIType(MPI_Datatype mpi_type)
 //{
@@ -79,6 +81,7 @@ int getSizeOfMPIType(MPI_Datatype mpi_type)
 //    }
 //    return -1;
 //}
+
 
 
 void
