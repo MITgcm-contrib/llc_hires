@@ -1,8 +1,15 @@
-# example node request:
+# example node requests
+# there are 192 cores per node
   salloc --nodes 16 --time=24:00:00
+  salloc --nodes=700 --time=24:00:00
 
 # example node request with exclusion of a some known bad nodes
   salloc --nodes 16 --time=24:00:00 --exclude=tri0073
 
 # this will create $SLURM_JOB_NODELIST
 # which will be used for mpi jobs
+
+############# dimitris screen/salloc on tri-login06
+screen 0: salloc --nodes=700 --time=24:00:00
+screen 1: salloc --nodes=700 --time=24:00:00
+screen 2: salloc --nodes=16 --time=24:00:00
