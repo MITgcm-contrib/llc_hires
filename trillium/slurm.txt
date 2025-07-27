@@ -1,3 +1,17 @@
+#### some basic screen commands ####
+screen        (to initialize)
+^A^C          (to create another screen)
+^A^D          (to detach)
+screen -r     (to reattach)
+exit          (to kill)
+
+screen -r -d  (to detach/reattach)
+^0, ^1, or ^2 (to select screen 1, 2, or 3)
+^"            (to select a screen >9)
+^A?           (for help)
+
+
+#### some basic slurm commands ####
 # example node requests
 # there are 192 cores per node
   salloc --nodes 16 --time=24:00:00
@@ -9,7 +23,8 @@
 # this will create $SLURM_JOB_NODELIST
 # which will be used for mpi jobs
 
-############# dimitris screen/salloc on tri-login06
-screen 0: salloc --nodes=700 --time=24:00:00
-screen 1: salloc --nodes=700 --time=24:00:00
-screen 2: salloc --nodes=16 --time=24:00:00
+# to look at queued jobs:
+  squeue
+
+# to kill a job, queued or running
+  scancel JOBID
