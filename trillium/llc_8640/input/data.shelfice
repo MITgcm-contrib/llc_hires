@@ -3,8 +3,8 @@
 # ******************************
  &SHELFICE_PARM01
  SHELFICEboundaryLayer = .TRUE.,
- SHELFICEtopoFile   = 'LLC1080_bedmachine_GrnV5_AntV2_ice_shelf_v1.2.bin',
- SHELFICEloadAnomalyFile = 'LLC1080_loadAnomaly_v1.2.bin',
+ SHELFICEtopoFile   = 'crood_llc8640_icetopo.bin',
+# SHELFICEloadAnomalyFile = 'LLC1080_loadAnomaly_v1.2.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
