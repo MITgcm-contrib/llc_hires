@@ -26,5 +26,8 @@ screen -r -d  (to detach/reattach)
 # to look at queued jobs:
   squeue
 
+# to look at queued jobs:available resources:
+  sinfo
+
 # to kill a job, queued or running
   scancel JOBID
