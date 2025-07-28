@@ -27,7 +27,7 @@
  vwindfile         = 'era5/ERA5_v10m',
  swdownfile        = 'era5/ERA5_dsw',
  lwdownfile        = 'era5/ERA5_dlw',
- runofffile        = 'runoff1p2472-360x180x12.bin',
+ runofffile        = 'era5/jra55_do_runoff_JRA55-do',
 #
  apressurestartdate1 = 19920101,
  apressurestartdate2 = 000000,
@@ -45,7 +45,9 @@
  precipstartdate2  = 003000,
  precipperiod      = 3600.0,
 #
- runoffperiod      = -12,
+ runoffstartdate1  = 19920101,
+ runoffstartdate2  = 120000,
+ runoffperiod      = 86400.0,
 #
  uwindstartdate1   = 19920101,
  uwindstartdate2   = 000000,
@@ -68,7 +70,6 @@
  exf_offset_atemp   = 273.15,
  exf_inscal_swdown  = -1.0,
  exf_inscal_lwdown  = -1.0,
- exf_inscal_runoff  = 3.1710e-08,
  &
 #
  &EXF_NML_04
@@ -160,10 +161,10 @@
  lwdown_nlon       = 1280,
  lwdown_nlat       = 640,
 #
- runoff_lon0       = 0.50D0,
- runoff_lon_inc    = 1.0D0,
- runoff_lat0       = -89.5D0,
- runoff_lat_inc    = 179*1.,
- runoff_nlon       = 360,
- runoff_nlat       = 180,
+ runoff_lon0       =     0.125D0,
+ runoff_lon_inc    =     0.250D0,
+ runoff_lat0       =   -89.875D0,
+ runoff_lat_inc    = 719*0.250D0,
+ runoff_nlon       = 1440,
+ runoff_nlat       = 720,
  &
