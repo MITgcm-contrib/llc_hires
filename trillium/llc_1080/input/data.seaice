@@ -36,7 +36,7 @@
       SEAICEwriteState   = .TRUE.,
 #
       AreaFile           = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
-      HsnowFile          = 'SIsnow_1jan23_v4r5_on_LLC1080.bin',
+      HsnowFile          = 'SIhsnow_1jan23_v4r5_on_LLC1080.bin',
 #      HsaltFile          = '0000597888_SIhsalt.data',
       HeffFile           = 'SIheff_1jan23_v4r5_on_LLC1080.bin',
 #      UiceFile           = '0000597888_SIuice.data',
