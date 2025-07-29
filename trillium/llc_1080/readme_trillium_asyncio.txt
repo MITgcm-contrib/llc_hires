@@ -1,4 +1,5 @@
 ############# run with asyncio #############
+  salloc --nodes 32 --time=24:00:00
 
 ####BUILD####
   cd $SCRATCH
@@ -15,7 +16,7 @@
   module load gcc/13.3
   module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
-  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x90x1872 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_54x54x5200 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code-async ../../llc_hires/trillium/llc_1080/code'
@@ -23,12 +24,11 @@
   make -j
 
 ####RUN####
-  salloc --nodes 16 --time=24:00:00
   cd $SCRATCH/MITgcm/run
-  cp ../build/mitgcmuv mitgcmuv_90x90x1872
+  cp ../build/mitgcmuv mitgcmuv_54x54x5200
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
   mv data_asyncio data
-  mpiexec -n 3072 ./mitgcmuv_90x90x1872
+  mpiexec -n 6144 ./mitgcmuv_54x54x5200
