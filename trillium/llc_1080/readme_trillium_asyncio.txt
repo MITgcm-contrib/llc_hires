@@ -18,7 +18,8 @@
   module load openmpi/5.0.3
   export MPI_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcc13/openmpi/5.0.3/
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_54x54x5200 SIZE.h
-  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x72x3510 SIZE.h
+#  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x72x3510 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x60x4212 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code-async ../../llc_hires/trillium/llc_1080/code'
@@ -26,15 +27,17 @@
   make -j
 
 ####RUN####
-  cd $SCRATCH/MITgcm/run_1080_day1
+  cd $SCRATCH/MITgcm/run_1080_day2
 #  cp ../build/mitgcmuv mitgcmuv_54x54x5200
-  cp ../build/mitgcmuv mitgcmuv_60x72x3510
+#  cp ../build/mitgcmuv mitgcmuv_60x72x3510
+  cp ../build/mitgcmuv mitgcmuv_60x60x4212
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
 #  mv data_asyncio_day0 data
-  mv data_asyncio_day1 data
-  mv data.seaice_day1 data.seaice
+  mv data_asyncio_day2 data
+  mv data.seaice_day2 data.seaice
 #  mpiexec -n 6144 ./mitgcmuv_54x54x5200
-  mpiexec -n 4032 ./mitgcmuv_60x72x3510
+#  mpiexec -n 4032 ./mitgcmuv_60x72x3510
+  mpiexec -n 4992 ./mitgcmuv_60x60x4212
