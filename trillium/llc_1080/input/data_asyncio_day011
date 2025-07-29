@@ -159,9 +159,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='LLC1080_GEBCO24_depth_v1.2a.bin',
- hydrogThetaFile='../run_1080_day010/Theta.0000023040.data',
- hydrogSaltFile ='../run_1080_day010/Salt.0000023040.data',
- uVelInitFile   ='../run_1080_day010/U.0000023040.data',
- vVelInitFile   ='../run_1080_day010/V.0000023040.data',
- pSurfInitFile  ='../run_1080_day010/Eta.0000023040.data',
+ hydrogThetaFile='../run_1080_day010/Theta.0000021120.data',
+ hydrogSaltFile ='../run_1080_day010/Salt.0000021120.data',
+ uVelInitFile   ='../run_1080_day010/U.0000021120.data',
+ vVelInitFile   ='../run_1080_day010/V.0000021120.data',
+ pSurfInitFile  ='../run_1080_day010/Eta.0000021120.data',
  /
