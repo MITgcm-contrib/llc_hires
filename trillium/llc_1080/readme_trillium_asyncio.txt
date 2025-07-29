@@ -11,7 +11,7 @@
   cd $SCRATCH/MITgcm/pkg
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
   cd $SCRATCH/MITgcm
-  mkdir build run
+  mkdir build run_1080_day1
   cd $SCRATCH/MITgcm/build
   module purge
   module load gcc/13.3
@@ -26,13 +26,15 @@
   make -j
 
 ####RUN####
-  cd $SCRATCH/MITgcm/run
+  cd $SCRATCH/MITgcm/run_1080_day1
 #  cp ../build/mitgcmuv mitgcmuv_54x54x5200
   cp ../build/mitgcmuv mitgcmuv_60x72x3510
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
-  mv data_asyncio data
+#  mv data_asyncio_day0 data
+  mv data_asyncio_day1 data
+  mv data.seaice_day1 data.seaice
 #  mpiexec -n 6144 ./mitgcmuv_54x54x5200
   mpiexec -n 4032 ./mitgcmuv_60x72x3510
