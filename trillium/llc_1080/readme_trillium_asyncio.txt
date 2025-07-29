@@ -12,7 +12,7 @@
   cd $SCRATCH/MITgcm/pkg
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
   cd $SCRATCH/MITgcm
-  mkdir build run_1080_day2
+  mkdir build run_1080_day3
   cd $SCRATCH/MITgcm/build
   module purge
   module load gcc/13.3
