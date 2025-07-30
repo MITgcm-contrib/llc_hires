@@ -2,7 +2,7 @@
 #  salloc --nodes 21 --time=24:00:00
 #  salloc --nodes 32 --time=24:00:00
 #  salloc --nodes 49 --time=24:00:00
-  salloc --nodes 98 --time=24:00:00
+  salloc --nodes 90 --time=24:00:00
 #  salloc --nodes 136 --time=24:00:00
 
 ####BUILD####
@@ -51,5 +51,5 @@
 #  mpiexec -n 4992 ./mitgcmuv_60x60x4212
 #  mpiexec -n 6144 ./mitgcmuv_54x54x5200
 #  mpiexec -n 9408 ./mitgcmuv_45x40x8424
-  mpiexec -n 18816 ./mitgcmuv_30x30x16848
+  mpiexec -n 17280 ./mitgcmuv_30x30x16848
 #  mpiexec -n 24192 ./mitgcmuv_24x27x23400

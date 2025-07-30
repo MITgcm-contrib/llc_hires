@@ -35,10 +35,10 @@
 #
       SEAICEwriteState   = .TRUE.,
 #
-      AreaFile           = '../run_1080_day011/SIarea.0000024480.data',
-      HsnowFile          = '../run_1080_day011/SIhsnow.0000024480.data',
-      HsaltFile          = '../run_1080_day011/SIhsalt.0000024480.data',
-      HeffFile           = '../run_1080_day011/SIheff.0000024480.data',
-      UiceFile           = '../run_1080_day011/SIuice.0000024480.data',
-      ViceFile           = '../run_1080_day011/SIvice.0000024480.data',
+      AreaFile           = '../run_1080_day012/SIarea.0000024480.data',
+      HsnowFile          = '../run_1080_day012/SIhsnow.0000024480.data',
+      HsaltFile          = '../run_1080_day012/SIhsalt.0000024480.data',
+      HeffFile           = '../run_1080_day012/SIheff.0000024480.data',
+      UiceFile           = '../run_1080_day012/SIuice.0000024480.data',
+      ViceFile           = '../run_1080_day012/SIvice.0000024480.data',
  &
