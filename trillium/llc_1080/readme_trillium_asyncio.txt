@@ -2,7 +2,8 @@
 #  salloc --nodes 21 --time=24:00:00
 #  salloc --nodes 32 --time=24:00:00
 #  salloc --nodes 98 --time=24:00:00
-  salloc --nodes 49 --time=24:00:00
+#  salloc --nodes 49 --time=24:00:00
+  salloc --nodes 136 --time=24:00:00
 
 ####BUILD####
   cd $SCRATCH
@@ -24,7 +25,7 @@
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x60x4212 SIZE.h
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_30x30x16848 SIZE.h
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_45x40x8424 SIZE.h
-  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_24x20x31590 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_24x27x23400 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code-async ../../llc_hires/trillium/llc_1080/code'
@@ -37,7 +38,7 @@
 #  cp ../build/mitgcmuv mitgcmuv_60x72x3510
 #  cp ../build/mitgcmuv mitgcmuv_60x60x4212
 #  cp ../build/mitgcmuv mitgcmuv_30x30x16848
-  cp ../build/mitgcmuv mitgcmuv_24x20x31590
+  cp ../build/mitgcmuv mitgcmuv_24x27x23400
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
@@ -50,4 +51,4 @@
 #  mpiexec -n 4992 ./mitgcmuv_60x60x4212
 #  mpiexec -n 18816 ./mitgcmuv_30x30x16848
 #  mpiexec -n 9408 ./mitgcmuv_45x40x8424
-  mpiexec -n 32064 ./mitgcmuv_24x20x31590
+  mpiexec -n 24192 ./mitgcmuv_24x27x23400
