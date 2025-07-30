@@ -74,10 +74,10 @@
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
  viscC4Leith=2.15,
- viscC4Leithd=0.0,
- viscC4leithDiv=0.0,
- leithDivDmask=0.0,
- leithDivFmask=500.,
+ viscC4Leithd=2.15,
+ viscC4leithDiv=0.1,
+ leithDivDmask=750.0,
+ leithDivFmask=750.0,
  viscA4GridMax=0.8,
  useAreaViscLength=.TRUE.,
  bottomDragQuadratic = 0.0021,
@@ -110,12 +110,12 @@
  &PARM03
  nIter0=29376,
  endtime=63158400.,
- deltaT = 30.,
+ deltaT = 60.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  dumpfreq = 86400.,
- monitorFreq = 30.,
+ monitorFreq = 60.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -159,9 +159,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='LLC1080_GEBCO24_depth_v1.2a.bin',
- hydrogThetaFile='../run_1080_day012/Theta.0000024480.data',
- hydrogSaltFile ='../run_1080_day012/Salt.0000024480.data',
- uVelInitFile   ='../run_1080_day012/U.0000024480.data',
- vVelInitFile   ='../run_1080_day012/V.0000024480.data',
- pSurfInitFile  ='../run_1080_day012/Eta.0000024480.data',
+ hydrogThetaFile='../run_1080_day017/Theta.0000057600.data',
+ hydrogSaltFile ='../run_1080_day017/Salt.0000057600.data',
+ uVelInitFile   ='../run_1080_day017/U.0000057600.data',
+ vVelInitFile   ='../run_1080_day017/V.0000057600.data',
+ pSurfInitFile  ='../run_1080_day017/Eta.0000057600.data',
  /
