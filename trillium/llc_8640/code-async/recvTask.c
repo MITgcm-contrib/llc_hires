@@ -237,7 +237,7 @@ fieldInfoThisEpoch_t *epochStyles[] = {
 //    fieldsForEpochStyle_1,
 //    fieldsForEpochStyle_2,
 };
-int 1;
+int numEpochStyles = 1;
 
 
 typedef enum {
