@@ -291,47 +291,47 @@ int maxTagValue = -1;
 void memcpy_r8_2_r4(float *f, double *d, long long *n)
 {
 long long i, rem;
-    rem = *n%16LL;
-    for (i = 0; i < rem; i++) {
-        f [i] = d [i];
-    }
-    for (i = rem; i < *n; i += 16) {
-        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 10" :  : "m" (d [i + 256 + 0]) );
-        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 11" :  : "m" (f [i + 256 + 0]) );
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm0  # memcpy_r8_2_r4.c 12" :  : "m" (d [i + 0]) : "%xmm0");
-        __asm__ __volatile__ ("movss    %%xmm0, %0  # memcpy_r8_2_r4.c 13" : "=m" (f [i + 0]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm1  # memcpy_r8_2_r4.c 14" :  : "m" (d [i + 1]) : "%xmm1");
-        __asm__ __volatile__ ("movss    %%xmm1, %0  # memcpy_r8_2_r4.c 15" : "=m" (f [i + 1]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm2  # memcpy_r8_2_r4.c 16" :  : "m" (d [i + 2]) : "%xmm2");
-        __asm__ __volatile__ ("movss    %%xmm2, %0  # memcpy_r8_2_r4.c 17" : "=m" (f [i + 2]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm3  # memcpy_r8_2_r4.c 18" :  : "m" (d [i + 3]) : "%xmm3");
-        __asm__ __volatile__ ("movss    %%xmm3, %0  # memcpy_r8_2_r4.c 19" : "=m" (f [i + 3]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm4  # memcpy_r8_2_r4.c 20" :  : "m" (d [i + 4]) : "%xmm4");
-        __asm__ __volatile__ ("movss    %%xmm4, %0  # memcpy_r8_2_r4.c 21" : "=m" (f [i + 4]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm5  # memcpy_r8_2_r4.c 22" :  : "m" (d [i + 5]) : "%xmm5");
-        __asm__ __volatile__ ("movss    %%xmm5, %0  # memcpy_r8_2_r4.c 23" : "=m" (f [i + 5]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm6  # memcpy_r8_2_r4.c 24" :  : "m" (d [i + 6]) : "%xmm6");
-        __asm__ __volatile__ ("movss    %%xmm6, %0  # memcpy_r8_2_r4.c 25" : "=m" (f [i + 6]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm7  # memcpy_r8_2_r4.c 26" :  : "m" (d [i + 7]) : "%xmm7");
-        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 27" :  : "m" (d [i + 256 + 8 + 0]) );
-        __asm__ __volatile__ ("movss    %%xmm7, %0  # memcpy_r8_2_r4.c 28" : "=m" (f [i + 7]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm8  # memcpy_r8_2_r4.c 29" :  : "m" (d [i + 8]) : "%xmm8");
-        __asm__ __volatile__ ("movss    %%xmm8, %0  # memcpy_r8_2_r4.c 30" : "=m" (f [i + 8]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm9  # memcpy_r8_2_r4.c 31" :  : "m" (d [i + 9]) : "%xmm9");
-        __asm__ __volatile__ ("movss    %%xmm9, %0  # memcpy_r8_2_r4.c 32" : "=m" (f [i + 9]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm10 # memcpy_r8_2_r4.c 33" :  : "m" (d [i + 10]) : "%xmm10");
-        __asm__ __volatile__ ("movss    %%xmm10, %0 # memcpy_r8_2_r4.c 34" : "=m" (f [i + 10]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm11 # memcpy_r8_2_r4.c 35" :  : "m" (d [i + 11]) : "%xmm11");
-        __asm__ __volatile__ ("movss    %%xmm11, %0 # memcpy_r8_2_r4.c 36" : "=m" (f [i + 11]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm12 # memcpy_r8_2_r4.c 37" :  : "m" (d [i + 12]) : "%xmm12");
-        __asm__ __volatile__ ("movss    %%xmm12, %0 # memcpy_r8_2_r4.c 38" : "=m" (f [i + 12]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm13 # memcpy_r8_2_r4.c 39" :  : "m" (d [i + 13]) : "%xmm13");
-        __asm__ __volatile__ ("movss    %%xmm13, %0 # memcpy_r8_2_r4.c 40" : "=m" (f [i + 13]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm14 # memcpy_r8_2_r4.c 41" :  : "m" (d [i + 14]) : "%xmm14");
-        __asm__ __volatile__ ("movss    %%xmm14, %0 # memcpy_r8_2_r4.c 42" : "=m" (f [i + 14]) :  : "memory");
-        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm15 # memcpy_r8_2_r4.c 43" :  : "m" (d [i + 15]) : "%xmm15");
-        __asm__ __volatile__ ("movss    %%xmm15, %0 # memcpy_r8_2_r4.c 44" : "=m" (f [i + 15]) :  : "memory");
-    }
+	rem = *n%16LL;
+	for (i = 0; i < rem; i++) {
+		f [i] = d [i];
+	}
+	for (i = rem; i < *n; i += 16) {
+		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 10" :  : "m" (d [i + 256 + 0]) );
+		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 11" :  : "m" (f [i + 256 + 0]) );
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm0	# memcpy_r8_2_r4.c 12" :  : "m" (d [i + 0]) : "%xmm0");
+		__asm__ __volatile__ ("movss	%%xmm0, %0	# memcpy_r8_2_r4.c 13" : "=m" (f [i + 0]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm1	# memcpy_r8_2_r4.c 14" :  : "m" (d [i + 1]) : "%xmm1");
+		__asm__ __volatile__ ("movss	%%xmm1, %0	# memcpy_r8_2_r4.c 15" : "=m" (f [i + 1]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm2	# memcpy_r8_2_r4.c 16" :  : "m" (d [i + 2]) : "%xmm2");
+		__asm__ __volatile__ ("movss	%%xmm2, %0	# memcpy_r8_2_r4.c 17" : "=m" (f [i + 2]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm3	# memcpy_r8_2_r4.c 18" :  : "m" (d [i + 3]) : "%xmm3");
+		__asm__ __volatile__ ("movss	%%xmm3, %0	# memcpy_r8_2_r4.c 19" : "=m" (f [i + 3]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm4	# memcpy_r8_2_r4.c 20" :  : "m" (d [i + 4]) : "%xmm4");
+		__asm__ __volatile__ ("movss	%%xmm4, %0	# memcpy_r8_2_r4.c 21" : "=m" (f [i + 4]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm5	# memcpy_r8_2_r4.c 22" :  : "m" (d [i + 5]) : "%xmm5");
+		__asm__ __volatile__ ("movss	%%xmm5, %0	# memcpy_r8_2_r4.c 23" : "=m" (f [i + 5]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm6	# memcpy_r8_2_r4.c 24" :  : "m" (d [i + 6]) : "%xmm6");
+		__asm__ __volatile__ ("movss	%%xmm6, %0	# memcpy_r8_2_r4.c 25" : "=m" (f [i + 6]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm7	# memcpy_r8_2_r4.c 26" :  : "m" (d [i + 7]) : "%xmm7");
+		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 27" :  : "m" (d [i + 256 + 8 + 0]) );
+		__asm__ __volatile__ ("movss	%%xmm7, %0	# memcpy_r8_2_r4.c 28" : "=m" (f [i + 7]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm8	# memcpy_r8_2_r4.c 29" :  : "m" (d [i + 8]) : "%xmm8");
+		__asm__ __volatile__ ("movss	%%xmm8, %0	# memcpy_r8_2_r4.c 30" : "=m" (f [i + 8]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm9	# memcpy_r8_2_r4.c 31" :  : "m" (d [i + 9]) : "%xmm9");
+		__asm__ __volatile__ ("movss	%%xmm9, %0	# memcpy_r8_2_r4.c 32" : "=m" (f [i + 9]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm10	# memcpy_r8_2_r4.c 33" :  : "m" (d [i + 10]) : "%xmm10");
+		__asm__ __volatile__ ("movss	%%xmm10, %0	# memcpy_r8_2_r4.c 34" : "=m" (f [i + 10]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm11	# memcpy_r8_2_r4.c 35" :  : "m" (d [i + 11]) : "%xmm11");
+		__asm__ __volatile__ ("movss	%%xmm11, %0	# memcpy_r8_2_r4.c 36" : "=m" (f [i + 11]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm12	# memcpy_r8_2_r4.c 37" :  : "m" (d [i + 12]) : "%xmm12");
+		__asm__ __volatile__ ("movss	%%xmm12, %0	# memcpy_r8_2_r4.c 38" : "=m" (f [i + 12]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm13	# memcpy_r8_2_r4.c 39" :  : "m" (d [i + 13]) : "%xmm13");
+		__asm__ __volatile__ ("movss	%%xmm13, %0	# memcpy_r8_2_r4.c 40" : "=m" (f [i + 13]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm14	# memcpy_r8_2_r4.c 41" :  : "m" (d [i + 14]) : "%xmm14");
+		__asm__ __volatile__ ("movss	%%xmm14, %0	# memcpy_r8_2_r4.c 42" : "=m" (f [i + 14]) :  : "memory");
+		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm15	# memcpy_r8_2_r4.c 43" :  : "m" (d [i + 15]) : "%xmm15");
+		__asm__ __volatile__ ("movss	%%xmm15, %0	# memcpy_r8_2_r4.c 44" : "=m" (f [i + 15]) :  : "memory");
+	}
 }
 
 
@@ -588,7 +588,7 @@ processSlabSection(
 	memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
     else
       for (y=0;y<TILE_Y;++y)
-void memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
+	memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
   }
 
   return;
@@ -1087,7 +1087,7 @@ ioRankMain (void)
     if (numTileBufs > 25) numTileBufs = 25;
 
     allocateTileBufs(numTileBufs, maxIntracommSize);
-void countBufs(numTileBufs);
+    countBufs(numTileBufs);
 
 
     ////////////////////////////////////////////////////////////////////
@@ -1118,7 +1118,7 @@ void countBufs(numTileBufs);
 
 	      fprintf(stderr,"new epoch: epoch %d, style %d, gcmIter %d\n", cmd[1],cmd[2],cmd[3]);
 
-              int epochStyle = cmd[2];
+	      int epochStyle = cmd[2];
 	      int gcmIter = cmd[3];
 	    
 	      fieldInfoThisEpoch_t *fieldInfo;
