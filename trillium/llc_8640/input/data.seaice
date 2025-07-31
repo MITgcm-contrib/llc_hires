@@ -35,10 +35,10 @@
 #
       SEAICEwriteState   = .TRUE.,
 #
-#      AreaFile           = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
-#      HsnowFile          = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
-#      HsaltFile          = '0000597888_SIhsalt.data',
-#      HeffFile           = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
-#      UiceFile           = '0000597888_SIuice.data',
-#      ViceFile           = '0000597888_SIvice.data',
+      AreaFile           = 'crood_llc8640_SIarea',
+      HsnowFile          = 'crood_llc8640_SIhsnow',
+      HsaltFile          = 'crood_llc8640_SIhsalt',
+      HeffFile           = 'crood_llc8640_SIheff',
+      UiceFile           = 'crood_llc8640_SIuice',
+      ViceFile           = 'crood_llc8640_SIvice',
  &

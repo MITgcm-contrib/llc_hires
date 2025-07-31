@@ -109,13 +109,13 @@
 # Time stepping parameters
  &PARM03
  nIter0=0,
- endtime=20.,
+ endtime=3600.,
  deltaT = 1.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  chkptFreq   = 259200.0,
- dumpfreq = 5.,
+ dumpfreq = 60.,
  monitorFreq = 1.,
  dumpInitAndLast=.FALSE.,
  /
@@ -160,9 +160,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2024_BEDMACHINE_LLC8640_BATHY.bin',
-# hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
-# hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
-# uVelInitFile   ='0000597888_U.data',
-# vVelInitFile   ='0000597888_V.data',
-# pSurfInitFile  ='0000597888_Eta.data',
+ hydrogThetaFile='crood_llc8640_Theta',
+ hydrogSaltFile ='crood_llc8640_Salt',
+ uVelInitFile   ='crood_llc8640_U',
+ vVelInitFile   ='crood_llc8640_V',
+ pSurfInitFile  ='crood_llc8640_Eta',
  /
