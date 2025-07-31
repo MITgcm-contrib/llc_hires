@@ -34,3 +34,19 @@
   cp ../../llc_hires/trillium/llc_8640/input/* .
 #  mpiexec -n 198528 ./mitgcmuv_80x72x168480
   mpirun --mca fs_ufs_lock_algorithm 1 -x LD_VAST_PATHFILE=vastpreload.paths -x LD_PRELOAD=/scinet/vast/vast-preload-lib/lib/libvastpreload.so -x LD_VAST_LOG_TOPICS=2 -np 198528 ./mitgcmuv_80x72x168480
+
+
+############# intel/mpich build
+  cd $SCRATCH/MITgcm
+  mkdir build run
+  cd $SCRATCH/MITgcm/build
+  module purge
+  module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
+  export MPI_HOME=$I_MPI_ROOT
+  cp ../../llc_hires/trillium/llc_8640/code-async/SIZE.h_80x72x168480 SIZE.h
+  ../tools/genmake2 -of \
+  ../../llc_hires/trillium/llc_8640/code-async/linux_amd64_gfortran_cspice_asyncio -mpi \
+  -mods '../../llc_hires/trillium/llc_8640/code-async ../../llc_hires/trillium/llc_8640/code'
+  make depend
+  make -j
+
