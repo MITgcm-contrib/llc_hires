@@ -13,12 +13,12 @@
 #- Note: in both cases, the last line of 3 module setting is for NetCDF
 #        (could be skipped if not using at all this type of I/O).
 
-CC=icc
-FC=ifort
-F90C=ifort
+CC=mpiicc
+FC=mpiifort
+F90C=mpiifort
 LINK="$F90C -shared-intel"
 
-CPP='/lib/cpp -traditional -P'
+#CPP='/lib/cpp -traditional -P'
 DEFINES='-DWORDLENGTH=4 -DINTEL_COMMITQQ -DALLOW_ASYNCIO'
 F90FIXEDFORMAT='-fixed -Tf'
 EXTENDED_SRC_FLAG='-132'
