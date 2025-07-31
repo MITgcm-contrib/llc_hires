@@ -34,6 +34,7 @@
 #define FPRINTF fprintf
 #else
 #include <stdarg.h>
+extern void initSizesAndTypes(void);
 void FPRINTF(FILE *fp,...){return;}
 #endif
 
@@ -287,7 +288,7 @@ int maxTagValue = -1;
 
 // routine to convert double to float during memcpy
 // need to get byteswapping in here as well
-memcpy_r8_2_r4 (float *f, double *d, long long *n)
+void memcpy_r8_2_r4(float *f, double *d, long long *n)
 {
 long long i, rem;
     rem = *n%16LL;
@@ -335,7 +336,7 @@ long long i, rem;
 
 
 // Debug routine
-countBufs(int nbufs)
+void countBufs(int nbufs)
 {
     int nInUse, nFree;
     bufHdr_t *bufPtr;
@@ -587,7 +588,7 @@ processSlabSection(
     memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
     else
       for (y=0;y<TILE_Y;++y)
-    memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
+void memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
   }
 
   return;
@@ -1086,7 +1087,7 @@ ioRankMain (void)
     if (numTileBufs > 25) numTileBufs = 25;
 
     allocateTileBufs(numTileBufs, maxIntracommSize);
-    countBufs(numTileBufs);
+void countBufs(numTileBufs);
 
 
     ////////////////////////////////////////////////////////////////////

@@ -169,7 +169,7 @@ tileIO(
 {
     int fileFlags;
     MPI_File fh;
-    int (*MPI_IO_LOC)();
+    int (*MPI_IO_LOC)(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status);
 
     int res,count;
     MPI_Status status;
