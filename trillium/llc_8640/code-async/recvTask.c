@@ -370,14 +370,14 @@ long int readn(int fd, void *p, long int nbytes)
   
     nleft = nbytes;
     while (nleft > 0){
-    nread = read(fd, ptr, nleft);
-    if (nread < 0)
-        return(nread); // error
-    else if (nread == 0)
-        break;  // EOF
+	nread = read(fd, ptr, nleft);
+	if (nread < 0)
+	    return(nread); // error
+	else if (nread == 0)
+	    break;  // EOF
     
-    nleft -= nread;
-    ptr += nread;
+	nleft -= nread;
+	ptr += nread;
     }
     return (nbytes - nleft);
 }
@@ -392,14 +392,14 @@ ssize_t writen(int fd, void *p, size_t nbytes)
 
     nleft = nbytes;
     while (nleft > 0){
-    nwritten = write(fd, ptr, nleft);
-    if (nwritten <= 0){
-      if (errno==EINTR) continue; // POSIX, not SVr4
-      return(nwritten);           // non-EINTR error 
-    }
+	nwritten = write(fd, ptr, nleft);
+	if (nwritten <= 0){
+	  if (errno==EINTR) continue; // POSIX, not SVr4
+	  return(nwritten);           // non-EINTR error 
+	}
 
-    nleft -= nwritten;
-    ptr += nwritten;
+	nleft -= nwritten;
+	ptr += nwritten;
     }
     return(nbytes - nleft);
 }
@@ -585,7 +585,7 @@ processSlabSection(
     int y;
     if (pickup)
       for (y=0;y<TILE_Y;++y)
-    memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
+	memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
     else
       for (y=0;y<TILE_Y;++y)
 void memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
@@ -606,14 +606,14 @@ allocateTileBufs(int numTileBufs, int maxIntracommSize)
         bufHdr_t *newBuf = malloc(sizeof(bufHdr_t));
         ASSERT(NULL != newBuf);
 
-    newBuf->payload = malloc(tileOneZLevelSizeInBytes * NUM_Z);
-    ASSERT(NULL != newBuf->payload);
+	newBuf->payload = malloc(tileOneZLevelSizeInBytes * NUM_Z);
+	ASSERT(NULL != newBuf->payload);
 
         newBuf->requests =  malloc(maxIntracommSize * sizeof(MPI_Request));
         ASSERT(NULL != newBuf->requests);
 
         // Init some values
-    newBuf->requestsArraySize = maxIntracommSize;
+	newBuf->requestsArraySize = maxIntracommSize;
         for (j = 0;  j < maxIntracommSize;  ++j) {
             newBuf->requests[j] = MPI_REQUEST_NULL;
         }
@@ -883,7 +883,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             if (tileID < 0) break;  // No slab was received
 
             numSlabPiecesRecvd += 1;
-        processSlabSection(fieldInfo, tileID, data, myNumZSlabs);
+	    processSlabSection(fieldInfo, tileID, data, myNumZSlabs);
 
             // Can do the write here, or at the end of the epoch.
             // Probably want to make it asynchronous (waiting for
@@ -896,16 +896,16 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
 
 
         ////////////////////////////////////////////////////////////////
-    // Sanity check for non-writers
-    if (0 == myNumSlabPiecesToRecv) {  
+	// Sanity check for non-writers
+	if (0 == myNumSlabPiecesToRecv) {  
 
-        long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
-        char data[msgSize];
+	    long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
+	    char data[msgSize];
 
             // Check that no one has tried to re-distribute a slab to us.
             int tileID = tryToReceiveZSlab(data, msgSize, fieldInfo->ioRanksIntracomm);
             ASSERT (tileID < 0);
-    }
+	}
 
 
         ////////////////////////////////////////////////////////////////
@@ -957,7 +957,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             ASSERT(numTilesRecvd == fieldInfo->tileCount);
             ASSERT(numSlabPiecesRecvd == myNumSlabPiecesToRecv);
 
-        //fprintf(stderr,"rank %d %d %d %d\n",intracommRank,numTilesRecvd,numSlabPiecesRecvd,myNumZSlabs);
+	    //fprintf(stderr,"rank %d %d %d %d\n",intracommRank,numTilesRecvd,numSlabPiecesRecvd,myNumZSlabs);
 
             // Ok, wrap up the current i/o epoch
             // Probably want to make this asynchronous (waiting for
@@ -1102,70 +1102,70 @@ void countBufs(numTileBufs);
         MPI_Barrier(ioIntracomm);
 
         if (0 == ioIntracommRank) {
-        fprintf(stderr, "I/O ranks waiting for new epoch at time %f\n",MPI_Wtime());
-        MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
+	    fprintf(stderr, "I/O ranks waiting for new epoch at time %f\n",MPI_Wtime());
+	    MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
 
             MPI_Recv(cmd, 4, MPI_INT, 0, 0, globalIntercomm, MPI_STATUS_IGNORE);
             fprintf(stderr, "I/O ranks begining new epoch: %d, gcmIter = %d, at time %f\n",
                             cmd[1], cmd[3], MPI_Wtime());
 
-        // before we start a new epoch, have i/o rank 0:
-        // determine output filenames for this epoch
-        // clean up any extant files with same names 
-        // write .meta files
+	    // before we start a new epoch, have i/o rank 0:
+	    // determine output filenames for this epoch
+	    // clean up any extant files with same names 
+	    // write .meta files
 
-        if (cmd_exit != cmd[0]){
+	    if (cmd_exit != cmd[0]){
 
-          fprintf(stderr,"new epoch: epoch %d, style %d, gcmIter %d\n", cmd[1],cmd[2],cmd[3]);
+	      fprintf(stderr,"new epoch: epoch %d, style %d, gcmIter %d\n", cmd[1],cmd[2],cmd[3]);
 
-          int epochStyle = cmd[2];
-          int gcmIter = cmd[3];
-        
-          fieldInfoThisEpoch_t *fieldInfo;
-          fieldInfo = epochStyles[epochStyle];
-          char s[1024];
-          int res;
-          FILE *fp;
+              int epochStyle = cmd[2];
+	      int gcmIter = cmd[3];
+	    
+	      fieldInfoThisEpoch_t *fieldInfo;
+	      fieldInfo = epochStyles[epochStyle];
+	      char s[1024];
+	      int res;
+	      FILE *fp;
 
-          if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
-        char f;
-        while (f = fieldInfo->dataFieldID){
-          sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
-          fprintf(stderr,"%s\n",s);
-          res = unlink(s);
-          if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
-          
-          // skip writing meta files for non-pickup fields
-          /*
-          sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
-          fp = fopen(s,"w+");
-          fclose(fp);
-          */          
+	      if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
+		char f;
+		while (f = fieldInfo->dataFieldID){
+		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
+		  fprintf(stderr,"%s\n",s);
+		  res = unlink(s);
+		  if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
+		  
+		  // skip writing meta files for non-pickup fields
+		  /*
+		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
+		  fp = fopen(s,"w+");
+		  fclose(fp);
+		  */		  
 
-          ++fieldInfo;
+		  ++fieldInfo;
 
-        }         
-          }
-          
-          else {                       // single pickup or pickup_seaice file
+		}	      
+	      }
+	      
+	      else {                       // single pickup or pickup_seaice file
 
-        sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
-        fprintf(stderr,"%s\n",s);
-        res = unlink(s);
-        if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
+		sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
+		fprintf(stderr,"%s\n",s);
+		res = unlink(s);
+		if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
 
-        sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
-        fp = fopen(s,"w+");
-        write_pickup_meta(fp, gcmIter, fieldInfo->pickup);
-        fclose(fp);
+		sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
+		fp = fopen(s,"w+");
+		write_pickup_meta(fp, gcmIter, fieldInfo->pickup);
+		fclose(fp);
 
-          }
-        }
-    }
+	      }
+	    }
+	}
         MPI_Bcast(cmd, 4, MPI_INT, 0, ioIntracomm);  
 
-    if (0 == ioIntracommRank)
-      fprintf(stderr,"i/o handshake completed %d %d %f\n",cmd[1],cmd[3],MPI_Wtime());
+	if (0 == ioIntracommRank)
+	  fprintf(stderr,"i/o handshake completed %d %d %f\n",cmd[1],cmd[3],MPI_Wtime());
 
         switch (cmd[0]) {
 
@@ -1186,7 +1186,7 @@ void countBufs(numTileBufs);
             }
             currentEpochID = cmd[1];
 
-        memset(outBuf,0,outBufSize);  // zero the outBuf, so dry tiles are well defined
+	    memset(outBuf,0,outBufSize);  // zero the outBuf, so dry tiles are well defined
 
             doNewEpoch(cmd[1], cmd[2], cmd[3]);
           break;
@@ -2092,7 +2092,7 @@ f2(int tileID)
 
             tileCounts = alloca(numRemoteRanks * sizeof(int));
 
-        memset(tileCounts,0,numRemoteRanks * sizeof(int));
+	    memset(tileCounts,0,numRemoteRanks * sizeof(int));
 
             // Distribute the tiles among the i/o ranks.
             for (i = 0;  i < numRemoteRanks;  ++i) {
@@ -2211,7 +2211,7 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
 
         MPI_Comm_remote_size(p->dataIntercomm, &remoteCommSize);
 
-    flag=1;
+	flag=1;
 
     }
     
