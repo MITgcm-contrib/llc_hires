@@ -35,10 +35,10 @@
 #
       SEAICEwriteState   = .TRUE.,
 #
-      AreaFile           = 'crood_llc8640_SIarea',
-      HsnowFile          = 'crood_llc8640_SIhsnow',
-      HsaltFile          = 'crood_llc8640_SIhsalt',
-      HeffFile           = 'crood_llc8640_SIheff',
-      UiceFile           = 'crood_llc8640_SIuice',
-      ViceFile           = 'crood_llc8640_SIvice',
+      AreaFile           = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIarea',
+      HsnowFile          = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIhsnow',
+      HsaltFile          = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIhsalt',
+      HeffFile           = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIheff',
+      UiceFile           = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIuice',
+      ViceFile           = '/scratch/momenika/heroic_run/interp/crood_llc8640_SIvice',
  &
