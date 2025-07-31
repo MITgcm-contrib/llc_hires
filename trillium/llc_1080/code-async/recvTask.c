@@ -234,10 +234,10 @@ fieldInfoThisEpoch_t fieldsForEpochStyle_2[] = {
 
 fieldInfoThisEpoch_t *epochStyles[] = {
     fieldsForEpochStyle_0,
-    fieldsForEpochStyle_1,
-    fieldsForEpochStyle_2,
+//    fieldsForEpochStyle_1,
+//    fieldsForEpochStyle_2,
 };
-int numEpochStyles = (sizeof(epochStyles) / sizeof(fieldInfoThisEpoch_t *));
+int 1;
 
 
 typedef enum {

@@ -234,10 +234,10 @@ fieldInfoThisEpoch_t fieldsForEpochStyle_2[] = {
 
 fieldInfoThisEpoch_t *epochStyles[] = {
     fieldsForEpochStyle_0,
-    fieldsForEpochStyle_1,
-    fieldsForEpochStyle_2,
+//    fieldsForEpochStyle_1,
+//    fieldsForEpochStyle_2,
 };
-int numEpochStyles = (sizeof(epochStyles) / sizeof(fieldInfoThisEpoch_t *));
+int 1;
 
 
 typedef enum {
@@ -290,47 +290,47 @@ int maxTagValue = -1;
 memcpy_r8_2_r4 (float *f, double *d, long long *n)
 {
 long long i, rem;
-	rem = *n%16LL;
-	for (i = 0; i < rem; i++) {
-		f [i] = d [i];
-	}
-	for (i = rem; i < *n; i += 16) {
-		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 10" :  : "m" (d [i + 256 + 0]) );
-		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 11" :  : "m" (f [i + 256 + 0]) );
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm0	# memcpy_r8_2_r4.c 12" :  : "m" (d [i + 0]) : "%xmm0");
-		__asm__ __volatile__ ("movss	%%xmm0, %0	# memcpy_r8_2_r4.c 13" : "=m" (f [i + 0]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm1	# memcpy_r8_2_r4.c 14" :  : "m" (d [i + 1]) : "%xmm1");
-		__asm__ __volatile__ ("movss	%%xmm1, %0	# memcpy_r8_2_r4.c 15" : "=m" (f [i + 1]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm2	# memcpy_r8_2_r4.c 16" :  : "m" (d [i + 2]) : "%xmm2");
-		__asm__ __volatile__ ("movss	%%xmm2, %0	# memcpy_r8_2_r4.c 17" : "=m" (f [i + 2]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm3	# memcpy_r8_2_r4.c 18" :  : "m" (d [i + 3]) : "%xmm3");
-		__asm__ __volatile__ ("movss	%%xmm3, %0	# memcpy_r8_2_r4.c 19" : "=m" (f [i + 3]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm4	# memcpy_r8_2_r4.c 20" :  : "m" (d [i + 4]) : "%xmm4");
-		__asm__ __volatile__ ("movss	%%xmm4, %0	# memcpy_r8_2_r4.c 21" : "=m" (f [i + 4]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm5	# memcpy_r8_2_r4.c 22" :  : "m" (d [i + 5]) : "%xmm5");
-		__asm__ __volatile__ ("movss	%%xmm5, %0	# memcpy_r8_2_r4.c 23" : "=m" (f [i + 5]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm6	# memcpy_r8_2_r4.c 24" :  : "m" (d [i + 6]) : "%xmm6");
-		__asm__ __volatile__ ("movss	%%xmm6, %0	# memcpy_r8_2_r4.c 25" : "=m" (f [i + 6]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm7	# memcpy_r8_2_r4.c 26" :  : "m" (d [i + 7]) : "%xmm7");
-		__asm__ __volatile__ ("prefetcht0	%0	# memcpy_r8_2_r4.c 27" :  : "m" (d [i + 256 + 8 + 0]) );
-		__asm__ __volatile__ ("movss	%%xmm7, %0	# memcpy_r8_2_r4.c 28" : "=m" (f [i + 7]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm8	# memcpy_r8_2_r4.c 29" :  : "m" (d [i + 8]) : "%xmm8");
-		__asm__ __volatile__ ("movss	%%xmm8, %0	# memcpy_r8_2_r4.c 30" : "=m" (f [i + 8]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm9	# memcpy_r8_2_r4.c 31" :  : "m" (d [i + 9]) : "%xmm9");
-		__asm__ __volatile__ ("movss	%%xmm9, %0	# memcpy_r8_2_r4.c 32" : "=m" (f [i + 9]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm10	# memcpy_r8_2_r4.c 33" :  : "m" (d [i + 10]) : "%xmm10");
-		__asm__ __volatile__ ("movss	%%xmm10, %0	# memcpy_r8_2_r4.c 34" : "=m" (f [i + 10]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm11	# memcpy_r8_2_r4.c 35" :  : "m" (d [i + 11]) : "%xmm11");
-		__asm__ __volatile__ ("movss	%%xmm11, %0	# memcpy_r8_2_r4.c 36" : "=m" (f [i + 11]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm12	# memcpy_r8_2_r4.c 37" :  : "m" (d [i + 12]) : "%xmm12");
-		__asm__ __volatile__ ("movss	%%xmm12, %0	# memcpy_r8_2_r4.c 38" : "=m" (f [i + 12]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm13	# memcpy_r8_2_r4.c 39" :  : "m" (d [i + 13]) : "%xmm13");
-		__asm__ __volatile__ ("movss	%%xmm13, %0	# memcpy_r8_2_r4.c 40" : "=m" (f [i + 13]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm14	# memcpy_r8_2_r4.c 41" :  : "m" (d [i + 14]) : "%xmm14");
-		__asm__ __volatile__ ("movss	%%xmm14, %0	# memcpy_r8_2_r4.c 42" : "=m" (f [i + 14]) :  : "memory");
-		__asm__ __volatile__ ("cvtsd2ss	%0, %%xmm15	# memcpy_r8_2_r4.c 43" :  : "m" (d [i + 15]) : "%xmm15");
-		__asm__ __volatile__ ("movss	%%xmm15, %0	# memcpy_r8_2_r4.c 44" : "=m" (f [i + 15]) :  : "memory");
-	}
+    rem = *n%16LL;
+    for (i = 0; i < rem; i++) {
+        f [i] = d [i];
+    }
+    for (i = rem; i < *n; i += 16) {
+        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 10" :  : "m" (d [i + 256 + 0]) );
+        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 11" :  : "m" (f [i + 256 + 0]) );
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm0  # memcpy_r8_2_r4.c 12" :  : "m" (d [i + 0]) : "%xmm0");
+        __asm__ __volatile__ ("movss    %%xmm0, %0  # memcpy_r8_2_r4.c 13" : "=m" (f [i + 0]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm1  # memcpy_r8_2_r4.c 14" :  : "m" (d [i + 1]) : "%xmm1");
+        __asm__ __volatile__ ("movss    %%xmm1, %0  # memcpy_r8_2_r4.c 15" : "=m" (f [i + 1]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm2  # memcpy_r8_2_r4.c 16" :  : "m" (d [i + 2]) : "%xmm2");
+        __asm__ __volatile__ ("movss    %%xmm2, %0  # memcpy_r8_2_r4.c 17" : "=m" (f [i + 2]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm3  # memcpy_r8_2_r4.c 18" :  : "m" (d [i + 3]) : "%xmm3");
+        __asm__ __volatile__ ("movss    %%xmm3, %0  # memcpy_r8_2_r4.c 19" : "=m" (f [i + 3]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm4  # memcpy_r8_2_r4.c 20" :  : "m" (d [i + 4]) : "%xmm4");
+        __asm__ __volatile__ ("movss    %%xmm4, %0  # memcpy_r8_2_r4.c 21" : "=m" (f [i + 4]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm5  # memcpy_r8_2_r4.c 22" :  : "m" (d [i + 5]) : "%xmm5");
+        __asm__ __volatile__ ("movss    %%xmm5, %0  # memcpy_r8_2_r4.c 23" : "=m" (f [i + 5]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm6  # memcpy_r8_2_r4.c 24" :  : "m" (d [i + 6]) : "%xmm6");
+        __asm__ __volatile__ ("movss    %%xmm6, %0  # memcpy_r8_2_r4.c 25" : "=m" (f [i + 6]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm7  # memcpy_r8_2_r4.c 26" :  : "m" (d [i + 7]) : "%xmm7");
+        __asm__ __volatile__ ("prefetcht0   %0  # memcpy_r8_2_r4.c 27" :  : "m" (d [i + 256 + 8 + 0]) );
+        __asm__ __volatile__ ("movss    %%xmm7, %0  # memcpy_r8_2_r4.c 28" : "=m" (f [i + 7]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm8  # memcpy_r8_2_r4.c 29" :  : "m" (d [i + 8]) : "%xmm8");
+        __asm__ __volatile__ ("movss    %%xmm8, %0  # memcpy_r8_2_r4.c 30" : "=m" (f [i + 8]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm9  # memcpy_r8_2_r4.c 31" :  : "m" (d [i + 9]) : "%xmm9");
+        __asm__ __volatile__ ("movss    %%xmm9, %0  # memcpy_r8_2_r4.c 32" : "=m" (f [i + 9]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm10 # memcpy_r8_2_r4.c 33" :  : "m" (d [i + 10]) : "%xmm10");
+        __asm__ __volatile__ ("movss    %%xmm10, %0 # memcpy_r8_2_r4.c 34" : "=m" (f [i + 10]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm11 # memcpy_r8_2_r4.c 35" :  : "m" (d [i + 11]) : "%xmm11");
+        __asm__ __volatile__ ("movss    %%xmm11, %0 # memcpy_r8_2_r4.c 36" : "=m" (f [i + 11]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm12 # memcpy_r8_2_r4.c 37" :  : "m" (d [i + 12]) : "%xmm12");
+        __asm__ __volatile__ ("movss    %%xmm12, %0 # memcpy_r8_2_r4.c 38" : "=m" (f [i + 12]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm13 # memcpy_r8_2_r4.c 39" :  : "m" (d [i + 13]) : "%xmm13");
+        __asm__ __volatile__ ("movss    %%xmm13, %0 # memcpy_r8_2_r4.c 40" : "=m" (f [i + 13]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm14 # memcpy_r8_2_r4.c 41" :  : "m" (d [i + 14]) : "%xmm14");
+        __asm__ __volatile__ ("movss    %%xmm14, %0 # memcpy_r8_2_r4.c 42" : "=m" (f [i + 14]) :  : "memory");
+        __asm__ __volatile__ ("cvtsd2ss %0, %%xmm15 # memcpy_r8_2_r4.c 43" :  : "m" (d [i + 15]) : "%xmm15");
+        __asm__ __volatile__ ("movss    %%xmm15, %0 # memcpy_r8_2_r4.c 44" : "=m" (f [i + 15]) :  : "memory");
+    }
 }
 
 
@@ -369,14 +369,14 @@ long int readn(int fd, void *p, long int nbytes)
   
     nleft = nbytes;
     while (nleft > 0){
-	nread = read(fd, ptr, nleft);
-	if (nread < 0)
-	    return(nread); // error
-	else if (nread == 0)
-	    break;  // EOF
+    nread = read(fd, ptr, nleft);
+    if (nread < 0)
+        return(nread); // error
+    else if (nread == 0)
+        break;  // EOF
     
-	nleft -= nread;
-	ptr += nread;
+    nleft -= nread;
+    ptr += nread;
     }
     return (nbytes - nleft);
 }
@@ -391,14 +391,14 @@ ssize_t writen(int fd, void *p, size_t nbytes)
 
     nleft = nbytes;
     while (nleft > 0){
-	nwritten = write(fd, ptr, nleft);
-	if (nwritten <= 0){
-	  if (errno==EINTR) continue; // POSIX, not SVr4
-	  return(nwritten);           // non-EINTR error 
-	}
+    nwritten = write(fd, ptr, nleft);
+    if (nwritten <= 0){
+      if (errno==EINTR) continue; // POSIX, not SVr4
+      return(nwritten);           // non-EINTR error 
+    }
 
-	nleft -= nwritten;
-	ptr += nwritten;
+    nleft -= nwritten;
+    ptr += nwritten;
     }
     return(nbytes - nleft);
 }
@@ -584,10 +584,10 @@ processSlabSection(
     int y;
     if (pickup)
       for (y=0;y<TILE_Y;++y)
-	memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
+    memcpy((double*)dst + y * skipdst, src + y * skipsrc, TILE_X*datumSize);
     else
       for (y=0;y<TILE_Y;++y)
-	memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
+    memcpy_r8_2_r4((float*)dst + y * skipdst, src + y * skipsrc, &n);
   }
 
   return;
@@ -605,14 +605,14 @@ allocateTileBufs(int numTileBufs, int maxIntracommSize)
         bufHdr_t *newBuf = malloc(sizeof(bufHdr_t));
         ASSERT(NULL != newBuf);
 
-	newBuf->payload = malloc(tileOneZLevelSizeInBytes * NUM_Z);
-	ASSERT(NULL != newBuf->payload);
+    newBuf->payload = malloc(tileOneZLevelSizeInBytes * NUM_Z);
+    ASSERT(NULL != newBuf->payload);
 
         newBuf->requests =  malloc(maxIntracommSize * sizeof(MPI_Request));
         ASSERT(NULL != newBuf->requests);
 
         // Init some values
-	newBuf->requestsArraySize = maxIntracommSize;
+    newBuf->requestsArraySize = maxIntracommSize;
         for (j = 0;  j < maxIntracommSize;  ++j) {
             newBuf->requests[j] = MPI_REQUEST_NULL;
         }
@@ -882,7 +882,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             if (tileID < 0) break;  // No slab was received
 
             numSlabPiecesRecvd += 1;
-	    processSlabSection(fieldInfo, tileID, data, myNumZSlabs);
+        processSlabSection(fieldInfo, tileID, data, myNumZSlabs);
 
             // Can do the write here, or at the end of the epoch.
             // Probably want to make it asynchronous (waiting for
@@ -895,16 +895,16 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
 
 
         ////////////////////////////////////////////////////////////////
-	// Sanity check for non-writers
-	if (0 == myNumSlabPiecesToRecv) {  
+    // Sanity check for non-writers
+    if (0 == myNumSlabPiecesToRecv) {  
 
-	    long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
-	    char data[msgSize];
+        long int msgSize = tileOneZLevelSizeInBytes * myNumZSlabs;
+        char data[msgSize];
 
             // Check that no one has tried to re-distribute a slab to us.
             int tileID = tryToReceiveZSlab(data, msgSize, fieldInfo->ioRanksIntracomm);
             ASSERT (tileID < 0);
-	}
+    }
 
 
         ////////////////////////////////////////////////////////////////
@@ -956,7 +956,7 @@ doNewEpoch(int epochID, int epochStyleIndex, int gcmIter)
             ASSERT(numTilesRecvd == fieldInfo->tileCount);
             ASSERT(numSlabPiecesRecvd == myNumSlabPiecesToRecv);
 
-	    //fprintf(stderr,"rank %d %d %d %d\n",intracommRank,numTilesRecvd,numSlabPiecesRecvd,myNumZSlabs);
+        //fprintf(stderr,"rank %d %d %d %d\n",intracommRank,numTilesRecvd,numSlabPiecesRecvd,myNumZSlabs);
 
             // Ok, wrap up the current i/o epoch
             // Probably want to make this asynchronous (waiting for
@@ -1101,70 +1101,70 @@ ioRankMain (void)
         MPI_Barrier(ioIntracomm);
 
         if (0 == ioIntracommRank) {
-	    fprintf(stderr, "I/O ranks waiting for new epoch at time %f\n",MPI_Wtime());
-	    MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
+        fprintf(stderr, "I/O ranks waiting for new epoch at time %f\n",MPI_Wtime());
+        MPI_Send(NULL, 0, MPI_BYTE, 0, cmd_epochComplete, globalIntercomm);
 
             MPI_Recv(cmd, 4, MPI_INT, 0, 0, globalIntercomm, MPI_STATUS_IGNORE);
             fprintf(stderr, "I/O ranks begining new epoch: %d, gcmIter = %d, at time %f\n",
                             cmd[1], cmd[3], MPI_Wtime());
 
-	    // before we start a new epoch, have i/o rank 0:
-	    // determine output filenames for this epoch
-	    // clean up any extant files with same names 
-	    // write .meta files
+        // before we start a new epoch, have i/o rank 0:
+        // determine output filenames for this epoch
+        // clean up any extant files with same names 
+        // write .meta files
 
-	    if (cmd_exit != cmd[0]){
+        if (cmd_exit != cmd[0]){
 
-	      fprintf(stderr,"new epoch: epoch %d, style %d, gcmIter %d\n", cmd[1],cmd[2],cmd[3]);
+          fprintf(stderr,"new epoch: epoch %d, style %d, gcmIter %d\n", cmd[1],cmd[2],cmd[3]);
 
-	      int epochStyle = cmd[2];
-	      int gcmIter = cmd[3];
-	    
-	      fieldInfoThisEpoch_t *fieldInfo;
-	      fieldInfo = epochStyles[epochStyle];
-	      char s[1024];
-	      int res;
-	      FILE *fp;
+          int epochStyle = cmd[2];
+          int gcmIter = cmd[3];
+        
+          fieldInfoThisEpoch_t *fieldInfo;
+          fieldInfo = epochStyles[epochStyle];
+          char s[1024];
+          int res;
+          FILE *fp;
 
-	      if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
-		char f;
-		while (f = fieldInfo->dataFieldID){
-		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
-		  fprintf(stderr,"%s\n",s);
-		  res = unlink(s);
-		  if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
-		  
-		  // skip writing meta files for non-pickup fields
-		  /*
-		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
-		  fp = fopen(s,"w+");
-		  fclose(fp);
-		  */		  
+          if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
+        char f;
+        while (f = fieldInfo->dataFieldID){
+          sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
+          fprintf(stderr,"%s\n",s);
+          res = unlink(s);
+          if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
+          
+          // skip writing meta files for non-pickup fields
+          /*
+          sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
+          fp = fopen(s,"w+");
+          fclose(fp);
+          */          
 
-		  ++fieldInfo;
+          ++fieldInfo;
 
-		}	      
-	      }
-	      
-	      else {                       // single pickup or pickup_seaice file
+        }         
+          }
+          
+          else {                       // single pickup or pickup_seaice file
 
-		sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
-		fprintf(stderr,"%s\n",s);
-		res = unlink(s);
-		if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
+        sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
+        fprintf(stderr,"%s\n",s);
+        res = unlink(s);
+        if (-1==res && ENOENT!=errno) fprintf(stderr,"unable to rm %s\n",s);
 
-		sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
-		fp = fopen(s,"w+");
-		write_pickup_meta(fp, gcmIter, fieldInfo->pickup);
-		fclose(fp);
+        sprintf(s,fieldInfo->filenameTemplate,gcmIter,"meta");
+        fp = fopen(s,"w+");
+        write_pickup_meta(fp, gcmIter, fieldInfo->pickup);
+        fclose(fp);
 
-	      }
-	    }
-	}
+          }
+        }
+    }
         MPI_Bcast(cmd, 4, MPI_INT, 0, ioIntracomm);  
 
-	if (0 == ioIntracommRank)
-	  fprintf(stderr,"i/o handshake completed %d %d %f\n",cmd[1],cmd[3],MPI_Wtime());
+    if (0 == ioIntracommRank)
+      fprintf(stderr,"i/o handshake completed %d %d %f\n",cmd[1],cmd[3],MPI_Wtime());
 
         switch (cmd[0]) {
 
@@ -1185,7 +1185,7 @@ ioRankMain (void)
             }
             currentEpochID = cmd[1];
 
-	    memset(outBuf,0,outBufSize);  // zero the outBuf, so dry tiles are well defined
+        memset(outBuf,0,outBufSize);  // zero the outBuf, so dry tiles are well defined
 
             doNewEpoch(cmd[1], cmd[2], cmd[3]);
           break;
@@ -2091,7 +2091,7 @@ f2(int tileID)
 
             tileCounts = alloca(numRemoteRanks * sizeof(int));
 
-	    memset(tileCounts,0,numRemoteRanks * sizeof(int));
+        memset(tileCounts,0,numRemoteRanks * sizeof(int));
 
             // Distribute the tiles among the i/o ranks.
             for (i = 0;  i < numRemoteRanks;  ++i) {
@@ -2210,7 +2210,7 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
 
         MPI_Comm_remote_size(p->dataIntercomm, &remoteCommSize);
 
-	flag=1;
+    flag=1;
 
     }
     
