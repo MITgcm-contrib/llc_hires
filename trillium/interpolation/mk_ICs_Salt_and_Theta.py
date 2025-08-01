@@ -123,7 +123,7 @@ def main():
                 fld2 = quikread_llc(template_salt, nx, k)
                 mask0 = (fld == 0)
                 fld[mask0] = fld2[mask0]
-                fld[fld < 0] = 0
+                fld[fld < 5] = 5
             mosaic = assemble_mosaic(fld, nx)
             write_bin(out_file, mosaic, append=(k > 1))
 
