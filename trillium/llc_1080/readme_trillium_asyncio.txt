@@ -53,3 +53,35 @@
 #  mpiexec -n 9408 ./mitgcmuv_45x40x8424
   mpiexec -n 17280 ./mitgcmuv_30x30x16848
 #  mpiexec -n 24192 ./mitgcmuv_24x27x23400
+
+
+18:45 
+ 3.26
+47.97
+11.86
+
+
+
+
+############# intel/mpich build
+  cd $SCRATCH/MITgcm
+  mkdir build run_1080_i
+  cd $SCRATCH/MITgcm/build
+  module purge
+  module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
+  export MPI_HOME=$I_MPI_ROOT
+  cp ../../llc_hires/trillium/llc_8640/code-async/SIZE.h_80x72x168480 SIZE.h
+  ../tools/genmake2 -of \
+  ../../llc_hires/trillium/llc_8640/code-async/linux_amd64_ifort+mpi_trillium -mpi \
+  -mods '../../llc_hires/trillium/llc_8640/code-async ../../llc_hires/trillium/llc_8640/code'
+  make depend
+  make -j
+  cd $SCRATCH/MITgcm/run_1080_i
+  cp ../build/mitgcmuv mitgcmuv_30x30x16848
+  ln -sf /scratch/dmenemen/era5 .
+  ln -sf /scratch/dmenemen/llc1080_template/* .
+  ln -sf /scratch/dmenemen/SPICE/kernels .
+  cp ../../llc_hires/trillium/llc_1080/input/* .
+  mv data_asyncio_day020 data
+  mv data.seaice_day020 data.seaice
+  mpiexec -n 17280 ./mitgcmuv_30x30x16848

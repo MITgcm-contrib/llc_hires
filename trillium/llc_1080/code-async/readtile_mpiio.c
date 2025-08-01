@@ -45,7 +45,8 @@ MPI_Info  ioHints;
 
 
 
-int getSizeOfMPIType(MPI_Datatype mpi_type)
+int
+getSizeOfMPIType(MPI_Datatype mpi_type)
 {
     if (mpi_type == MPI_INT || mpi_type == MPI_FLOAT || mpi_type == MPI_REAL4) {
         return 4;
@@ -176,8 +177,10 @@ tileIO(
 
     if (writeFlag) {
         fileFlags = MPI_MODE_WRONLY | MPI_MODE_CREATE;
-        MPI_IO_LOC = MPI_File_write_all;
-    } else {
+        /* MPI_File_write_all takes const void*; cast it into our void* prototype */
+        MPI_IO_LOC = (int (*)(MPI_File, void *, int, MPI_Datatype, MPI_Status *))
+                     MPI_File_write_all;
+  } else {
         fileFlags = MPI_MODE_RDONLY;
         MPI_IO_LOC = MPI_File_read_all;
     }
