@@ -43,7 +43,7 @@ CFLAGS="$CFLAGS -mcmodel=medium -shared-intel"
 
 FFLAGS="$FFLAGS -W0 -WB"
 if test "x$IEEE" = x ; then     #- with optimisation:
-    FOPTIM='-O2 -ipo -fp-model precise -align -axCORE-AVX512 -xCORE-AVX512 -traceback -ftz'
+    FOPTIM='-O2 -ipo -fp-model precise -align -march=skylake-avx512 -traceback -ftz'
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
     NOOPTFILES="$NOOPTFILES obcs_init_fixed.F"
 else
