@@ -32,8 +32,10 @@
   ln -sf /scratch/dmenemen/llc8640_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_8640/input/* .
-#  mpiexec -n 198528 ./mitgcmuv_80x72x168480
-  mpirun --mca fs_ufs_lock_algorithm 1 -x LD_VAST_PATHFILE=vastpreload.paths -x LD_PRELOAD=/scinet/vast/vast-preload-lib/lib/libvastpreload.so -x LD_VAST_LOG_TOPICS=2 -np 198528 ./mitgcmuv_80x72x168480
+# mpiexec -n 198528 ./mitgcmuv_80x72x168480
+# mpirun --mca fs_ufs_lock_algorithm 1 -x LD_VAST_PATHFILE=vastpreload.paths -x LD_PRELOAD=/scinet/vast/vast-preload-lib/lib/libvastpreload.so -x LD_VAST_LOG_TOPICS=2 -np 198528 ./mitgcmuv_80x72x168480
+  unset I_MPI_PMI_LIBRARY
+  mpiexec -n 198528 ./mitgcmuv_80x72x168480
 
 
 ############# intel/mpich build
