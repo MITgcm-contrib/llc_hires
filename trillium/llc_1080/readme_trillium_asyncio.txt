@@ -72,7 +72,7 @@
   export MPI_HOME=$I_MPI_ROOT
   cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_30x30x16848 SIZE.h
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_ifort+mpi_ice_nas -mpi \
+  ../../llc_hires/trillium/llc_1080/code-async/linux_amd64_ifort+mpi_trillium -mpi \
   -mods '../../llc_hires/trillium/llc_1080/code-async ../../llc_hires/trillium/llc_1080/code'
   make depend
   make -j
