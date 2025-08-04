@@ -1,6 +1,6 @@
 ############# run with asyncio #############
 #  salloc --nodes 722 --time=24:00:00
-  salloc --nodes 1034 --time=24:00:00
+  salloc --nodes 1040 --time=24:00:00
 #  salloc --nodes 1211 --time=24:00:00
 
 #### GET CODE ####
