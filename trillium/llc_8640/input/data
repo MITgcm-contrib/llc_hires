@@ -98,8 +98,8 @@
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
-# select_rStar=2,
-# nonlinFreeSurf=4,
+ select_rStar=2,
+ nonlinFreeSurf=4,
  /
 
 # Elliptic solver parameters
@@ -159,7 +159,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2024_BEDMACHINE_LLC8640_BATHY.bin',
+ bathyFile      ='GEBCO2024_on_LLC8640_v4.bin',
  hydrogThetaFile='/scratch/momenika/heroic_run/interp/crood_llc8640_Theta',
  hydrogSaltFile ='/scratch/momenika/heroic_run/interp/crood_llc8640_Salt',
  uVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_U',

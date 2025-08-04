@@ -3,7 +3,7 @@
 # ******************************
  &SHELFICE_PARM01
  SHELFICEboundaryLayer = .TRUE.,
- SHELFICEtopoFile   = 'GEBCO2024_BEDMACHINE_LLC8640_TOPO.bin',
+ SHELFICEtopoFile   = 'BEDMACHINE_on_LLC8640_v4.bin',
 # SHELFICEloadAnomalyFile = 'LLC1080_loadAnomaly_v1.2.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
