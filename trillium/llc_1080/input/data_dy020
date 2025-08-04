@@ -108,14 +108,14 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=19200,
+ nIter0=28800,
  endtime=31449600.,
- deltaT = 90.,
+ deltaT = 60.,
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  dumpfreq = 3600.,
- monitorFreq = 90.,
+ monitorFreq = 60.,
  dumpInitAndLast=.FALSE.,
  /
 
