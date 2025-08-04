@@ -3,7 +3,7 @@
 # ******************************
  &SHELFICE_PARM01
  SHELFICEboundaryLayer = .TRUE.,
- SHELFICEtopoFile   = 'LLC1080_GEBCO24_YN_llc270_BASE_v3.bin',
+ SHELFICEtopoFile   = 'LLC1080_bedmachine_GrnV5_AntV2_ice_shelf_v3.bin',
 # SHELFICEloadAnomalyFile = 'LLC1080_loadAnomaly_v1.2.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
