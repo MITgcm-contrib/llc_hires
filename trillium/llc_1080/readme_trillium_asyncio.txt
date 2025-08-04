@@ -53,6 +53,8 @@
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
+  cp data_dy001 data
+  cp data.seaice_dy001 data.seaice
 
 #  mpiexec -n 3648 ./mitgcmuv_90x54x3120
 #  mpiexec -n 4032 ./mitgcmuv_60x72x3510
