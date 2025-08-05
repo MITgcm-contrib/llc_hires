@@ -1,51 +1,94 @@
 import numpy as np
-from quikread_llc import quikread_llc
 
+import os
+
+
+def quikread_llc(fname, nx, k=None, prec='>f4'):
+    """
+    Read an LLC binary file (big-endian real*4) of shape (nx, nx*13, levels).
+
+    Parameters
+    ----------
+    fname : str
+        Path to .data file containing concatenated levels.
+    nx : int
+        Tile dimension (e.g., 1080).
+    k : int, optional
+        1-based level index to read. If None, defaults to 1.
+    prec : str, optional
+        NumPy dtype descriptor, default big-endian float32.
+
+    Returns
+    -------
+    fld : ndarray, shape (nx, 13*nx)
+        Field at level k.
+    """
+    dtype = np.dtype(prec)
+    count_per_level = nx * nx * 13
+    bytes_per_level = count_per_level * dtype.itemsize
+
+    level = 1 if k is None else int(k)
+    with open(fname, 'rb') as f:
+        f.seek((level - 1) * bytes_per_level, os.SEEK_SET)
+        raw = f.read(bytes_per_level)
+        arr = np.frombuffer(raw, dtype=prec)
+        fld = arr.reshape((nx, 13*nx), order='F')
+    return fld
 
 def assemble_mosaic(fld, nx):
     """
-    Given a 2D LLC field `fld` of shape (nx, 13*nx), assemble into
-    the full mosaic of size (8*nx, 13*8*nx) by tiling each face.
+    Assemble an LLC tile field `fld` of shape (nx, 13*nx) into
+    the full mosaic of size (8*nx, 13*8*nx) matching MATLAB's tiling.
     """
     repeat = 8
     NX = nx * repeat
-    FLD = np.zeros((NX, 13 * NX), dtype=fld.dtype)
+    mosaic = np.zeros((NX, 13 * NX), dtype=fld.dtype)
 
-    # Face 1: columns 0 : 3*nx
-    tmp = fld[:, 0 : nx * 3]
-    m1 = np.repeat(np.repeat(tmp, repeat, axis=0), repeat, axis=1)
-    FLD[:, 0 : 3 * NX] = m1
+    # Helper for block tiling
+    def tile_block(src, out_shape, start_col, block_width):
+        TMP = np.zeros(out_shape, dtype=fld.dtype)
+        for i in range(repeat):
+            for j in range(repeat):
+                TMP[i::repeat, j::repeat] = src
+        mosaic[:, start_col:start_col+block_width] = TMP
 
-    # Face 2: columns 3*nx : 6*nx
-    tmp = fld[:, nx * 3 : nx * 6]
-    m2 = np.repeat(np.repeat(tmp, repeat, axis=0), repeat, axis=1)
-    FLD[:, 3 * NX : 6 * NX] = m2
+    # Tile 1 (cols 0:3*nx)
+    src1 = fld[:, 0:nx*3]
+    tile_block(src1, (NX, 3*NX), 0, 3*NX)
 
-    # Face 3: columns 6*nx : 7*nx
-    tmp = fld[:, nx * 6 : nx * 7]
-    m3 = np.repeat(np.repeat(tmp, repeat, axis=0), repeat, axis=1)
-    FLD[:, 6 * NX : 7 * NX] = m3
+    # Tile 2 (cols 3*nx:6*nx)
+    src2 = fld[:, nx*3:nx*6]
+    tile_block(src2, (NX, 3*NX), 3*NX, 3*NX)
 
-    # Face 4: reshape then tile, then reshape into mosaic block
-    tmp = fld[:, nx * 7 : nx * 10].reshape((3 * nx, nx), order='F')
-    t4 = np.repeat(np.repeat(tmp, repeat, axis=0), repeat, axis=1)
-    m4 = t4.reshape((NX, 3 * NX), order='F')
-    FLD[:, 7 * NX : 10 * NX] = m4
+    # Tile 3 (cols 6*nx:7*nx)
+    src3 = fld[:, nx*6:nx*7]
+    tile_block(src3, (NX, NX), 6*NX, NX)
 
-    # Face 5: same as face 4 but next columns
-    tmp = fld[:, nx * 10 : nx * 13].reshape((3 * nx, nx), order='F')
-    t5 = np.repeat(np.repeat(tmp, repeat, axis=0), repeat, axis=1)
-    m5 = t5.reshape((NX, 3 * NX), order='F')
-    FLD[:, 10 * NX : 13 * NX] = m5
+    # Tile 4 (reshape then tile, then reshape out)
+    t4 = fld[:, nx*7:nx*10].reshape((3*nx, nx), order='F')
+    TMP4 = np.zeros((NX*3, NX), dtype=fld.dtype)
+    for i in range(repeat):
+        for j in range(repeat):
+            TMP4[i::repeat, j::repeat] = t4
+    block4 = TMP4.reshape((NX, 3*NX), order='F')
+    mosaic[:, 7*NX:10*NX] = block4
 
-    return FLD
+    # Tile 5 (same as tile 4)
+    t5 = fld[:, nx*10:nx*13].reshape((3*nx, nx), order='F')
+    TMP5 = np.zeros((NX*3, NX), dtype=fld.dtype)
+    for i in range(repeat):
+        for j in range(repeat):
+            TMP5[i::repeat, j::repeat] = t5
+    block5 = TMP5.reshape((NX, 3*NX), order='F')
+    mosaic[:, 10*NX:13*NX] = block5
+
+    return mosaic
 
 
 def write_bin(fname, data, append=False):
     """
-    Write `data` (NumPy array, dtype='>f4') to binary file `fname`.
-    Uses Fortran (column-major) order to match MATLAB's fwrite.
-    If append=True, opens in 'ab', else 'wb'.
+    Write a 2D array `data` (dtype='>f4') to binary file `fname` in Fortran order.
+    If append=True, appends; otherwise, overwrites.
     """
     mode = 'ab' if append else 'wb'
     with open(fname, mode) as f:
@@ -55,27 +98,26 @@ def write_bin(fname, data, append=False):
 def main():
     nx = 1080
     nz = 173
-    pin = '/scratch/dmenemen/MITgcm/run_1080_day017/'
-    suf = '.0000057600.data'
+    pin = '/scratch/dmenemen/MITgcm/run_1080_hr162_dy020/'
+    suf = '.0000019200.data'
 
-    # Surface/state variables (no vertical levels)
+    # 2D variables
     vars2d = ['Eta', 'SIarea', 'SIheff', 'SIhsalt', 'SIhsnow', 'SIuice', 'SIvice']
     for v in vars2d:
-        print(f"Processing {v}...")
+        print(f"Processing {v} (2D)...")
         fld = quikread_llc(f"{pin}{v}{suf}", nx)
-        FLD = assemble_mosaic(fld, nx)
-        write_bin(f"crood_llc8640_{v}", FLD.astype('>f4'), append=False)
+        mosaic = assemble_mosaic(fld, nx)
+        write_bin(f"crood_llc8640_day20_no_low_cap_{v}", mosaic.astype('>f4'), append=False)
 
-    # 3D variables (loop over vertical levels)
-    vars3d = ['Salt', 'Theta', 'U', 'V']
+    # 3D variables
+    vars3d = ['U', 'V']
     for v in vars3d:
         print(f"Processing {v} (3D)...")
-        outname = f"crood_llc8640_{v}"
-        # overwrite or create new file for level 1
-        for k in range(1, nz + 1):
+        outname = f"crood_llc8640_day20_no_low_cap_{v}"
+        for k in range(1, nz+1):
             fld = quikread_llc(f"{pin}{v}{suf}", nx, k)
-            FLD = assemble_mosaic(fld, nx)
-            write_bin(outname, FLD.astype('>f4'), append=(k > 1))
+            mosaic = assemble_mosaic(fld, nx)
+            write_bin(outname, mosaic.astype('>f4'), append=(k > 1))
 
 if __name__ == '__main__':
     main()

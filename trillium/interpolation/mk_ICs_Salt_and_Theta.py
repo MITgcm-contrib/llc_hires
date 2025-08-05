@@ -100,16 +100,16 @@ def write_bin(fname, data, append=False):
 def main():
     nx = 1080
     nz = 173
-    pin = '/scratch/dmenemen/MITgcm/run_1080_day017/'
-    suf = '.0000057600.data'
+    pin = '/scratch/dmenemen/MITgcm/run_1080_hr162_dy020/'
+    suf = '.0000019200.data'
     template_theta = '/scratch/dmenemen/llc1080_template/THETA_1jan23_v4r5_on_LLC1080.bin'
     template_salt = '/scratch/dmenemen/llc1080_template/SALT_1jan23_v4r5_on_LLC1080.bin'
 
     # 3D fields
-    vars3d = ['Theta', 'Salt']
+    vars3d = ['Salt', 'Theta']
     for name in vars3d:
         print(f"Processing {name} (3D)")
-        out_file = f"crood_llc8640_{name}"
+        out_file = f"crood_llc8640_day20_no_low_cap_{name}"
         for k in range(1, nz+1):
             fld = quikread_llc(os.path.join(pin, name + suf), nx, k)
             if name == 'Theta':
@@ -117,13 +117,13 @@ def main():
                 fld2 = quikread_llc(template_theta, nx, k)
                 mask0 = (fld == 0)
                 fld[mask0] = fld2[mask0]
-                fld[fld < -3] = -3
+                fld[fld == 0] = 0.001
             if name == 'Salt':
                 fld = fld.copy()
                 fld2 = quikread_llc(template_salt, nx, k)
                 mask0 = (fld == 0)
                 fld[mask0] = fld2[mask0]
-                fld[fld < 5] = 5
+                fld[fld == 0] = 0.001
             mosaic = assemble_mosaic(fld, nx)
             write_bin(out_file, mosaic, append=(k > 1))
 
