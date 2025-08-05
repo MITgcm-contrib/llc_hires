@@ -114,7 +114,6 @@
  abEps = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- chkptFreq   = 259200.0,
  dumpfreq = 60.,
  monitorFreq = 1.,
  dumpInitAndLast=.FALSE.,
@@ -160,9 +159,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2024_on_LLC8640_v4.bin',
- hydrogThetaFile='/scratch/momenika/heroic_run/interp/crood_llc8640_Theta',
- hydrogSaltFile ='/scratch/momenika/heroic_run/interp/crood_llc8640_Salt',
- uVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_U',
- vVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_V',
- pSurfInitFile  ='/scratch/momenika/heroic_run/interp/crood_llc8640_Eta',
+ hydrogThetaFile='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Theta',
+ hydrogSaltFile ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Salt',
+ uVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_U',
+ vVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_V',
+ pSurfInitFile  ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Eta',
  /
