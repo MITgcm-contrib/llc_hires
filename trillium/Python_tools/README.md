@@ -55,5 +55,5 @@ llc.ts2dte(ts, deltat=deltaT, startyr=..., startmo=..., startdy=...)
 
 ## Interaction
 - **Hover**: shows raw value at cursor (tracer value or `sqrt(U^2+V^2)` (speed) for vectors).
-- **Click**: prints `x	y	value` to stdout.
+- **Click**: prints `x	y	value`.
 - **Keys**: `q` or `Esc` = close; `f` = refit window to work area.
