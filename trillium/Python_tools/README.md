@@ -1,4 +1,4 @@
-# llc_view — quick viewer for LLC tracer & vector C-grid data
+# vis_llc — Fast On-Site Visualizer for Large LLC Tracer and Vector C-Grid Data
 
 Short guide to run the script `vis_llc.py` and understand the options.
 
