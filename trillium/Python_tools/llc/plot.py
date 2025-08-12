@@ -1,4 +1,4 @@
-# llc_vis.py
+# plot.py
 # -----------------------------------------------------------------------------
 # Lightweight LLC visualizers (scalar + C-grid vector), ready to import.
 # - plot(...)                -> scalar tracer mosaic
