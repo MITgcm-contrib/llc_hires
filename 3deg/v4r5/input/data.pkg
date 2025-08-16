@@ -1,10 +1,11 @@
 # Packages
  &PACKAGES
- useEXF        = .TRUE.,
- useCAL        = .TRUE.,
- useGMRedi     = .TRUE.,
- useSeaice     = .TRUE.,
- useGGL90      = .TRUE.,
- useSALT_PlUME =.TRUE.,
+ useCAL   = .TRUE.,
+ useEXF   = .TRUE.,
+ useGMRedi= .TRUE.,
+ useSeaice= .TRUE.,
+# useShelfIce=.TRUE.,
+ useGGL90=.TRUE.,
+ useSALT_PlUME=.TRUE.,
  useDiagnostics=.TRUE.,
  /
