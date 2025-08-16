@@ -16,11 +16,11 @@ C  and "diagSt_size" (statistics-diags) since values here are deliberately small
       INTEGER    numDiags
       INTEGER    nRegions, sizRegMsk, nStats
       INTEGER    diagSt_size
-      PARAMETER( ndiagMax = 1500 )
-      PARAMETER( numlists = 90, numperlist = 90, numLevels=Nr )
-      PARAMETER( numDiags = 25+300*Nr )
-      PARAMETER( nRegions = 0 , sizRegMsk = 1 , nStats = 4 )
-      PARAMETER( diagSt_size = 10*Nr )
+      PARAMETER( ndiagMax = 700 )
+      PARAMETER( numlists = 300, numperlist = 30, numLevels=5*Nr )
+      PARAMETER( numDiags = 4000 )
+      PARAMETER( nRegions = 20 , sizRegMsk = 1 , nStats = 4 )
+      PARAMETER( diagSt_size = 50*Nr )
 
 
 CEH3 ;;; Local Variables: ***

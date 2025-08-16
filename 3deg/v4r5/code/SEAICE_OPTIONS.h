@@ -12,7 +12,10 @@ C     *==========================================================*
 #include "CPP_OPTIONS.h"
 
 #ifdef ALLOW_SEAICE
+#define SEAICE_USE_GROWTH_ADX
 C     Package-specific Options & Macros go here
+
+#define ALLOW_SEAICE_FLOODING
 
 C--   Write "text-plots" of certain fields in STDOUT for debugging.
 #undef SEAICE_DEBUG
@@ -95,7 +98,8 @@ C     enable JFNK code by defining the following flag
 C     enable LSR to use global (multi-tile) tri-diagonal solver
 # undef SEAICE_GLOBAL_3DIAG_SOLVER
 C     enable EVP code by defining the following flag
-# define SEAICE_ALLOW_EVP
+# undef SEAICE_ALLOW_EVP
+
 # ifdef SEAICE_ALLOW_EVP
 C--   When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
@@ -138,10 +142,12 @@ C     It is here for completeness, but its usefulness is unclear.
 #endif /* SEAICE_CGRID */
 
 C--   When set limit the Ice-Loading to mass of 1/5 of Surface ocean grid-box
-#undef SEAICE_CAP_ICELOAD
+#define SEAICE_CAP_ICELOAD
+
 C--   When set use SEAICE_clipVelocties = .true., to clip U/VICE at 40cm/s,
 C     not recommended
-#define SEAICE_ALLOW_CLIPVELS
+#undef SEAICE_ALLOW_CLIPVELS
+
 C--   When set cap the sublimation latent heat flux in solve4temp according
 C     to the available amount of ice+snow. Otherwise this term is treated
 C     like all of the others -- residuals heat and fw stocks are passed to
@@ -150,7 +156,7 @@ C     SEAICE_CAP_SUBLIM is not needed as of now, but kept just in case.
 #undef SEAICE_CAP_SUBLIM
 
 C--   Enable free drift code
-#define SEAICE_ALLOW_FREEDRIFT
+#undef SEAICE_ALLOW_FREEDRIFT
 
 C--   pkg/seaice cost functions compile flags
 c       >>> Sea-ice volume (requires pkg/cost)
