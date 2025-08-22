@@ -45,7 +45,6 @@
  deltaT=50.0,
  abEps=0.1,
  cAdjFreq = -1.,
- tauCD = 400000.,
  pChkptFreq=0.0,
  chkptFreq=0.0,
  dumpFreq=0.0,
