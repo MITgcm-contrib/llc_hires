@@ -52,10 +52,10 @@
 #  cp ../build/mitgcmuv mitgcmuv_24x24x26325
 #  cp ../build/mitgcmuv mitgcmuv_20x24x31590
 #  cp ../build/mitgcmuv mitgcmuv_20x20x37908
-  ln -sf /staging/scratch/dmenemen/era5 .
-  ln -sf /staging/scratch/dmenemen/discharge/* .
-  ln -sf /staging/scratch/dmenemen/llc1080_template/* .
-  ln -sf /staging/scratch/dmenemen/SPICE/kernels .
+  ln -sf /project/rrg-peltier-ac/momenika/era5 .
+  ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
+  ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
+  ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
   cp data_dy000 data
   cp data.seaice_dy000 data.seaice
