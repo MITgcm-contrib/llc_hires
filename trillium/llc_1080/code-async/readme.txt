@@ -1,3 +1,6 @@
+To add or replace diagnotics, edit write_state.F and recvTask.c
+
+
 From Bron Nelson, February 28, 2019
 
 In the newest version, it is no longer necessary to hand-edit the

@@ -187,7 +187,6 @@ fieldInfoThisEpoch_t fieldsForEpochStyle_0[] = {
   { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIvice.%010d.%s", 0,0 },
   { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIhsalt.%010d.%s", 0,0 },
 
-//{ 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "EtaHnm1.%010d.%s", 0,0 },
   { 'I', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUX.%010d.%s", 0,0 },
   { 'J', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUY.%010d.%s", 0,0 },
   { 'K', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "KPPhbl.%010d.%s", 0,0 },
@@ -197,7 +196,9 @@ fieldInfoThisEpoch_t fieldsForEpochStyle_0[] = {
   { 'O', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQnet.%010d.%s", 0,0 },
   { 'P', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "PhiBot.%010d.%s", 0,0 },
   { 'Q', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQsw.%010d.%s", 0,0 },
-//{ 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "dEtaHdt.%010d.%s", 0,0 },
+
+  { 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SHIhtFlx.%010d.%s", 0,0 },
+  { 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SHIfwFlx.%010d.%s", 0,0 },
 
   {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0,0 },
 };
