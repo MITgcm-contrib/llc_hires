@@ -108,21 +108,21 @@
 
 # Time stepping parameters
  &PARM03
- nIter0=6480,
- endtime=31449600.,
- deltaT = 90.,
- abEps = 0.1,
+ nIter0 = 0,
+ endtime= 86400.,
+ deltaT = 15.,
+ abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- dumpfreq = 3600.,
- monitorFreq = 90.,
+ dumpfreq = 600.,
+ monitorFreq = 15.,
  dumpInitAndLast=.FALSE.,
  /
 
 # Gridding parameters
  &PARM04
  usingCurvilinearGrid=.TRUE.,
- pCellMix_select = 2,
+ pCellMix_select = 22,
  pCellMix_viscAr = 173*4.e-4,
  pCellMix_diffKr = 173*2.e-4,
  delR = 3.6311,    3.6933,   3.7563,   3.8201,   3.8845,   3.9495,
@@ -158,10 +158,10 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='LLC1080_GEBCO24_depth_v3d.bin',
- hydrogThetaFile='../run_1080_hr024_hr162/Theta.0000009720.data',
- hydrogSaltFile ='../run_1080_hr024_hr162/Salt.0000009720.data',
- uVelInitFile   ='../run_1080_hr024_hr162/U.0000009720.data',
- vVelInitFile   ='../run_1080_hr024_hr162/V.0000009720.data',
- pSurfInitFile  ='../run_1080_hr024_hr162/Eta.0000009720.data',
+ bathyFile      ='GEBCO2025_on_LLC1080_v9.bin',
+ hydrogThetaFile='THETA_1jan23_v4r5_on_LLC1080.bin',
+ hydrogSaltFile ='SALT_1jan23_v4r5_on_LLC1080.bin',
+# uVelInitFile   ='0000597888_U.data',
+# vVelInitFile   ='0000597888_V.data',
+# pSurfInitFile  ='0000597888_Eta.data',
  /

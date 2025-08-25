@@ -50,10 +50,10 @@
 #  cp ../build/mitgcmuv mitgcmuv_30x30x16848
 #  cp ../build/mitgcmuv mitgcmuv_24x27x23400
 #  cp ../build/mitgcmuv mitgcmuv_24x24x26325
-#  cp ../build/mitgcmuv mitgcmuv_24x24x26325
 #  cp ../build/mitgcmuv mitgcmuv_20x24x31590
   cp ../build/mitgcmuv mitgcmuv_20x20x37908
   ln -sf /scratch/dmenemen/era5 .
+  ln -sf /scratch/dmenemen/discharge/* .
   ln -sf /scratch/dmenemen/llc1080_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
@@ -70,11 +70,3 @@
 #  mpiexec -n 29376 ./mitgcmuv_24x27x23400
 #  mpiexec -n 32832 ./mitgcmuv_20x24x31590
   mpiexec -n 39936 ./mitgcmuv_20x20x37908
-
-
-###########
-old gcc openpmi timings
-18:45 
- 3.26
-47.97
-11.86
