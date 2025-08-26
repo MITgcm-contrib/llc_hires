@@ -42,4 +42,5 @@ ln -s ${INPUTDIR}/input_bin/* .
 ln -s ${INPUTDIR}/TBADJ .
 cp ${MOD}/input/* .
 cp data.exch2_noblank data.exch2
+cp data.diagnostics_wmt data.diagnostics
 mpirun -np 26 ./mitgcmuv
