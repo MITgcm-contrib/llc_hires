@@ -23,7 +23,7 @@ git checkout checkpoint68y
 
 mkdir build run
 cd build
-module load mpi/mpich-x86_64
+module load mpi/openmpi-x86_64
 export MPI_INC_DIR=/usr/include/openmpi-x86_64
 MOD="../../llc_hires/llc_90/ecco_v4r5"
 cp $MOD/code/SIZE.h_90x45 SIZE.h
@@ -35,12 +35,11 @@ make -j
 # 3. Instructions for running simulation (1992-2019 period)
 
 cd ../run
-rm -rf *
 mkdir -p diags
 ln -sf ../build/mitgcmuv .
 INPUTDIR='/net/eady.gps.caltech.edu/data1/dmenemen/Release5'
 ln -s ${INPUTDIR}/input_bin/* .
 ln -s ${INPUTDIR}/TBADJ .
 cp ${MOD}/input/* .
+cp data.exch2_noblank data.exch2
 mpirun -np 26 ./mitgcmuv
-
