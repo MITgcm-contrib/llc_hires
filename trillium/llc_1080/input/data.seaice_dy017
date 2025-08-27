@@ -21,7 +21,7 @@
  IMAX_TICE             = 6,
  SEAICE_salt0          = 4.0,
  SEAICE_doOpenWaterMelt= .TRUE.,
- SEAICE_mcPheePiston   = 0.04999999,
+ SEAICE_mcPheePiston   = 0.02,
  SEAICE_mcPheeTaper    = 0.92,
  SEAICE_no_slip        = .TRUE.,
 #
