@@ -1,0 +1,11 @@
+# *******************************
+# Parameter for SHELFICE package
+# ******************************
+ &SHELFICE_PARM01
+ SHELFICEtopoFile   = 'BEDMACHINE_on_LLC1080_v12.bin',
+ SHELFICEconserve = .TRUE.,
+ no_slip_shelfice = .false.,
+ SHELFICEwriteState = .TRUE.,
+ SHELFICEuseGammaFrict = .TRUE.,
+ SHELFICE_dumpFreq = 0.0,
+/
