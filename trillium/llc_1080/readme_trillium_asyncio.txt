@@ -59,8 +59,10 @@
   cp ../../llc_hires/trillium/llc_1080/input/* .
 #  cp data_dy000 data
 #  cp data.seaice_dy000 data.seaice
-  cp data_dy017 data
-  cp data.seaice_dy017 data.seaice
+#  cp data_dy017 data
+  cp data_dy040 data
+#  cp data.seaice_dy017 data.seaice
+  cp data.seaice_dy040 data.seaice
   cp data.shelfice_dy017 data.shelfice
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 3648 ./mitgcmuv_90x54x3120
