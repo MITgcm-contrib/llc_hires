@@ -63,8 +63,10 @@
 #  cp data_dy040 data
 #  cp data.seaice_dy017 data.seaice
 #  cp data.seaice_dy040 data.seaice
-  cp data_dy048 data
-  cp data.seaice_dy048 data.seaice
+#  cp data_dy048 data
+  cp data_dy050 data
+#  cp data.seaice_dy048 data.seaice
+  cp data.seaice_dy050 data.seaice
   cp data.shelfice_dy017 data.shelfice
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 3648 ./mitgcmuv_90x54x3120
