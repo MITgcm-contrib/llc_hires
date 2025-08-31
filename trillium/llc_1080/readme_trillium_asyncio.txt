@@ -57,17 +57,10 @@
   ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
-#  cp data_dy000 data
-#  cp data.seaice_dy000 data.seaice
-#  cp data_dy017 data
-#  cp data_dy040 data
-#  cp data.seaice_dy017 data.seaice
-#  cp data.seaice_dy040 data.seaice
-#  cp data_dy048 data
-  cp data_dy050 data
-#  cp data.seaice_dy048 data.seaice
-  cp data.seaice_dy050 data.seaice
-  cp data.shelfice_dy017 data.shelfice
+
+  cp data_dy051 data
+  cp data.seaice_dy051 data.seaice
+  cp data.shelfice_dy051 data.shelfice
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 3648 ./mitgcmuv_90x54x3120
 #  mpiexec -n 4032 ./mitgcmuv_60x72x3510
