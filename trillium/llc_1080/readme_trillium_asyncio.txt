@@ -60,7 +60,7 @@
 
   cp data_dy051 data
   cp data.seaice_dy051 data.seaice
-  cp data.shelfice_dy051 data.shelfice
+  cp data.shelfice_dy017 data.shelfice
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 3648 ./mitgcmuv_90x54x3120
 #  mpiexec -n 4032 ./mitgcmuv_60x72x3510

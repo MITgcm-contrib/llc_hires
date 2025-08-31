@@ -158,7 +158,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC1080_v14.bin',
+ bathyFile      ='GEBCO2025_on_LLC1080_v13.bin',
  hydrogThetaFile='/project/rrg-peltier-ac/momenika/llc_1080/run_1080_dy050_dy051/Theta.0000048960.data',
  hydrogSaltFile ='/project/rrg-peltier-ac/momenika/llc_1080/run_1080_dy050_dy051/Salt.0000048960.data',
  uVelInitFile   ='/project/rrg-peltier-ac/momenika/llc_1080/run_1080_dy050_dy051/U.0000048960.data',
