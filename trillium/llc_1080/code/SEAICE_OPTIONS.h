@@ -216,7 +216,7 @@ C     It is here for completeness, but its usefulness is unclear.
 
 C--   Some regularisations
 C-    When set limit the Ice-Loading to mass of 1/5 of Surface ocean grid-box
-#undef SEAICE_CAP_ICELOAD
+#define SEAICE_CAP_ICELOAD
 
 C-    When set use SEAICE_clipVelocties = .true., to clip U/VICE at 40cm/s,
 C     not recommended
