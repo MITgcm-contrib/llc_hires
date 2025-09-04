@@ -58,8 +58,8 @@
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_1080/input/* .
 
-  cp data_dy100 data
-  cp data.seaice_dy100 data.seaice
+  cp data_dy109 data
+  cp data.seaice_dy109 data.seaice
   cp data.shelfice_dy017 data.shelfice
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 3648 ./mitgcmuv_90x54x3120
