@@ -70,7 +70,7 @@
 #define __OLy    8
 #define __nSx    1
 #define __nSy    1
-#define __nPx    3120
+#define __nPx    3120-891
 #define __nPy    1
 #define __Nr     173
 

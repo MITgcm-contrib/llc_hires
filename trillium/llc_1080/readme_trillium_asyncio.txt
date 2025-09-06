@@ -1,5 +1,5 @@
 ############# run with asyncio #############
-  salloc --nodes 18 --time=24:00:00
+  salloc --nodes 13 --time=24:00:00
 #  salloc --nodes 19 --time=24:00:00
 #  salloc --nodes 21 --time=24:00:00
 #  salloc --nodes 32 --time=24:00:00
@@ -24,7 +24,7 @@
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
-  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x54x3120 SIZE.h
+  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_90x54x2229 SIZE.h
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x72x3510 SIZE.h
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_60x60x4212 SIZE.h
 #  cp ../../llc_hires/trillium/llc_1080/code-async/SIZE.h_54x54x5200 SIZE.h
@@ -42,7 +42,7 @@
 
 ####RUN####
   cd $SCRATCH/MITgcm/run
-  cp ../build/mitgcmuv mitgcmuv_90x54x3120
+  cp ../build/mitgcmuv mitgcmuv_90x54x2229
 #  cp ../build/mitgcmuv mitgcmuv_60x72x3510
 #  cp ../build/mitgcmuv mitgcmuv_60x60x4212
 #  cp ../build/mitgcmuv mitgcmuv_54x54x5200
@@ -60,8 +60,9 @@
 
   cp data_dy153 data
   cp data.seaice_dy153 data.seaice
+  cp data.exch2_90x54x2229 data.exch2
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 3648 ./mitgcmuv_90x54x3120
+  mpiexec -n 2496 ./mitgcmuv_90x54x2229
 #  mpiexec -n 4032 ./mitgcmuv_60x72x3510
 #  mpiexec -n 4992 ./mitgcmuv_60x60x4212
 #  mpiexec -n 6144 ./mitgcmuv_54x54x5200
