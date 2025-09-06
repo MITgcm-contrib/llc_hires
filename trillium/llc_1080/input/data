@@ -95,6 +95,7 @@
  useRealFreshWaterFlux=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
+ globalFiles=.TRUE.,
  temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
