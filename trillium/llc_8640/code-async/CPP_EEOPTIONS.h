@@ -86,7 +86,7 @@ C--   Flag defined for eeboot_minimal.F, eeset_parms.F and open_copy_data_file.F
 C     to write STDOUT, STDERR and scratch files from process 0 only.
 C WARNING: to use only when absolutely confident that the setup is working
 C     since any message (error/warning/print) from any proc <> 0 will be lost.
-#undef SINGLE_DISK_IO
+#define SINGLE_DISK_IO
 
 C=== MPI, EXCH and GLOBAL_SUM related options ===
 C--   Flag turns off MPI_SEND ready_to_receive polling in the

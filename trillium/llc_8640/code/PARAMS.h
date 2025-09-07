@@ -685,9 +685,6 @@ C     smag3D_coeff     :: Isotropic 3-D Smagorinsky viscosity coefficient (-)
 C     smag3D_diffCoeff :: Isotropic 3-D Smagorinsky diffusivity coefficient (-)
 C     viscC2leith  :: Leith non-dimensional viscosity factor (grad(vort))
 C     viscC2leithD :: Modified Leith non-dimensional visc. factor (grad(div))
-C     viscC4leithDiv :: Fraction of the divergent part of the flow that C4 leith acts on (0-1)
-C     leithDivFmask :: Min ocean-floor depth for which Leith Div is enabled.
-C     leithDivDmask :: Min ocean depth for which Leith Div is enabled.
 C     viscC2LeithQG:: QG Leith non-dimensional viscosity factor
 C     viscC4leith  :: Leith non-dimensional viscosity factor (grad(vort))
 C     viscC4leithD :: Modified Leith non-dimensional viscosity factor (grad(div))
@@ -840,7 +837,6 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
      & viscFacAdj, viscAh, viscAhW, smag3D_coeff, smag3D_diffCoeff,
      & viscAhMax, viscAhGrid, viscAhGridMax, viscAhGridMin,
      & viscC2leith, viscC2leithD, viscC2LeithQG,
-     & viscC4leithDiv, leithDivDmask, leithDivFmask,
      & viscC2smag, viscC4smag,
      & viscAhD, viscAhZ, viscA4D, viscA4Z,
      & viscA4, viscA4W, viscA4Max,
@@ -937,9 +933,6 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
       _RL viscA4Grid, viscA4GridMax, viscA4GridMin
       _RL viscC4leith
       _RL viscC4leithD
-      _RL viscC4leithDiv
-      _RL leithDivFmask
-      _RL leithDivDmask
       _RL viscC4smag
       _RL diffKhT
       _RL diffK4T

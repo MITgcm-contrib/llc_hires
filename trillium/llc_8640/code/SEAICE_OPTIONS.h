@@ -133,7 +133,7 @@ C     Include code to print residual of EVP iteration for debugging/diagnostics
 
 C     smooth regularization (without max-function) of delta for
 C     better differentiability
-# undef SEAICE_DELTA_SMOOTHREG
+# define SEAICE_DELTA_SMOOTHREG
 
 C     regularize zeta to zmax with a smooth tanh-function instead
 C     of a min(zeta,zmax). This improves convergence of iterative
@@ -170,7 +170,7 @@ C     Use zebra-method (alternate lines) for line-successive-relaxation
 C     This modification improves the convergence of the vector code
 C     dramatically, so that is may actually be useful in general, but
 C     that needs to be tested. Can be used without vectorization options.
-# undef SEAICE_LSR_ZEBRA
+# define SEAICE_LSR_ZEBRA
 
 C     Include code to print residual of nonlinear outer loop of LSR
 # undef SEAICE_ALLOW_CHECK_LSR_CONVERGENCE
@@ -216,7 +216,7 @@ C     It is here for completeness, but its usefulness is unclear.
 
 C--   Some regularisations
 C-    When set limit the Ice-Loading to mass of 1/5 of Surface ocean grid-box
-#undef SEAICE_CAP_ICELOAD
+#define SEAICE_CAP_ICELOAD
 
 C-    When set use SEAICE_clipVelocties = .true., to clip U/VICE at 40cm/s,
 C     not recommended
