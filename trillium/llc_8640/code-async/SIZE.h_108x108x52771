@@ -65,12 +65,12 @@
 
 #define __sFacet 8640
 #define __sNx    108
-#define __sNy    90
+#define __sNy    108
 #define __OLx    8
 #define __OLy    8
 #define __nSx    1
 #define __nSy    1
-#define __nPx    99840
+#define __nPx    83200-30429
 #define __nPy    1
 #define __Nr     173
 
