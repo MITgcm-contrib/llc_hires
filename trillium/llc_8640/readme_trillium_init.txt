@@ -2,7 +2,7 @@
 # to save grid information and find blank tiles
   salloc --nodes 3 --time=2:00:00
 
-####BUILD####
+#### BUILD ####
   cd $SCRATCH
   git clone https://github.com/MITgcm/MITgcm
   git clone https://github.com/MITgcm-contrib/llc_hires
@@ -18,12 +18,12 @@
   export MPI_HOME=$I_MPI_ROOT
   cp ../../llc_hires/trillium/llc_8640/code/SIZE.h_108x108x160x520 SIZE.h
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_8640/code/linux_amd64_ifort+mpi_trillium \
-  -mpi -mods ../../llc_hires/trillium/llc_8640/code
+    ../../llc_hires/trillium/llc_8640/code/linux_amd64_ifort+mpi_trillium \
+    -mpi -mods ../../llc_hires/trillium/llc_8640/code
   make depend
   make -j 64
 
-####RUN####
+#### RUN ####
   cd $SCRATCH/MITgcm/run
   cp ../build/mitgcmuv mitgcmuv_108x108x160x520
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
