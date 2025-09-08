@@ -28,8 +28,10 @@
   cp ../build/mitgcmuv mitgcmuv_108x108x160x520
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
-  ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
+  ln -sf /project/rrg-peltier-ac/dmenemen/llc8640_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
-  cp ../../llc_hires/trillium/llc_1080/input/* .
+  cp ../../llc_hires/trillium/llc_8640/input/* .
+  cp data_init data
+  cp data.pkg_init data.pkg
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 520 ./mitgcmuv_108x108x160x520

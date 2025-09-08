@@ -27,7 +27,7 @@
  vwindfile         = 'era5/ERA5_v10m',
  swdownfile        = 'era5/ERA5_dsw',
  lwdownfile        = 'era5/ERA5_dlw',
- runofffile        = 'era5/jra55_do_runoff_JRA55-do',
+ runofffile        = 'jra55_do_runoff_JRA55-do',
 #
  apressurestartdate1 = 19920101,
  apressurestartdate2 = 000000,
