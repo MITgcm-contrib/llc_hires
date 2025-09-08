@@ -64,9 +64,9 @@
 # Gridding parameters
  &PARM04
  usingCurvilinearGrid=.TRUE.,
- pCellMix_select = 22,
- pCellMix_viscAr = 173*4.e-4,
- pCellMix_diffKr = 173*2.e-4,
+# pCellMix_select = 22,
+# pCellMix_viscAr = 173*4.e-4,
+# pCellMix_diffKr = 173*2.e-4,
  delR = 3.6311,
  /
 
