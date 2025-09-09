@@ -75,7 +75,6 @@
  implicitViscosity=.TRUE.,
  viscC4Leith=2.15,
  viscC4Leithd=2.15,
- viscC4leithDiv=0.1,
  useAreaViscLength=.TRUE.,
  bottomDragQuadratic = 0.0021,
  selectImplicitDrag = 2,
