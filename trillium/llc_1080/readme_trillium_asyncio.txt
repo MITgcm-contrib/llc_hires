@@ -56,7 +56,7 @@
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
-  cp ../../llc_hires/trillium/llc_1080/input/* .
+  find ../../llc_hires/trillium/llc_1080/input/ -type f -exec cp -t . -- {} +
 
   cp -f data_dy203 data
   cp -f data.seaice_dy203 data.seaice
