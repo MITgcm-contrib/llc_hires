@@ -56,11 +56,11 @@
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
-  cp ../../llc_hires/trillium/llc_1080/input/* .
+  find ../../llc_hires/trillium/llc_1080/input/ -type f -exec cp -t . -- {} +
 
-  cp -f data/data_dy000_LPNB data
-  cp -f data/data.seaice_dy000_LPNB data.seaice
-  cp -f data/data.exch2_90x54x2229 data.exch2
+  cp -f data_dy000_LPNB data
+  cp -f data.seaice_dy000_LPNB data.seaice
+  cp -f data.exch2_90x54x2229 data.exch2
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 2496 ./mitgcmuv_90x54x2229
 #  mpiexec -n 4032 ./mitgcmuv_60x72x3510
