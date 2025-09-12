@@ -105,14 +105,14 @@
 
 # Time stepping parameters
  &PARM03
- nIter0 = 1440,
+ nIter0 = 11520,
  endtime= 31536000.,
- deltaT = 60.,
+ deltaT = 90.,
  abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  dumpfreq = 3600,
- monitorFreq = 60.,
+ monitorFreq =60,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -156,9 +156,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC1080_v13.bin',
- hydrogThetaFile='/scratch/momenika/MITgcm/run_1080_LPNB_dy000_dy001/Theta.0000005760.data',
- hydrogSaltFile ='/scratch/momenika/MITgcm/run_1080_LPNB_dy000_dy001/Salt.0000005760.data',
- uVelInitFile   ='/scratch/momenika/MITgcm/run_1080_LPNB_dy000_dy001/U.0000005760.data',
- vVelInitFile   ='/scratch/momenika/MITgcm/run_1080_LPNB_dy000_dy001/V.0000005760.data',
- pSurfInitFile  ='/scratch/momenika/MITgcm/run_1080_LPNB_dy000_dy001/Eta.0000005760.data',
+ hydrogThetaFile='/scratch/momenika/MITgcm/run_1080_LPNB_dy001_dy012/Theta.0000017280.data',
+ hydrogSaltFile ='/scratch/momenika/MITgcm/run_1080_LPNB_dy001_dy012/Salt.0000017280.data',
+ uVelInitFile   ='/scratch/momenika/MITgcm/run_1080_LPNB_dy001_dy012/U.0000017280.data',
+ vVelInitFile   ='/scratch/momenika/MITgcm/run_1080_LPNB_dy001_dy012/V.0000017280.data',
+ pSurfInitFile  ='/scratch/momenika/MITgcm/run_1080_LPNB_dy001_dy012/Eta.0000017280.data',
  /
