@@ -31,10 +31,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIarea.0000371520.data',
- HsnowFile             = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIhsnow.0000371520.data',
- HeffFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIheff.0000371520.data',
- HsaltFile             = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIhsalt.0000371520.data',
- UiceFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIuice.0000371520.data',
- ViceFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIvice.0000371520.data',
+ AreaFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIarea.0000384480.data',
+ HsnowFile             = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIhsnow.0000384480.data',
+ HeffFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIheff.0000384480.data',
+ HsaltFile             = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIhsalt.0000384480.data',
+ UiceFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIuice.0000384480.data',
+ ViceFile              = '/scratch/momenika/MITgcm/run_1080_dy258_dy267/SIvice.0000384480.data',
  &
