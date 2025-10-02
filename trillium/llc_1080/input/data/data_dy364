@@ -105,7 +105,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0  =515520,
+ nIter0  =524160,
  endtime =34560000,
  deltaT  = 60,
  abEps   = 0.1,
