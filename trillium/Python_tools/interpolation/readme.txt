@@ -1,1 +1,0 @@
-mk_ICs_Salt_and_Theta gets 2nd field files; if the value of the original field is 0, it replaces it with values from 2nd field. Also applied a cap mask for negative values.
