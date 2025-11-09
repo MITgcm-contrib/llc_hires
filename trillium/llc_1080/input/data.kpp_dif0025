@@ -6,7 +6,7 @@
  kpp_tavefreq    = 0.,
  Ricr            = 0.3559,
  Riinfty         = 0.25,
- difm0   = 2.5 _d -3,
- difs0   = 2.5 _d -3,
- dift0   = 2.5 _d -3,
+ difm0   = 0.0025,
+ difs0   = 0.0025,
+ dift0   = 0.0025,
  &
