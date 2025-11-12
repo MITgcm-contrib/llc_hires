@@ -2,8 +2,6 @@
 # Parameter for SHELFICE package
 # ******************************
  &SHELFICE_PARM01
-# SHELFICEtopoFile   = 'BEDMACHINE_on_LLC1080_v11.bin',
-# switched on day 17 to:
  SHELFICEtopoFile   = 'BEDMACHINE_on_LLC4320_v14.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
