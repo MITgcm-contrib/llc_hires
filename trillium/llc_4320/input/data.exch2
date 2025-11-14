@@ -23,7 +23,7 @@
 #
 #-- 5 facets llc_1080 topology (drop facet 6 and its connection):
   preDefTopol = 0,
-  dimsFacets = 8640, 25920, 8640, 25920, 8640, 8640, 25920, 8640, 25920, 8640, 0, 0,
+  dimsFacets = 4320, 12960, 4320, 12960, 4320, 4320, 12960, 4320, 12960, 4320, 0, 0,
   facetEdgeLink(1,1)= 3.4, 0. , 2.4, 5.1,
   facetEdgeLink(1,2)= 3.2, 0. , 4.2, 1.3,
   facetEdgeLink(1,3)= 5.4, 2.1, 4.4, 1.1,
