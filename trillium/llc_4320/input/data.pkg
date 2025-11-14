@@ -2,9 +2,9 @@
  &PACKAGES
  useCAL         = .TRUE.,
  useEXF         = .TRUE.,
- useSEAICE      = .TRUE.,
- useKPP         = .TRUE.,
- useTIDES       = .TRUE.,
- useShelfIce    = .TRUE.,
- useSALT_PLUME  = .TRUE.,
+ useSEAICE      = .FALSE.,
+ useKPP         = .FALSE.,
+ useTIDES       = .FALSE.,
+ useShelfIce    = .FALSE.,
+ useSALT_PLUME  = .FALSE.,
  /
