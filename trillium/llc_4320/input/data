@@ -88,7 +88,7 @@
  StaggerTimeStep=.TRUE.,
  vectorInvariantMomentum=.TRUE.,
  exactConserv=.TRUE.,
- debuglevel=-1,
+ debuglevel=5,
  useRealFreshWaterFlux=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
