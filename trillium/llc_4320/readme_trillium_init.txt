@@ -40,3 +40,5 @@
 grep Empty STDO* > Empty_90x90x29952.txt
 chmod +x extract_blank.sh
 ./extract_blank.sh Empty_90x90x29952.txt
+wc -l blank
+tail blank
