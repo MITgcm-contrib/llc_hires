@@ -34,7 +34,7 @@
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
-  find ../../llc_hires/trillium/llc_1080/input/ -type f -exec cp -t . -- {} +
+  find ../../llc_hires/trillium/llc_4320/input/ -type f -exec cp -t . -- {} +
 
   cp -f data_LPNB_dy365 data
   cp -f data.seaice_LPNB_dy365 data.seaice
