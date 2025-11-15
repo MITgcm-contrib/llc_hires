@@ -19,7 +19,7 @@
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
-  cp ../../llc_hires/trillium/llc_4320/code-async/SIZE.h_108x108x20800 SIZE.h
+  cp ../../llc_hires/trillium/llc_4320/code-async/SIZE.h_90x90x19492 SIZE.h
   ../tools/genmake2 -of \
   ../../llc_hires/trillium/llc_4320/code-async/linux_amd64_ifort+mpi_trillium -mpi \
   -mods '../../llc_hires/trillium/llc_4320/code-async ../../llc_hires/trillium/llc_4320/code'
@@ -29,12 +29,14 @@
 #### RUN MODEL ####
   cd $SCRATCH/MITgcm/run_4320
 
-  cp ../build_4320/mitgcmuv mitgcmuv_108x108x20800
+  cp ../build_4320/mitgcmuv mitgcmuv_90x90x19492
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_4320/input/* .
+
+  cp -f data.exch2_90x90x19492 data.exch2
   unset I_MPI_PMI_LIBRARY
 
-  mpiexec -n 21120 ./mitgcmuv_108x108x20800
+  mpiexec -n 21120 ./mitgcmuv_90x90x19492
