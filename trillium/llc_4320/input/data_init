@@ -72,10 +72,5 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC8640_v10.bin',
-# hydrogThetaFile='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Theta',
-# hydrogSaltFile ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Salt',
-# uVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_U',
-# vVelInitFile   ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_V',
-# pSurfInitFile  ='/scratch/momenika/heroic_run/interp/crood_llc8640_day20_Eta',
+ bathyFile      ='GEBCO2025_on_LLC4320_v14.bin',
  /
