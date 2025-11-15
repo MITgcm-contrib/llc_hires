@@ -111,8 +111,8 @@
  abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- dumpfreq = 600.,
- monitorFreq = 5.,
+ dumpfreq = 3600.,
+ monitorFreq = 60.,
  dumpInitAndLast=.FALSE.,
  /
 
