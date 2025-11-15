@@ -33,6 +33,7 @@
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /scratch/dmenemen/llc4320_template/* .
   ln -sf /scratch/dmenemen/SPICE/kernels .
+  ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   cp ../../llc_hires/trillium/llc_4320/input/* .
   unset I_MPI_PMI_LIBRARY
 
