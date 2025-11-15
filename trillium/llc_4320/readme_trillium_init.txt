@@ -28,7 +28,7 @@
   cp ../build/mitgcmuv mitgcmuv_90x90x156x192
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
-  ln -sf /project/rrg-peltier-ac/dmenemen/llc4320_template/* .
+  ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_4320/input/* .
   cp data_init data
