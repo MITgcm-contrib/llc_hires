@@ -16,7 +16,7 @@
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
-  cp ../../llc_hires/trillium/llc_4320/code/SIZE.h_108x108x160x520 SIZE.h
+  cp ../../llc_hires/trillium/llc_4320/code/SIZE.h_108x108x160x130 SIZE.h
   ../tools/genmake2 -of \
     ../../llc_hires/trillium/llc_4320/code/linux_amd64_ifort+mpi_trillium \
     -mpi -mods ../../llc_hires/trillium/llc_4320/code
@@ -25,7 +25,7 @@
 
 #### RUN ####
   cd $SCRATCH/MITgcm/run
-  cp ../build/mitgcmuv mitgcmuv_108x108x160x520
+  cp ../build/mitgcmuv mitgcmuv_108x108x160x130
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/dmenemen/llc4320_template/* .
@@ -34,7 +34,7 @@
   cp data_init data
   cp data.pkg_init data.pkg
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 520 ./mitgcmuv_108x108x160x520
+  mpiexec -n 520 ./mitgcmuv_108x108x160x130
 
 # find blank tiles
 grep Empty STDO* > Empty_108x108x83200.txt
