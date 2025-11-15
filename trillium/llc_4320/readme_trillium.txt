@@ -32,7 +32,7 @@
   cp ../build_4320/mitgcmuv mitgcmuv_108x108x20800
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
-  ln -sf /project/rrg-peltier-ac/momenika/llc1080_template/* .
+  ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   cp ../../llc_hires/trillium/llc_4320/input/* .
   unset I_MPI_PMI_LIBRARY
