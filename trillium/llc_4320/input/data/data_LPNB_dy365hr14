@@ -155,7 +155,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC4320_v14.bin',
+ bathyFile      ='GEBCO2025_on_LLC4320_v14a.bin',
  hydrogThetaFile='/scratch/momenika/MITgcm/run_4320_LPNB_dy365hr00_dy365hr14/Theta.0006317280.data',
  hydrogSaltFile ='/scratch/momenika/MITgcm/run_4320_LPNB_dy365hr00_dy365hr14/Salt.0006317280.data',
  uVelInitFile   ='/scratch/momenika/MITgcm/run_4320_LPNB_dy365hr00_dy365hr14/U.0006317280.data',
