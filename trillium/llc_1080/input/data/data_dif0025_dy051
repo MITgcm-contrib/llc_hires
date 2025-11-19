@@ -155,7 +155,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC1080_v13c.bin',
+ bathyFile      ='GEBCO2025_on_LLC1080_v13d.bin',
  hydrogThetaFile='../run_1080_dif0025_dy040_dy051/Theta.0000073440.data',
  hydrogSaltFile ='../run_1080_dif0025_dy040_dy051/Salt.0000073440.data',
  uVelInitFile   ='../run_1080_dif0025_dy040_dy051/U.0000073440.data',
