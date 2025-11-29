@@ -111,6 +111,7 @@ C
 C     to compute depth of boundary layer:
 C
 C     Ricr    = critical bulk Richardson Number            = 0.3
+C     RicrEq  = Equatorial critical bulk Richardson Number = 0.2
 C     cekman  = coefficient for ekman depth                = 0.7
 C     cmonob  = coefficient for Monin-Obukhov depth        = 1.0
 C     concv   = ratio of interior buoyancy frequency to
@@ -123,10 +124,10 @@ C               scale of turbulant velocity shear
 C               (=function of concv,concs,epsilon,vonk,Ricr)
 C-----------------------------------------------------------------------
 
-      _RL                   Ricr,cekman,cmonob,concv,Vtc
+      _RL                   Ricr,RicrEq,cekman,cmonob,concv,Vtc
       _RL                   hbf
 
-      common /kpp_bldepth1/ Ricr,cekman,cmonob,concv,Vtc
+      common /kpp_bldepth1/ Ricr,RicrEq,cekman,cmonob,concv,Vtc
       common /kpp_bldepth2/ hbf
 
 C-----------------------------------------------------------------------
