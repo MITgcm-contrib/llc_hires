@@ -76,8 +76,10 @@ C--   Print out KPP parameters:
      &  ' /* scalar constant [-] */')
       CALL WRITE_0D_RL( Ricr,      INDEX_NONE, ' Ricr      =',
      &  ' /* critical bulk Richardson Number [-] */')
+#ifdef KPP_VARY_RICR
       CALL WRITE_0D_RL( RicrEq,    INDEX_NONE, ' RicrEq    =',
      &  ' /* Equatorial critical bulk Richardson Number [-] */')
+#endif /* KPP_VARY_RICR */
       CALL WRITE_0D_RL( cekman,    INDEX_NONE, ' cekman    =',
      &  ' /* coeff for Ekman depth [-] */')
       CALL WRITE_0D_RL( cmonob,    INDEX_NONE, ' cmonob    =',

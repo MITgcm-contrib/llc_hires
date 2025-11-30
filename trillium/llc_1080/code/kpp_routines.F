@@ -600,7 +600,11 @@ CML     2             dbloc(i,kl  ) / (zgrid(kl  )-zgrid(kl+1)))
             IF (bvsq .EQ. 0. _d 0) THEN
               vtsq = 0. _d 0
             ELSE
+#ifdef KPP_VARY_RICR
+              vtsq = -zgrid(kl) * ws(i) * SQRT(ABS(bvsq)) * VtcLoc(i)
+#else /* KPP_VARY_RICR */
               vtsq = -zgrid(kl) * ws(i) * SQRT(ABS(bvsq)) * Vtc
+#endif /* KPP_VARY_RICR */
             ENDIF
 
 c     compute bulk Richardson number at new level
@@ -643,7 +647,12 @@ cph)
 
       DO kl = 2, Nr
          DO i = 1, imt
-            IF (kbl(i).EQ.kmtj(i) .AND. Rib(i,kl).GT.Ricr) kbl(i) = kl
+            IF (kbl(i).EQ.kmtj(i) .AND.
+#ifdef KPP_VARY_RICR
+     &           Rib(i,kl).GT.RicrLoc(k)) kbl(i) = kl
+#else /* KPP_VARY_RICR */
+     &           Rib(i,kl).GT.Ricr) kbl(i) = kl
+#endif /* KPP_VARY_RICR */
          ENDDO
       ENDDO
 
@@ -657,7 +666,11 @@ c     linearly interpolate to find hbl where Rib = Ricr
          IF (kl.GT.1 .AND. kl.LT.kmtj(i)) THEN
             tempVar1 = (Rib(i,kl)-Rib(i,kl-1))
             hbl(i) = -zgrid(kl-1) + (zgrid(kl-1)-zgrid(kl)) *
+#ifdef KPP_VARY_RICR
+     1           (RicrLoc(i) - Rib(i,kl-1)) / tempVar1
+#else /* KPP_VARY_RICR */
      1           (Ricr - Rib(i,kl-1)) / tempVar1
+#endif /* KPP_VARY_RICR */
 C     this is the MOM5 formulation, (nearly) identical results
 CML            hbl(i) = ((Rib(i,kl-1)-Ricr)*zgrid(kl) -
 CML     1           (Rib(i,kl)-Ricr)*zgrid(kl-1))/tempVar1

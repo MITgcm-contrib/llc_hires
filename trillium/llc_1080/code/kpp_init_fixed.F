@@ -33,11 +33,22 @@ C     === Local variables ===
 C     i,j,k,bi,bj - Loop counters
 C     zehat       - zeta * ustar**3
 C     zeta        - Stability parameter d/l
-      INTEGER i, j, k
+      INTEGER i, j, k, bi, bj
       _RL zehat
       _RL zeta
       _RL usta
       _RL p25, p33
+
+#ifdef KPP_VARY_RICR
+c     Parameters used for allowing latitudinal dependence of Ricr
+c     YCeq :: defines equatorial region where RicrLoc = RicrEq
+c     YChl :: defines high-latitude region where RicrLoc = Ricr
+      _RL YCeq YChl DelYC DelRicr RicrLoc
+      YCeq    = 5.0
+      YChl    = 20.0
+      DelYC   = YChl - YCeq
+      DelRicr = Ricr - RicrEq 
+#endif /* KPP_VARY_RICR */
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 C-- Note: this should go in a separated S/R: KPP_MNC_INIT
@@ -124,6 +135,35 @@ C-----------------------------------------------------------------------
 
       Vtc     = concv * SQRT(0.2 _d 0 /concs/epsilon) / vonk**2 / Ricr
       cg      = cstar * vonk * (concs * vonk * epsilon)**p33
+
+#ifdef KPP_VARY_RICR
+c     Define latitudinal dependence of RicrLoc and VtcLoc
+      k = 0
+      DO bj = myByLo(myThid), myByHi(myThid)
+         DO bi = myBxLo(myThid), myBxHi(myThid)
+            DO j = 1-OLy, sNy+OLy
+               DO i = 1-OLx, sNx+OLx
+                  k = k + 1
+                  RicrLoc(k) = Ricr
+                  IF ( YC(i,j,bi,bj) .GT. -YChl .AND.
+     &                 YC(i,j,bi,bj) .LT. -YCeq ) THEN
+                     RicrLoc(k) = RicrEq + DelRicr *
+     &                    (1+cos(pi*(YC(i,j,bi,bj)+YChl)/DelYC))/2;
+                  ELSEIF ( YC(i,j,bi,bj) .GE. -YCeq .AND.
+     &                    YC(i,j,bi,bj) .LE. YCeq ) THEN
+                     RicrLoc(k) = RicrEq
+                  ELSEIF ( YC(i,j,bi,bj) .GT. YCeq .AND.
+     &                    YC(i,j,bi,bj) .LT. YChl ) THEN
+                     RicrLoc(k) = RicrEq - DelRicr *
+     &                    (1+cos(pi*(YC(i,j,bi,bj)-YCeq)/DelYC))/2;
+                  ENDIF
+                  VtcLoc(k) = concv * SQRT(0.2 _d 0 /concs/epsilon) /
+     &                 vonk**2 / RicrLoc(k)
+               ENDDO
+            ENDDO
+         ENDDO
+      ENDDO
+#endif /* KPP_VARY_RICR */
 
 c-----------------------------------------------------------------------
 c construct the wm and ws lookup tables

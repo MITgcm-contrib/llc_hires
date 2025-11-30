@@ -43,7 +43,10 @@ C--   KPP vertical mixing parameters
      & epsln, phepsi, epsilon, vonk, dB_dz,
      & conc1, conam, concm, conc2, zetam,
      & conas, concs, conc3, zetas,
-     & Ricr, RicrEq, cekman, cmonob, concv, hbf,
+     & Ricr, cekman, cmonob, concv, hbf,
+#ifdef KPP_VARY_RICR
+     & RicrEq,
+#endif /* KPP_VARY_RICR */      
      & zmin, zmax, umin, umax,
      & num_v_smooth_Ri,
      & Riinfty, BVSQcon, difm0, difs0, dift0,
@@ -110,7 +113,9 @@ C-----------------------------------------------------------------------
 C     parameters for subroutine "bldepth"
 
       Ricr    = 0.3 _d 0
-      Ricr    = 0.2 _d 0
+#ifdef KPP_VARY_RICR
+      RicrEq  = 0.2 _d 0
+#endif /* KPP_VARY_RICR */
       cekman  = 0.7 _d 0
       cmonob  = 1.  _d 0
       concv   = 1.8 _d 0
