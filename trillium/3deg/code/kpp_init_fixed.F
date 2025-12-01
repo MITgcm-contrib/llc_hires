@@ -154,7 +154,7 @@ c     Define latitudinal dependence of RicrLoc and VtcLoc
                      RicrLoc(k) = RicrEq
                   ELSEIF ( YC(i,j,bi,bj) .GT. YCeq .AND.
      &                    YC(i,j,bi,bj) .LT. YChl ) THEN
-                     RicrLoc(k) = RicrEq - DelRicr *
+                     RicrLoc(k) = Ricr - DelRicr *
      &                    (1+cos(pi*(YC(i,j,bi,bj)-YCeq)/DelYC))/2;
                   ENDIF
                   VtcLoc(k) = concv * SQRT(0.2 _d 0 /concs/epsilon) /

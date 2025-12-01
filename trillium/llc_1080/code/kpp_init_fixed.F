@@ -43,7 +43,7 @@ C     zeta        - Stability parameter d/l
 c     Parameters used for allowing latitudinal dependence of Ricr
 c     YCeq :: defines equatorial region where RicrLoc = RicrEq
 c     YChl :: defines high-latitude region where RicrLoc = Ricr
-      _RL YCeq YChl DelYC DelRicr RicrLoc
+      _RL YCeq, YChl, DelYC, DelRicr
       YCeq    = 5.0
       YChl    = 20.0
       DelYC   = YChl - YCeq
@@ -154,7 +154,7 @@ c     Define latitudinal dependence of RicrLoc and VtcLoc
                      RicrLoc(k) = RicrEq
                   ELSEIF ( YC(i,j,bi,bj) .GT. YCeq .AND.
      &                    YC(i,j,bi,bj) .LT. YChl ) THEN
-                     RicrLoc(k) = RicrEq - DelRicr *
+                     RicrLoc(k) = Ricr - DelRicr *
      &                    (1+cos(pi*(YC(i,j,bi,bj)-YCeq)/DelYC))/2;
                   ENDIF
                   VtcLoc(k) = concv * SQRT(0.2 _d 0 /concs/epsilon) /
