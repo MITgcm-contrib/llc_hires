@@ -29,7 +29,6 @@
  viscA4GridMax=0.5,
  useAreaViscLength=.TRUE.,
  useRealFreshWaterFlux=.TRUE.,
- balanceSaltClimRelax=.TRUE.,
  allowFreezing=.FALSE.,
  hFacMinDr=50.,
  hFacMin=0.1,
@@ -75,9 +74,6 @@
  momDissip_In_AB=.FALSE.,
  tauCD=321428.,
  deltaT=1200.,
- doAB_onGtGs=.FALSE.,
- alph_AB=0.5,
- beta_AB=0.281105,
 #
  monitorFreq = 1200.,
  dumpInitAndLast = .TRUE.,

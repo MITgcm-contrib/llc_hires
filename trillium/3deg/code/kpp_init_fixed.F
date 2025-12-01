@@ -43,7 +43,7 @@ C     zeta        - Stability parameter d/l
 c     Parameters used for allowing latitudinal dependence of Ricr
 c     YCeq :: defines equatorial region where RicrLoc = RicrEq
 c     YChl :: defines high-latitude region where RicrLoc = Ricr
-      _RL YCeq YChl DelYC DelRicr RicrLoc
+      _RL YCeq, YChl, DelYC, DelRicr
       YCeq    = 5.0
       YChl    = 20.0
       DelYC   = YChl - YCeq

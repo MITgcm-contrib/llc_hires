@@ -21,5 +21,8 @@
 # 3. Run verification setup
  cd ../run
  ln -sf ../build/mitgcmuv .
+ cp ../../llc_hires/3deg/v4r5/input/*.0005184000 .
+ cp ../../llc_hires/3deg/v4r5/input/EIG_* .
+ cp ../../llc_hires/3deg/v4r5/input/*.bin .
  cp ../../llc_hires/trillium/3deg/input/* .
  ./mitgcmuv > output.txt

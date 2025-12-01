@@ -649,7 +649,7 @@ cph)
          DO i = 1, imt
             IF (kbl(i).EQ.kmtj(i) .AND.
 #ifdef KPP_VARY_RICR
-     &           Rib(i,kl).GT.RicrLoc(k)) kbl(i) = kl
+     &           Rib(i,kl).GT.RicrLoc(i)) kbl(i) = kl
 #else /* KPP_VARY_RICR */
      &           Rib(i,kl).GT.Ricr) kbl(i) = kl
 #endif /* KPP_VARY_RICR */
