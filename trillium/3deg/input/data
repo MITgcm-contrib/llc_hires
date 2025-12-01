@@ -22,8 +22,6 @@
  diffKrBL79scl = 150.,
 #
  bottomDragQuadratic = 0.001,
-#when using ggl90
- ivdc_kappa=10.,
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
  viscC4Leith=1.5,
@@ -56,7 +54,6 @@
  saltImplVertAdv=.TRUE.,
  staggerTimeStep=.TRUE.,
  vectorInvariantMomentum=.TRUE.,
-#when using the cd scheme:
  useCDscheme=.TRUE.,
  useJamartWetPoints=.TRUE.,
  readBinaryPrec=32,
@@ -76,30 +73,14 @@
  nTimeSteps=24,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
-#when using the cd scheme:
-# epsAB_CD = 0.25,
  tauCD=321428.,
- deltaTmom   =1200.,
- deltaTtracer=1200.,
- deltaTfreesurf=1200.,
- deltaTClock =1200.,
-#when using ab2:
-# abEps = 0.1,
-#when using ab3:
+ deltaT=1200.,
  doAB_onGtGs=.FALSE.,
  alph_AB=0.5,
  beta_AB=0.281105,
 #
- pChkptFreq  =31536000.0,
- chkptFreq   =31536000.0,
- monitorFreq = 1.0,
- dumpInitAndLast = .FALSE.,
- adjDumpFreq = 31536000.0,
- adjMonitorFreq = 43200.0,
- pickupStrictlyMatch=.FALSE.,
- periodicExternalForcing=.TRUE.,
- externForcingPeriod=2592000.,
- externForcingCycle=31104000.,
+ monitorFreq = 1200.,
+ dumpInitAndLast = .TRUE.,
  /
 
 # Gridding parameters
