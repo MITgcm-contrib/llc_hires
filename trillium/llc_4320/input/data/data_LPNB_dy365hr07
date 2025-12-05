@@ -105,9 +105,9 @@
 
 # Time stepping parameters
  &PARM03
- nIter0 = 2104080,
+ nIter0 = 3156120,
  endtime= 31622400.,
- deltaT = 15.,
+ deltaT = 10.,
  abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
