@@ -1,0 +1,40 @@
+# SEAICE parameters
+ &SEAICE_PARM01
+# values used by Longjiang Mu and Martin Losch for 500-m Arctic simualtion
+ SEAICE_dryIceAlb      = 0.69,
+ SEAICE_wetSnowAlb     = 0.79,
+ SEAICE_strength       = 2.2640e+04,
+ SEAICE_waterDrag      = 5.5627e-03,
+ SEAICE_drag           = 0.00114,
+ HO                    = 0.6074,
+ SEAICE_eccen          = 1.0,
+ SOLV_NCHECK           = 8,
+ SEAICEnonLinIterMax   = 10,
+ SEAICElinearIterMax   = 500,
+ SEAICEadvScheme       = 7,
+ MIN_ATEMP             = -40.,
+ MIN_TICE              = -40.,
+ SEAICE_saltFrac       = 0.3,
+ SEAICE_area_reg       = 0.15,
+ SEAICE_area_floor     = 0.00001,
+ SEAICE_hice_reg       = 0.1,
+ IMAX_TICE             = 6,
+ SEAICE_salt0          = 4.0,
+ SEAICE_doOpenWaterMelt= .TRUE.,
+ SEAICE_mcPheePiston   = 0.02,
+ SEAICE_mcPheeTaper    = 0.92,
+ SEAICE_no_slip        = .TRUE.,
+#
+# values that differ from Longjiang's 500-m simulation
+ SEAICE_multDim        = 7,
+ SEAICEpressReplFac    = 0,
+ SEAICEwriteState      = .TRUE.,
+ SEAICE_dumpfreq       = 0.0,
+#
+ AreaFile              = '../run_1080_difst0025_dy323_dy356/SIarea.0000512640.data',
+ HsnowFile             = '../run_1080_difst0025_dy323_dy356/SIhsnow.0000512640.data',
+ HeffFile              = '../run_1080_difst0025_dy323_dy356/SIheff.0000512640.data',
+ HsaltFile             = '../run_1080_difst0025_dy323_dy356/SIhsalt.0000512640.data',
+ UiceFile              = '../run_1080_difst0025_dy323_dy356/SIuice.0000512640.data',
+ ViceFile              = '../run_1080_difst0025_dy323_dy356/SIvice.0000512640.data',
+ &
