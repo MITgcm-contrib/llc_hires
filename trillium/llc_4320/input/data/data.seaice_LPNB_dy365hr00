@@ -31,9 +31,9 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = 'SIarea_1jan24_LLC1080_LPNB_on_LLC4320.bin',
+ AreaFile              = 'SIarea_1jan24_LLC1080_LPNB_on_LLC4320_No_Fraction_at_Thick_ice.bin',
  HsnowFile             = 'SIhsnow_1jan24_LLC1080_LPNB_on_LLC4320.bin',
- HeffFile              = 'SIheff_1jan24_LLC1080_LPNB_on_LLC4320.bin',
+ HeffFile              = 'SIheff_1jan24_LLC1080_LPNB_on_LLC4320_Capped_at_5m.bin',
  HsaltFile             = 'SIhsalt_1jan24_LLC1080_LPNB_on_LLC4320.bin',
  UiceFile              = 'SIuice_1jan24_LLC1080_LPNB_on_LLC4320.bin',
  ViceFile              = 'SIvice_1jan24_LLC1080_LPNB_on_LLC4320.bin',
