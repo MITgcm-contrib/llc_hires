@@ -210,6 +210,7 @@ C--   Continuous equation parameters
      & cosPower, viscAstrain, viscAtension,
      & viscAz, diffKzT, diffKzS, viscAp, diffKpT, diffKpS,
      & viscAr, diffKrT, diffKrS, viscArNr, diffKrNrT, diffKrNrS,
+     & shallowViscAr, shallowViscArDepth,
      & diffKhT, diffK4T, diffKhS, diffK4S, smag3D_diffCoeff,
      & diffKr4T, diffKr4S, BL79LatVary,
      & diffKrBL79surf, diffKrBL79deep, diffKrBL79scl, diffKrBL79Ho,
@@ -304,7 +305,6 @@ C--   Input files
       NAMELIST /PARM05/
      & bathyFile, topoFile, addWwallFile, addSwallFile, shelfIceFile,
      & diffKrFile, viscAhDfile, viscAhZfile, viscA4Dfile, viscA4Zfile,
-     & viscArFile,
      & hydrogThetaFile, hydrogSaltFile,
      & maskIniTemp, maskIniSalt, checkIniTemp, checkIniSalt,
      & zonalWindFile, meridWindFile,

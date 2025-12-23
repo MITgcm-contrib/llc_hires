@@ -68,13 +68,12 @@ CEOP
 
        DO j = 1-OLy, sNy+OLy
         DO i = 1-OLx, sNx+OLx
-#ifdef ALLOW_3D_VISCARR
-         kappaRU(i,j,k) = viscAr3D(i,j,k,bi,bj)
-         kappaRV(i,j,k) = viscAr3D(i,j,k,bi,bj)
-#else
          kappaRU(i,j,k) = viscArNr(ki)
          kappaRV(i,j,k) = viscArNr(ki)
-#endif
+         IF ( R_low(i,j,bi,bj) .GE. shallowViscArDepth ) THEN
+            kappaRU(i,j,k) = shallowViscAr
+            kappaRV(i,j,k) = shallowViscAr
+         ENDIF
         ENDDO
        ENDDO
 

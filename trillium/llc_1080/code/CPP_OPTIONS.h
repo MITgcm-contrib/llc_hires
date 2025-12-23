@@ -75,9 +75,6 @@ C o Include/exclude call to S/R CALC_DIFFUSIVITY
 C o Allow full 3D specification of vertical diffusivity
 #undef ALLOW_3D_DIFFKR
 
-C o Allow full 3D specification of vertical viscosity
-#define ALLOW_3D_VISCAR
-
 C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 #undef ALLOW_BL79_LAT_VARY
 
