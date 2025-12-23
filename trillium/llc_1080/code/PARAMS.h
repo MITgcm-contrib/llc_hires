@@ -52,6 +52,7 @@ C                        for potential temperature.
 C     hydrogSaltFile  :: File containing initial hydrographic data (3-D)
 C                        for salinity.
 C     diffKrFile      :: File containing 3D specification of vertical diffusivity
+C     viscArFile      :: File containing 3D specification of vertical viscosity
 C     viscAhDfile     :: File containing 3D specification of horizontal viscosity
 C     viscAhZfile     :: File containing 3D specification of horizontal viscosity
 C     viscA4Dfile     :: File containing 3D specification of horizontal viscosity
@@ -92,6 +93,7 @@ C     the_run_name    :: string identifying the name of the model "run"
      &                viscAhDfile, viscAhZfile,
      &                viscA4Dfile, viscA4Zfile,
      &                hydrogThetaFile, hydrogSaltFile, diffKrFile,
+     &                viscArFile,
      &                zonalWindFile, meridWindFile, thetaClimFile,
      &                saltClimFile,
      &                EmPmRfile, saltFluxFile,
@@ -120,6 +122,7 @@ C     the_run_name    :: string identifying the name of the model "run"
       CHARACTER*(MAX_LEN_FNAM) addWwallFile, addSwallFile
       CHARACTER*(MAX_LEN_FNAM) hydrogThetaFile, hydrogSaltFile
       CHARACTER*(MAX_LEN_FNAM) diffKrFile
+      CHARACTER*(MAX_LEN_FNAM) viscArFile
       CHARACTER*(MAX_LEN_FNAM) viscAhDfile
       CHARACTER*(MAX_LEN_FNAM) viscAhZfile
       CHARACTER*(MAX_LEN_FNAM) viscA4Dfile

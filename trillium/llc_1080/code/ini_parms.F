@@ -304,6 +304,7 @@ C--   Input files
       NAMELIST /PARM05/
      & bathyFile, topoFile, addWwallFile, addSwallFile, shelfIceFile,
      & diffKrFile, viscAhDfile, viscAhZfile, viscA4Dfile, viscA4Zfile,
+     & viscArFile,
      & hydrogThetaFile, hydrogSaltFile,
      & maskIniTemp, maskIniSalt, checkIniTemp, checkIniSalt,
      & zonalWindFile, meridWindFile,

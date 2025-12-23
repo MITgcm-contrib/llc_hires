@@ -97,6 +97,20 @@ C       code is being compiled
       ENDIF
 #endif
 
+C     o If viscArFile is set, then we should make sure the corresponing
+C       code is being compiled
+#ifndef ALLOW_3D_VISCAR
+      IF (viscArFile.NE.' ') THEN
+        WRITE(msgBuf,'(A)')
+     &  'CONFIG_CHECK: viscArFile is set but never used.'
+        CALL PRINT_ERROR( msgBuf, myThid )
+        WRITE(msgBuf,'(2A)') 'CONFIG_CHECK: ',
+     &  'Re-compile with: "#define ALLOW_3D_VISCAR"'
+        CALL PRINT_ERROR( msgBuf, myThid )
+        errCount = errCount + 1
+      ENDIF
+#endif
+
 #ifdef EXCLUDE_PCELL_MIX_CODE
       IF ( interDiffKr_pCell .OR. interViscAr_pCell
      &                       .OR. pCellMix_select.NE.0 ) THEN

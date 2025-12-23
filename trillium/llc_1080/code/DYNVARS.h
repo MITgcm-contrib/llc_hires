@@ -84,6 +84,14 @@ C               for mixing of tracers vertically ( units of r^2/s )
       _RL  diffKr (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
 #endif
 
+#ifdef ALLOW_3D_VISCAR
+C     viscAr3D :: full 3D specification of vertical viscosity
+C               for mixing of momentum vertically ( units of r^2/s )
+      COMMON /DYNVARS_VISCAR/
+     &                       viscAr3D
+      _RL  viscAr3D (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+#endif
+
 #ifdef ALLOW_SMAG_3D_DIFFUSIVITY
 C     smag3D_diffK :: isotropic 3D diffusivity from Smagorisky viscosity
 C                     at grid-cell center (units: m^2/s )

@@ -375,6 +375,7 @@ C--   Input files
       checkIniTemp    = .TRUE.
       checkIniSalt    = .TRUE.
       diffKrFile      = ' '
+      viscArFile      = ' '
       viscAhDfile     = ' '
       viscAhZfile     = ' '
       viscA4Dfile     = ' '

@@ -25,13 +25,13 @@ C     myThid :: my Thread Id number
       INTEGER myThid
 
 C     !LOCAL VARIABLES:
-#if (defined ALLOW_3D_DIFFKR) || (defined ALLOW_BL79_LAT_VARY)
+#if (defined ALLOW_3D_DIFFKR) || (defined ALLOW_BL79_LAT_VARY) || (defined ALLOW_3D_VISCAR)
 C     bi,bj  :: tile indices
 C     i,j,k  :: Loop counters
       INTEGER bi, bj
       INTEGER i, j
 #endif
-#ifdef ALLOW_3D_DIFFKR
+#if (defined ALLOW_3D_DIFFKR) || (defined ALLOW_3D_VISCAR)
       INTEGER k
 #endif
 CEOP
@@ -53,6 +53,13 @@ CEOP
          _EXCH_XYZ_RL( diffKr, myThid )
        ENDIF
 #endif /* ALLOW_3D_DIFFKR */
+
+#ifdef ALLOW_3D_VISCAR
+       IF ( viscArFile .NE. ' ' ) THEN
+         CALL READ_FLD_XYZ_RL( viscArFile, ' ', viscAr3D, 0, myThid )
+         _EXCH_XYZ_RL( viscAr3D, myThid )
+       ENDIF
+#endif /* ALLOW_3D_VISCAR */
 
 #ifdef ALLOW_BL79_LAT_VARY
        DO bj = myByLo(myThid), myByHi(myThid)
