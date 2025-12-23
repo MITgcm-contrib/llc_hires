@@ -845,6 +845,7 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
      & viscA4Grid, viscA4GridMax, viscA4GridMin,
      & viscAhReMax, viscA4ReMax,
      & viscC4leith, viscC4leithD, viscArNr,
+     & shallowViscAr, shallowViscArDepth,
      & diffKhT, diffK4T, diffKrNrT, diffKr4T,
      & diffKhS, diffK4S, diffKrNrS, diffKr4S,
      & diffKrBL79surf, diffKrBL79deep, diffKrBL79scl, diffKrBL79Ho,
