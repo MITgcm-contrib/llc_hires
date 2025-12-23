@@ -661,6 +661,8 @@ C     omega      :: Angular velocity ( rad/s )
 C     rotationPeriod :: Rotation period (s) (= 2.pi/omega)
 C     viscArNr   :: vertical profile of Eddy viscosity coeff.
 C                   for vertical mixing of momentum ( units of r^2/s )
+C     shallowViscAr      :: vertical viscosity for shallow regions
+C     shallowViscArDepth :: depth threshhold for shallowViscAr
 C     viscAh     :: Eddy viscosity coeff. for mixing of
 C                   momentum laterally ( m^2/s )
 C     viscAhW    :: Eddy viscosity coeff. for mixing of vertical
@@ -911,6 +913,8 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
       _RL hFacInf
       _RL hFacSup
       _RL viscArNr(Nr)
+      _RL shallowViscAr
+      _RL shallowViscArDepth
       _RL viscFacAdj
       _RL viscAh
       _RL viscAhW
