@@ -128,6 +128,8 @@ C-    viscosity and diffusivity default value:
       viscC2LeithQG       = 0. _d 0
       viscC2smag          = 0. _d 0
       viscArDefault       = 0. _d -3
+      shallowDiffKr       = 0. _d -3
+      shallowDiffKrDepth  = 0. _d 0
       shallowViscAr       = 0. _d -3
       shallowViscArDepth  = 0. _d 0
       viscFacAdj          = 1. _d 0
