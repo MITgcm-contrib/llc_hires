@@ -210,6 +210,7 @@ C--   Continuous equation parameters
      & cosPower, viscAstrain, viscAtension,
      & viscAz, diffKzT, diffKzS, viscAp, diffKpT, diffKpS,
      & viscAr, diffKrT, diffKrS, viscArNr, diffKrNrT, diffKrNrS,
+     & shallowDiffKr, shallowDiffKrDepth,
      & shallowViscAr, shallowViscArDepth,
      & diffKhT, diffK4T, diffKhS, diffK4S, smag3D_diffCoeff,
      & diffKr4T, diffKr4S, BL79LatVary,
