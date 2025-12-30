@@ -10,8 +10,10 @@
  no_slip_bottom = .TRUE.,
 #
  viscAr=1.E-3,
+ shallowDiffKr=1.E-2,
+ shallowDiffKrDepth=-100.,
  shallowViscAr=1.E-2,
- shallowViscArDepth=-50.,
+ shallowViscArDepth=-100.,
 #
  viscAh=2.E5,
  viscAhGrid=1.E-2,
