@@ -31,10 +31,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIarea.0006404400.data',
- HsnowFile             = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIhsnow.0006404400.data',
- HeffFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIheff.0006404400.data',
- HsaltFile             = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIhsalt.0006404400.data',
- UiceFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIuice.0006404400.data',
- ViceFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr15/SIvice.0006404400.data',
+ AreaFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIarea.0006405840.data',
+ HsnowFile             = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIhsnow.0006405840.data',
+ HeffFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIheff.0006405840.data',
+ HsaltFile             = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIhsalt.0006405840.data',
+ UiceFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIuice.0006405840.data',
+ ViceFile              = '/scratch/momenika/MITgcm/run_4320_LPNB_dy370hr06_dy370hr17/SIvice.0006405840.data',
  &
