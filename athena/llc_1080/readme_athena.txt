@@ -19,51 +19,26 @@ cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
 make depend
 make -j
 
-
-
-
-
-
-
+# run llc_1080 model configuration
 qsub -I -lselect=13:ncpus=256:model=ath_tur,walltime=2:00:00 -q devel
-cd $WORKDIR/MITgcm/pkg
-ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
-cd $WORKDIR/MITgcm
-mkdir build
-cd build
-# module purge
-# module load ...
-cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
-../tools/genmake2 -of \
- ../../llc_hires/athena/llc_1080/code/linux_amd64_ifort+mpi_athena \
- -mpi -mods ../../llc_hires/athena/llc_1080/code
-make depend
-make -j
-
-#### run llc_1080 model configuration
-cd $WORKDIR/MITgcm
-mkdir run
-cd run
-
-
-
-
-
-
-cd ~/llc1080/MITgcm/run
-cp ../build/mitgcmuv mitgcmuv_72x72x2925
-#cp ../build/mitgcmuv mitgcmuv_108x108x1300
-ln -sf /swbuild/kzhang/llc1080/run_template/* .
+WORKDIR=/nobackup/$USER/llc_1080
+cd $WORKDIR/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_90x54x3120
+ln -sf /nobackup/kzhang/llc1080/run_template/* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/athena/llc_1080/input/* .
-mpiexec -n 2925 ./mitgcmuv_72x72x2925
-# mpiexec -n 1300 ./mitgcmuv_108x108x1300
-
-cd ~/llc1080/MITgcm/run
+mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
+
+
+
+
+
+
+
 
 
 ############# with asyncio
