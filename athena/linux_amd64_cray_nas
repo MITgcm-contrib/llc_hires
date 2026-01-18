@@ -39,4 +39,3 @@ MPI_INC_DIR="${MPI_ROOT}/include"
 LIBS="$LIBS -L${MPI_ROOT}/lib -lmpi"
 INCLUDES="$INCLUDES -I${MPI_INC_DIR}"
 MPIINCLUDEDIR="$MPI_INC_DIR"
-linux_amd64_ifort+mpi_cray_nas (END)
