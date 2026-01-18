@@ -41,3 +41,4 @@ INCLUDES="$INCLUDES -I${MPI_INC_DIR}"
 MPIINCLUDEDIR="$MPI_INC_DIR"
 
 LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"
+LIBS="$LIBS -L/nasa/intel/Compiler/2022.1.0/compiler/2022.1.0/linux/compiler/lib/intel64_lin -lifcore -limf -lirc"

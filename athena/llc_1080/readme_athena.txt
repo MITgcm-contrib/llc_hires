@@ -14,8 +14,8 @@ mkdir build run
 # build llc_1080 model configuration
 cd $WORKDIR/MITgcm/build
 cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
-../tools/genmake2 -mods ../../llc_hires/athena/llc_1080/code \
-        -mpi -of ../../llc_hires/athena/linux_amd64_cray_nas
+../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_1080/code \
+ -of ../../llc_hires/athena/llc_1080/code/linux_amd64_cray_nas_tides
 make depend
 make -j
 

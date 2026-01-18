@@ -60,7 +60,7 @@ C bi,bj     :: Tile indices
       M = MOD(myDate(2)/100,100)
       S = MOD(myDate(2),100)
 C     convert UTC to ephemeris time using SPICE
-      WRITE(timestr,'(I4,X,I2.2,X,I2.2,X,I2.2,X,I2.2,X,I2.2)'),
+      WRITE(timestr,'(I4,X,I2.2,X,I2.2,X,I2.2,X,I2.2,X,I2.2)')
      &   yr, mon, day, H, M, S
       CALL STR2ET(timestr, time)
 
