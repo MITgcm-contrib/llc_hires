@@ -1,4 +1,4 @@
-# downloading MITgcm checkpoint69f and MITgcm-contrib/llc_hires on athena front end
+# download MITgcm checkpoint69f and MITgcm-contrib/llc_hires on athena
 ssh athfe01
 WORKDIR=/nobackup/$USER/llc_1080
 mkdir $WORKDIR
@@ -20,7 +20,8 @@ make depend
 make -j
 
 # run llc_1080 model configuration
-qsub -I -lselect=13:ncpus=256:model=ath_tur,walltime=2:00:00 -q devel
+qsub -I -lselect=13:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
+export LD_LIBRARY_PATH="/nasa/intel/Compiler/2022.1.0/compiler/2022.1.0/linux/compiler/lib/intel64_lin:$LD_LIBRARY_PATH"
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x3120
