@@ -14,8 +14,16 @@ mkdir build run
 # build llc_1080 model configuration
 cd $WORKDIR/MITgcm/build
 cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch  PrgEnv-cray PrgEnv-intel
+export MPICH_FC=ifort
+export MPICH_CC=icc
+export MPICH_CXX=icpc
+module load cray-pals
+module load cray-netcdf
+export FI_PROVIDER=cxi
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_1080/code \
- -of ../../llc_hires/athena/llc_1080/code/linux_amd64_cray_nas_tides
+ -of ../../llc_hires/athena/llc_1080/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
 make -j
 
