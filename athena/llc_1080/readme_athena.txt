@@ -26,7 +26,8 @@ qsub -I -lselect=13:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x3120
-ln -sf /nobackup/kzhang/llc1080/run_template/* .
+ln -sf /nobackup/kzhang/llc1080/run_template/*1jan23* .
+ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
 ln -sf /nobackup/hzhang1/forcing/era5 .
