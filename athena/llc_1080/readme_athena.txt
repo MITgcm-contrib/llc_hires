@@ -20,8 +20,6 @@ export MPICH_FC=ifort
 export MPICH_CC=icc
 export MPICH_CXX=icpc
 module load cray-pals
-module load cray-netcdf
-export FI_PROVIDER=cxi
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_1080/code \
  -of ../../llc_hires/athena/llc_1080/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
@@ -29,7 +27,6 @@ make -j
 
 # run llc_1080 model configuration
 qsub -I -lselect=13:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
-export LD_LIBRARY_PATH="/nasa/intel/Compiler/2022.1.0/compiler/2022.1.0/linux/compiler/lib/intel64_lin:$LD_LIBRARY_PATH"
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x3120
@@ -39,6 +36,10 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/athena/llc_1080/input/* .
+module switch  PrgEnv-cray PrgEnv-intel
+module use /opt/cray/pals/modulefiles
+module load cray-pals
+FI_PROVIDER=cxi
 mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
 

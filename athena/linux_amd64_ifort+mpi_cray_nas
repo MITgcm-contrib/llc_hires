@@ -1,6 +1,22 @@
 #! /usr/bin/env bash
 
 # build_options for intel compiler on athena (NASA Ames Cray)
+#
+# To compile:
+#  source /opt/cray/pe/modules/3.2.11.7/init/bash
+#  module switch PrgEnv-cray PrgEnv-intel
+#  export MPICH_FC=ifort
+#  export MPICH_CC=icc
+#  export MPICH_CXX=icpc
+#  module load cray-pals
+#
+# To run:
+#  source /opt/cray/pe/modules/3.2.11.7/init/bash
+#  module switch PrgEnv-cray PrgEnv-intel
+#  module use /opt/cray/pals/modulefiles
+#  module load cray-pals
+#  module load cray-netcdf
+#  FI_PROVIDER=cxi
 
 CC=icx
 FC=ifort
