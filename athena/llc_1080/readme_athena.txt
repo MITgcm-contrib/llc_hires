@@ -40,11 +40,28 @@ mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
 
 # find blank tiles
+cd $WORKDIR/MITgcm/run
 grep Empty STDO* > Empty_90x54x3120.txt
 chmod +x extract_blank.sh
 ./extract_blank.sh Empty_90x54x3120.txt
 wc -l blank
 tail blank
+
+# run llc_1080 model configuration with blank tiles
+qsub -I -lselect=9:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
+WORKDIR=/nobackup/$USER/llc_1080
+cd $WORKDIR/MITgcm/build
+cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x2229 SIZE.h
+make -j
+cd $WORKDIR/MITgcm/run
+cp ../build/mitgcmuv mitgcmuv_90x54x2229
+cp ../../llc_hires/athena/llc_1080/input/* .
+cp data.exch2_90x54x2229 data.exch2
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch PrgEnv-cray PrgEnv-intel
+mpiexec -n 2229 ./mitgcmuv_90x54x2229 &
+tail -f STDOUT.0000 | grep advcfl_W
+
 
 
 
