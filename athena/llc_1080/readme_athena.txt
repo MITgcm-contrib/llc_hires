@@ -15,11 +15,7 @@ mkdir build run
 cd $WORKDIR/MITgcm/build
 cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
 source /opt/cray/pe/modules/3.2.11.7/init/bash
-module switch  PrgEnv-cray PrgEnv-intel
-export MPICH_FC=ifort
-export MPICH_CC=icc
-export MPICH_CXX=icpc
-module load cray-pals
+module switch PrgEnv-cray PrgEnv-intel
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_1080/code \
  -of ../../llc_hires/athena/llc_1080/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
@@ -36,10 +32,8 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/athena/llc_1080/input/* .
-module switch  PrgEnv-cray PrgEnv-intel
-module use /opt/cray/pals/modulefiles
-module load cray-pals
-FI_PROVIDER=cxi
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch PrgEnv-cray PrgEnv-intel
 mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
 

@@ -21,10 +21,4 @@ export LD_LIBRARY_PATH="/nasa/intel/Compiler/2022.1.0/compiler/2022.1.0/linux/co
 # using mpi with PrgEnv-intel fortran setup:
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module switch PrgEnv-cray PrgEnv-intel
-export MPICH_FC=ifort
-export MPICH_CC=icc
-export MPICH_CXX=icpc
-module load cray-pals
-module load cray-netcdf
-export FI_PROVIDER=cxi
 ./testreport -mpi -j 256 -of ../../llc_hires/athena/linux_amd64_ifort+mpi_cray_nas -t lab_sea
