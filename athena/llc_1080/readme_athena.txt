@@ -37,7 +37,12 @@ module switch PrgEnv-cray PrgEnv-intel
 mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
 
-
+# find blank tiles
+grep Empty STDO* > Empty_90x54x3120.txt
+chmod +x extract_blank.sh
+./extract_blank.sh Empty_90x54x3120.txt
+wc -l blank
+tail blank
 
 
 
