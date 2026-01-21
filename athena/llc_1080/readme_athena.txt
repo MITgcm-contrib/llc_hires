@@ -12,10 +12,10 @@ git checkout checkpoint69f
 mkdir build run
 
 # build llc_1080 model configuration
-cd $WORKDIR/MITgcm/build
-cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module switch PrgEnv-cray PrgEnv-intel
+cd $WORKDIR/MITgcm/build
+cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x3120 SIZE.h
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_1080/code \
  -of ../../llc_hires/athena/llc_1080/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
@@ -23,6 +23,8 @@ make -j
 
 # run llc_1080 model configuration
 qsub -I -lselect=13:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch PrgEnv-cray PrgEnv-intel
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x3120
@@ -34,8 +36,6 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp ../../llc_hires/athena/llc_1080/input/* .
-source /opt/cray/pe/modules/3.2.11.7/init/bash
-module switch PrgEnv-cray PrgEnv-intel
 mpiexec -n 3120 ./mitgcmuv_90x54x3120 &
 tail -f STDOUT.0000 | grep advcfl_W
 
@@ -49,6 +49,8 @@ tail blank
 
 # compile and run llc_1080 model configuration with blank tiles
 qsub -I -lselect=9:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch PrgEnv-cray PrgEnv-intel
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/build
 cp ../../llc_hires/athena/llc_1080/code/SIZE.h_90x54x2229 SIZE.h
@@ -57,19 +59,17 @@ cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x2229
 cp ../../llc_hires/athena/llc_1080/input/* .
 cp data.exch2_90x54x2229 data.exch2
-source /opt/cray/pe/modules/3.2.11.7/init/bash
-module switch PrgEnv-cray PrgEnv-intel
 mpiexec -n 2229 ./mitgcmuv_90x54x2229 &
 tail -f STDOUT.0000 | grep advcfl_W
 
 # compile and run llc_1080 model configuration with asyncio and blank tiles
 qsub -I -lselect=10:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
+source /opt/cray/pe/modules/3.2.11.7/init/bash
+module switch PrgEnv-cray PrgEnv-intel
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm/build
 rm -rf *
 cp ../../llc_hires/athena/llc_1080/code-async/SIZE.h_90x54x2229 SIZE.h
-source /opt/cray/pe/modules/3.2.11.7/init/bash
-module switch PrgEnv-cray PrgEnv-intel
 ../tools/genmake2 -mpi -mods \
  '../../llc_hires/athena/llc_1080/code-async ../../llc_hires/athena/llc_1080/code' \
  -of ../../llc_hires/athena/llc_1080/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
@@ -80,4 +80,5 @@ cp ../build/mitgcmuv mitgcmuv_90x54x2229_asyncio
 cp ../../llc_hires/athena/llc_1080/input/* .
 cp data_asyncio data
 cp data.exch2_90x54x2229 data.exch2
+FI_CXI_DEFAULT_TX_SIZE=65536
 mpiexec -n 2560 ./mitgcmuv_90x54x2229_asyncio
