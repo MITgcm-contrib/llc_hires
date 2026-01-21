@@ -62,6 +62,21 @@ cp data.exch2_90x54x2229 data.exch2
 mpiexec -n 2229 ./mitgcmuv_90x54x2229 &
 tail -f STDOUT.0000 | grep advcfl_W
 
+
+#run with blank tiles and with glorys initial conditions
+ln -sf /nobackup/dbwhitt/llc_1080/grid_interp_out/*glorys*on_LLC1080* .
+sed -i \
+ -e "s/THETA_1jan23_v4r5_on_LLC1080.bin/THETA_1jan23_glorysv4r5icecavities_on_LLC1080.bin/" \
+ -e "s/SALT_1jan23_v4r5_on_LLC1080.bin/SALT_1jan23_glorys_on_LLC1080.bin/" \
+ data
+sed -i \
+ -e "s/SIarea_1jan23_v4r5_on_LLC1080.bin/SIarea_1jan23_glorys_on_LLC1080.bin/" \
+ -e "s/SIhsnow_1jan23_v4r5_on_LLC1080.bin/SIhsnow_1jan23_glorys_on_LLC1080.bin/" \
+ -e "s/SIheff_1jan23_v4r5_on_LLC1080.bin/SIheff_1jan23_glorys_on_LLC1080.bin/" \
+ data.seaice
+mpiexec -n 2229 ./mitgcmuv_90x54x2229 &
+
+
 # compile and run llc_1080 model configuration with asyncio and blank tiles
 qsub -I -lselect=10:ncpus=256:model=tur_ath,walltime=2:00:00 -q normal
 source /opt/cray/pe/modules/3.2.11.7/init/bash
