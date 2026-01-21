@@ -72,12 +72,12 @@ source /opt/cray/pe/modules/3.2.11.7/init/bash
 module switch PrgEnv-cray PrgEnv-intel
 ../tools/genmake2 -mpi -mods \
  '../../llc_hires/athena/llc_1080/code-async ../../llc_hires/athena/llc_1080/code' \
- -of ../../llc_hires/athena/llc_1080/code-async/linux_amd64_ifort+mpi_cray_nas_tides_async
+ -of ../../llc_hires/athena/llc_1080/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
 make depend
 make -j
 cd $WORKDIR/MITgcm/run
 cp ../build/mitgcmuv mitgcmuv_90x54x2229_asyncio
 cp ../../llc_hires/athena/llc_1080/input/* .
+cp data_asyncio data
 cp data.exch2_90x54x2229 data.exch2
-mpiexec -n 2229 ./mitgcmuv_90x54x2229_asyncio &
-tail -f STDOUT.0000 | grep advcfl_W
+mpiexec -n 2560 ./mitgcmuv_90x54x2229_asyncio
