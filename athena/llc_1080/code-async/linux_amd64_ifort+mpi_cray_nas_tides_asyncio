@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # build_options for intel compiler on athena (NASA Ames Cray)
-# including link to spice library for tides
+# including link to spice library for tides and ASYNCIO flag
 #  source /opt/cray/pe/modules/3.2.11.7/init/bash
 #  module switch PrgEnv-cray PrgEnv-intel
 
@@ -11,7 +11,7 @@ F90C=ifort
 LINK="$F90C -shared-intel"
 
 CPP='/lib/cpp -traditional -P'
-DEFINES='-DWORDLENGTH=4 -DINTEL_COMMITQQ'
+DEFINES='-DWORDLENGTH=4 -DINTEL_COMMITQQ -DALLOW_ASYNCIO'
 F90FIXEDFORMAT='-fixed -Tf'
 EXTENDED_SRC_FLAG='-132'
 GET_FC_VERSION="--version"
