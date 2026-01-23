@@ -40,3 +40,6 @@
 #    where 11152 = 1080*1080*13/sNx/sNy - "results of wc -l blank"
 #    in SIZE.h adjust __sNx __sNy __nPx
 #    and blanklist in data.exch2 comes from file "blank"
+
+# 6. Create a jobfile for asyncio, for example,
+#    llc_hires/athena/llc_1080/jobfiles/llc1080_30x30x11152_asyncio.sh
