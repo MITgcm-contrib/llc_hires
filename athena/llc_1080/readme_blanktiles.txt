@@ -34,4 +34,9 @@
  ./extract_blank.sh Empty_30x30x16848.txt
  wc -l blank
 
-# 5. Create new SIZE.h and data.exch2, for example
+# 5. Create new SIZE.h and data.exch2, for example,
+#    llc_hires/athena/llc_1080/code-async/SIZE.h_30x30x11152
+#    llc_hires/athena/llc_1080/input/data.exch2_30x30x11152
+#    where 11152 = 1080*1080*13/sNx/sNy - "results of wc -l blank"
+#    in SIZE.h adjust __sNx __sNy __nPx
+#    and blanklist in data.exch2 comes from file "blank"
