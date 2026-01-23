@@ -37,7 +37,6 @@ ln -sf /nobackup/kzhang/llc1080/run_template/*1jan23* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
-ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12.bin .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
