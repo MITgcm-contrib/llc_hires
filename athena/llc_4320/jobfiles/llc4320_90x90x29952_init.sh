@@ -36,11 +36,10 @@ cp ../build/mitgcmuv mitgcmuv_90x90x29952
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data_init data
 
-ln -sf /nobackup/kzhang/llc4320/run_template/*1jan23* .
-ln -sf /nobackup/kzhang/llc4320/run_template/jra55* .
-ln -sf /nobackup/kzhang/llc4320/run_template/*_on_LLC4320_v13* .
+ln -sf /nobackup/kzhang/llc_4320/run_template/* .
+ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 16848 ./mitgcmuv_90x90x29952
+mpiexec -n 29952 ./mitgcmuv_90x90x29952
