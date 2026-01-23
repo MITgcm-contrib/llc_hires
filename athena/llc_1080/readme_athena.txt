@@ -78,5 +78,5 @@ mpiexec -n 2229 ./mitgcmuv_90x54x2229 &
 cd $WORKDIR
 mkdir jobs
 cd $WORKDIR/jobs
-cp $WORKDIR/llc_hires/athena/llc_1080/jobfiles/llc1080_90x54x2229_asyncio.sh .
+cp $WORKDIR/llc_hires/athena/llc_1080/jobfiles/* .
 qsub llc1080_90x54x2229_asyncio.sh

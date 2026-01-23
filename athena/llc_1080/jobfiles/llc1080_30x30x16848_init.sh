@@ -44,4 +44,4 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/runoff1p2472-360x180x12
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 2560 ./mitgcmuv_90x54x2229_asyncio
+mpiexec -n 2560 ./mitgcmuv_30x30x16848
