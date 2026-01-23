@@ -3,7 +3,7 @@
 #PBS -l select=66:ncpus=256:mpiprocs=256:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
-#PBS -q normal
+#PBS -q wide
 
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
