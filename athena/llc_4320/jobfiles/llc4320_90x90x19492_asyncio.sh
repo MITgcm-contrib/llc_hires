@@ -33,7 +33,7 @@ make -j
 cd $WORKDIR/MITgcm/run
 echo $PWD
 
-cp ../build/mitgcmuv mitgcmuv_90x90x19492
+cp ../build/mitgcmuv mitgcmuv_90x90x19492_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
