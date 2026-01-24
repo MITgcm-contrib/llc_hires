@@ -14,24 +14,24 @@
  ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
 
 # 2. Create a SIZE.h without blank tiles, for example,
-#    llc_hires/athena/llc_4320/code/SIZE.h_90x90x29952
+#    llc_hires/athena/llc_4320/code/SIZE.h_72x72x2x23400
 #    Note that sNx and sNy must be factors of 4320
-#    and nPx = 4320*4320*13/sNx/sNy
+#    and nPx = 4320*4320*13/sNx/sNy/nSx/nSy
 
 # 3. Run a 1-time step job to get a list of the blank tiles
 #    Create a jobfile, for example,
-#    llc_hires/athena/llc_4320/jobfiles/llc4320_90x90x29952_init.sh
+#    llc_hires/athena/llc_4320/jobfiles/llc4320_72x72x2x23400_init.sh
  cd $WORKDIR
  mkdir jobs
  cd $WORKDIR/jobs
  cp $WORKDIR/llc_hires/athena/llc_4320/jobfiles/* .
- qsub llc4320_90x90x29952_init.sh
+ qsub llc4320_72x72x2x23400_init.sh
 
 # 4. Extract Empty tile list
  cd $WORKDIR/MITgcm/run
- grep Empty STDO* > Empty_90x90x29952.txt
+ grep Empty STDO* > Empty_72x72x2x23400.txt
  chmod +x extract_blank.sh
- ./extract_blank.sh Empty_90x90x29952.txt
+ ./extract_blank.sh Empty_72x72x2x23400.txt
  wc -l blank
 
 # 5. Create new SIZE.h and data.exch2, for example,
