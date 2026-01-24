@@ -35,6 +35,7 @@ echo $PWD
 
 cp ../build/mitgcmuv mitgcmuv_90x90x19492_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
+cp data.exch2_90x90x19492 data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
