@@ -35,6 +35,7 @@ echo $PWD
 cp ../build/mitgcmuv mitgcmuv_90x90x29952
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data_init data
+cp data.pkg_init data.pkg
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
