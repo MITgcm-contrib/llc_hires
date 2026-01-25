@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -l select=117:ncpus=256:mpiprocs=256:model=tur_ath
+#PBS -l select=120:ncpus=256:mpiprocs=256:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -23,19 +23,19 @@ mkdir build run
 cd $WORKDIR/MITgcm/build
 echo $PWD
 
-cp ../../llc_hires/athena/llc_4320/code/SIZE.h_90x90x29952 SIZE.h
-../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
- -of ../../llc_hires/athena/llc_4320/code/linux_amd64_ifort+mpi_cray_nas_tides
+cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h_72x72x29271 SIZE.h
+../tools/genmake2 -mpi -mods \
+ '../../llc_hires/athena/llc_4320/code-async ../../llc_hires/athena/llc_4320/code' \
+ -of ../../llc_hires/athena/llc_4320/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
 make depend
 make -j
 
 cd $WORKDIR/MITgcm/run
 echo $PWD
 
-cp ../build/mitgcmuv mitgcmuv_90x90x29952
+cp ../build/mitgcmuv mitgcmuv_72x72x29271_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
-cp data_init data
-cp data.pkg_init data.pkg
+cp data.exch2_72x72x29271 data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
@@ -43,4 +43,4 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 29952 ./mitgcmuv_90x90x29952
+mpiexec -n 30720 ./mitgcmuv_72x72x29271_asyncio
