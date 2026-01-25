@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash -x
 
 #PBS -l select=128:ncpus=256:mpiprocs=366:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
 
-# define tile number and size
+# define tiling configuration
 RANKS=46800
 TILES=_72x72x$RANKS
 
@@ -18,12 +18,10 @@ export FI_PROVIDER=cxi
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
-echo $PWD
 
 mkdir build$TILES run$TILES
 
 cd $WORKDIR/MITgcm/build$TILES
-echo $PWD
 
 cp ../../llc_hires/athena/llc_4320/code/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
@@ -32,7 +30,6 @@ make depend
 make -j
 
 cd $WORKDIR/MITgcm/run$TILES
-echo $PWD
 
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
