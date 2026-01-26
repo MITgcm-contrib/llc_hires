@@ -26,7 +26,7 @@ mkdir build run
 
 cd $WORKDIR/MITgcm/build
 
-cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h_$TILES SIZE.h
+cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods \
  '../../llc_hires/athena/llc_4320/code-async ../../llc_hires/athena/llc_4320/code' \
  -of ../../llc_hires/athena/llc_4320/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
@@ -36,9 +36,9 @@ make -j
 cd $WORKDIR/MITgcm/run
 echo $PWD
 
-cp ../build/mitgcmuv mitgcmuv_$TILES_asyncio
+cp ../build/mitgcmuv mitgcmuv$TILES_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
-cp data.exch2_$TILES data.exch2
+cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
@@ -46,4 +46,4 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 30208 ./mitgcmuv_$TILES_asyncio
+mpiexec -n 30208 ./mitgcmuv$TILES_asyncio

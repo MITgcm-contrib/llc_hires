@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 #PBS -l select=115:ncpus=256:mpiprocs=256:model=tur_ath
-#PBS -l walltime=2:00:00
+#PBS -l walltime=6:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
 
@@ -26,21 +26,20 @@ mkdir build run
 
 cd $WORKDIR/MITgcm/build
 
-cp ../../llc_hires/athena/llc_4320/code/SIZE.h_$TILES SIZE.h
+cp ../../llc_hires/athena/llc_4320/code/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
  -of ../../llc_hires/athena/llc_4320/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
 make -j
 
 cd $WORKDIR/MITgcm/run
-echo $PWD
 
-cp ../build/mitgcmuv mitgcmuv_$TILES_asyncio
+cp ../build/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
-cp data.exch2_$TILES data.exch2
-sed -i \
- -e "s/# usesinglecpuio=.TRUE.,/ usesinglecpuio=.TRUE.,/" \
- data
+cp data.exch2$TILES data.exch2
+#sed -i \
+# -e "s/# globalFiles=.TRUE.,/ globalFiles=.TRUE.,/" \
+# data
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
