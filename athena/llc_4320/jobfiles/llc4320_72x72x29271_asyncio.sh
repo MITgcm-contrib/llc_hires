@@ -20,11 +20,9 @@ export FI_CXI_RX_MATCH_MODE=hybrid
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
 
-mv run run_old
-mv build build_old
-mkdir build run
+mkdir build_asyncio run_asyncio
 
-cd $WORKDIR/MITgcm/build
+cd $WORKDIR/MITgcm/build_asyncio
 
 cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods \
@@ -33,10 +31,10 @@ cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
 make depend
 make -j
 
-cd $WORKDIR/MITgcm/run
+cd $WORKDIR/MITgcm/run_asyncio
 echo $PWD
 
-cp ../build/mitgcmuv mitgcmuv$TILES_asyncio
+cp ../build_asyncio/mitgcmuv mitgcmuv$TILES_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data.exch2$TILES data.exch2
 
