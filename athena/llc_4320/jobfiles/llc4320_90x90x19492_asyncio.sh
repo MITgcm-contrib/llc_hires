@@ -44,5 +44,6 @@ ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
+ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
 
 mpiexec -n 20480 ./mitgcmuv$TILES

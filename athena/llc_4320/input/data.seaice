@@ -31,9 +31,9 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
-# AreaFile              = 'SIarea_1jan23_v4r5_on_LLC1080.bin',
-# HsnowFile             = 'SIhsnow_1jan23_v4r5_on_LLC1080.bin',
-# HeffFile              = 'SIheff_1jan23_v4r5_on_LLC1080.bin',
+ AreaFile              = 'SIarea_1jan23_glorys_on_LLC4320.bin',
+ HsnowFile             = 'SIhsnow_1jan23_glorys_on_LLC4320.bin',
+ HeffFile              = 'SIheff_1jan23_glorys_on_LLC4320.bin',
 # HsaltFile             = '0000597888_SIhsalt.data',
 # UiceFile              = '0000597888_SIuice.data',
 # ViceFile              = '0000597888_SIvice.data',
