@@ -32,7 +32,6 @@ make depend
 make -j
 
 cd $WORKDIR/MITgcm/run_asyncio
-echo $PWD
 
 cp ../build_asyncio/mitgcmuv mitgcmuv$TILES_asyncio
 cp ../../llc_hires/athena/llc_4320/input/* .
