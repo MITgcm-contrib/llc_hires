@@ -97,6 +97,8 @@
  implicDiv2DFlow = 0.6,
  select_rStar=2,
  nonlinFreeSurf=4,
+# globalFiles=.TRUE.,
+# usesinglecpuio=.TRUE.,
  /
 
 # Elliptic solver parameters
