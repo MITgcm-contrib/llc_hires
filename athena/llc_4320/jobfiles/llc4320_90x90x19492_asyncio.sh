@@ -16,6 +16,8 @@ module swap PrgEnv-cray PrgEnv-intel
 #set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
 export FI_CXI_RX_MATCH_MODE=hybrid
+export FI_CXI_DEFAULT_TX_SIZE=4096
+#export FI_CXI_DEFAULT_RX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
