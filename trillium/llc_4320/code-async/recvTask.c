@@ -1130,7 +1130,7 @@ ioRankMain (void)
 
 	      if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
 		char f;
-		while (f = fieldInfo->dataFieldID){
+		while ((f = fieldInfo->dataFieldID) != 0){
 		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
 		  fprintf(stderr,"%s\n",s);
 		  res = unlink(s);
