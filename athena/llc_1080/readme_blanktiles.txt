@@ -21,6 +21,7 @@
 # 3. Run a 1-time step job to get a list of the blank tiles
 #    Create a jobfile, for example,
 #    llc_hires/athena/llc_1080/jobfiles/llc1080_30x30x16848_init.sh
+# NOTE: this run will also generate the MITgcm grid files
  cd $WORKDIR
  mkdir jobs
  cd $WORKDIR/jobs
