@@ -1,13 +1,13 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=256:mpiprocs=732:model=tur_ath
+#PBS -l select=128:ncpus=256:mpiprocs=488:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
 
 # define tiling configuration
-RANKS=93600
-TILES=_36x36x2x$RANKS
+RANKS=62400
+TILES=_36x36x3x$RANKS
 
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
