@@ -7,7 +7,7 @@
 
 # define tiling configuration
 RANKS=31200
-TILES=_72x72x6x$RANKS
+TILES=_36x36x6x$RANKS
 
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
