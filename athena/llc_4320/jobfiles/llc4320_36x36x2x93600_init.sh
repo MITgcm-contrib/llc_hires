@@ -1,13 +1,13 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=256:mpiprocs=80:model=tur_ath
+#PBS -l select=128:ncpus=256:mpiprocs=732:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
 
 # define tiling configuration
-RANKS=19492
-TILES=_90x90x$RANKS
+RANKS=93600
+TILES=_36x36x2x$RANKS
 
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
@@ -25,10 +25,9 @@ mkdir build$TILES run$TILES
 
 cd $WORKDIR/MITgcm/build$TILES
 
-cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
-../tools/genmake2 -mpi -mods \
- '../../llc_hires/athena/llc_4320/code-async ../../llc_hires/athena/llc_4320/code' \
- -of ../../llc_hires/athena/llc_4320/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
+cp ../../llc_hires/athena/llc_4320/code/SIZE.h$TILES SIZE.h
+../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
+ -of ../../llc_hires/athena/llc_4320/code/linux_amd64_ifort+mpi_cray_nas_tides
 make depend
 make -j
 
@@ -36,13 +35,12 @@ cd $WORKDIR/MITgcm/run$TILES
 
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
-cp data.exch2$TILES data.exch2
+cp data_init data
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
-ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
 
-mpiexec -n 20480 ./mitgcmuv$TILES
+mpiexec -n $RANKS ./mitgcmuv$TILES
