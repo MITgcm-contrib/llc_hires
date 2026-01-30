@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 #PBS -l select=117:ncpus=256:mpiprocs=256:model=tur_ath
 #PBS -l walltime=2:00:00
@@ -14,14 +14,12 @@ FI_PROVIDER=cxi
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
-echo $PWD
 
 mv run run_old
 mv build build_old
 mkdir build run
 
 cd $WORKDIR/MITgcm/build
-echo $PWD
 
 cp ../../llc_hires/athena/llc_4320/code/SIZE.h_90x90x29952 SIZE.h
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
@@ -30,7 +28,6 @@ make depend
 make -j
 
 cd $WORKDIR/MITgcm/run
-echo $PWD
 
 cp ../build/mitgcmuv mitgcmuv_90x90x29952
 cp ../../llc_hires/athena/llc_4320/input/* .
@@ -41,6 +38,5 @@ ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
-ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 mpiexec -n 29952 ./mitgcmuv_90x90x29952

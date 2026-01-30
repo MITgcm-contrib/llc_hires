@@ -36,11 +36,11 @@ cd $WORKDIR/MITgcm/run$TILES
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data_init data
+cp data.pkg_init data.pkg
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
-ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 mpiexec -n $RANKS ./mitgcmuv$TILES
