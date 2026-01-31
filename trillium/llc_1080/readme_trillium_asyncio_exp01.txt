@@ -41,7 +41,7 @@
   make -j 64
 
 ####RUN####
-  cd $SCRATCH/MITgcm/run_LPNB
+  cd $SCRATCH/MITgcm/run_exp01
   cp ../build/mitgcmuv mitgcmuv_30x30x11152
 #  cp ../build/mitgcmuv mitgcmuv_60x72x3510
 #  cp ../build/mitgcmuv mitgcmuv_60x60x4212
