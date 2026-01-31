@@ -1,0 +1,13 @@
+# KPP parameters
+ &KPP_PARM01
+ KPPmixingMaps   = .FALSE.,
+ KPPwriteState   = .FALSE.,
+ kpp_dumpFreq    = 0.,
+ kpp_tavefreq    = 0.,
+ Ricr            = 0.3559,
+ RicrEq          = 0.3559,
+ Riinfty         = 0.25,
+ difm0   = 0.0040,
+ difs0   = 0.0050,
+ dift0   = 0.0050,
+ &
