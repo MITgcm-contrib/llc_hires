@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=256:mpiprocs=80:model=tur_ath
+#PBS -l select=128:ncpus=256:mpiprocs=160:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -45,4 +45,4 @@ ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
 
-mpiexec -n 20480 ./mitgcmuv$TILES
+mpiexec -n 20480 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
