@@ -24,7 +24,7 @@ module load comp-intel mpi-hpe hdf4 hdf5/1.8.18_mpt netcdf/4.4.1.1_mpt
 
 cd $WORKDIR/MITgcm/build
 MOD='../../llc_hires/athena/llc_1080'
-cp $MOD/code/SIZE.h_90x54x3120 SIZE.h
+cp $MOD/code/SIZE.h_90x54x2229 SIZE.h
 ../tools/genmake2 -mpi -mods "$MOD/code_sal $MOD/code" \
  -of $MOD/code_sal/linux_amd64_ifort+mpi_ice_nas
 make depend
@@ -43,5 +43,6 @@ ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp $MOD/input/* .
 cp $MOD/input_sal/* .
+cp data.exch2_90x54x2229 data.exch2
 
 qsub job_llc1080_sal
