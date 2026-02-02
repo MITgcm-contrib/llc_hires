@@ -1,0 +1,15 @@
+ &SAL_PARM01
+ sal_LoveFile= 'Load_Love2_CM.dat',
+ sal_refFile= 'Dan_PhiBot_ref.bin',
+#sal_diagIter=1,
+#sal_cilmIter=1,
+ sal_startTime=0.,
+ sal_maskLand=.TRUE.,
+# default is nearest interpolation to Gaussian grid
+ sal_model2llFile= 'SAL_model2ll_nearest',
+# bilinear interpolation from Gaussian grid to model grid
+ sal_ll2modelMethod=1,
+# Gaussian grid origin
+ sal_lon_0= -179.9998,
+ sal_loadSaveCfg=.TRUE.,
+ /
