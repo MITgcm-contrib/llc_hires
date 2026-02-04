@@ -46,3 +46,12 @@ cp $MOD/input_sal/* .
 cp data.exch2_90x54x2229 data.exch2
 
 qsub job_llc1080_sal
+
+
+
+
+# for running SAL code on athena, see Oliver's email dated Feb. 3, 2026.
+# athfe01:/u/ojahn/linux_amd64_ifort+mpi_cray_nas_shtns
+#  with module commands inside:
+#   module use /u/ojahn/software/modulefiles
+#   module load jahn/shtns/3.4.5_intel-2023.2.1
