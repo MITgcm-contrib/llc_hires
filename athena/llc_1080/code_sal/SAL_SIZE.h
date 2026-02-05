@@ -18,6 +18,7 @@ C                   larger for bilinear and bicubic
       PARAMETER(SAL_NLAT   = 1024)
       PARAMETER(SAL_NLON   = SAL_NLAT*2)
       PARAMETER(SAL_LMAX   = SAL_NLAT-1)
-      PARAMETER(SAL_MAXM2G = SAL_NLON*SAL_NLAT*4)
+c      PARAMETER(SAL_MAXM2G = SAL_NLON*SAL_NLAT*4)
+      PARAMETER(SAL_MAXM2G = 30825608)
 CEOP
 #endif /* ALLOW_SAL */

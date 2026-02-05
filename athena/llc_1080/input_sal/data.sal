@@ -6,7 +6,7 @@
  sal_startTime=0.,
  sal_maskLand=.TRUE.,
 # default is nearest interpolation to Gaussian grid
- sal_model2llFile= 'SAL_model2ll_nearest',
+ sal_model2llFile= 'llc1080_to_GL2048x1024X-179.9998NS_conservative',
 # bilinear interpolation from Gaussian grid to model grid
  sal_ll2modelMethod=1,
 # Gaussian grid origin

@@ -40,6 +40,7 @@ ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
+ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp $MOD/input/* .
 cp $MOD/input_sal/* .
@@ -92,6 +93,7 @@ ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
+ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 cp $MOD/input/* .
 cp $MOD/input_sal/* .
