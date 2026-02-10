@@ -11,9 +11,13 @@
 #
  viscAr=1.E-3,
  shallowDiffKr=1.E-2,
- shallowDiffKrDepth=-100.,
+ shallowDiffKrDepth=0.,
  shallowViscAr=1.E-2,
- shallowViscArDepth=-100.,
+ shallowViscArDepth=0.,
+ bblDiffKr=1.E-2,
+ bblDiffKrThickness=51.,
+ bblViscAr=1.E-2,
+ bblViscArThickness=51.,
 #
  viscAh=2.E5,
  viscAhGrid=1.E-2,

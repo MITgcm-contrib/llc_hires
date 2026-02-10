@@ -132,6 +132,10 @@ C-    viscosity and diffusivity default value:
       shallowDiffKrDepth  = 0. _d 0
       shallowViscAr       = 0. _d -3
       shallowViscArDepth  = 0. _d 0
+      bblDiffKr           = 0. _d -3
+      bblDiffKrThickness  = 0. _d 0
+      bblViscAr           = 0. _d -3
+      bblViscArThickness  = 0. _d 0
       viscFacAdj          = 1. _d 0
       no_slip_sides       = .TRUE.
       no_slip_bottom      = .TRUE.

@@ -396,13 +396,29 @@ C--   end of k loop
 
       IF ( shallowViscArDepth .LT. 0 ) THEN
 C--   Alter vertical viscosity in shallow regions
-C     to account for lack of bottom boundary layer
-       DO k = 1,Nr
+       DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
          DO i = 1-OLx, sNx+OLx
-          IF ( R_low(i,j,bi,bj) .GE. shallowViscArDepth ) THEN
+          IF ( R_low(i,j,bi,bj) .GE. shallowViscArDepth .AND.
+     &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
            kappaRU(i,j,k) = kappaRU(i,j,k) + shallowViscAr
            kappaRV(i,j,k) = kappaRV(i,j,k) + shallowViscAr
+          ENDIF
+         ENDDO
+        ENDDO
+       ENDDO
+      ENDIF
+
+      IF ( bblViscArThickness .GT. 0. ) THEN
+C--   Alter vertical diffusivity in bottom boundary layer
+       DO k = 1,Nr+1
+        DO j = 1-OLy, sNy+OLy
+         DO i = 1-OLx, sNx+OLx
+          IF ( rF(k) .GE. R_low(i,j,bi,bj) .AND.
+     &         rF(k) .LE. R_low(i,j,bi,bj)+bblViscArThickness .AND.
+     &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
+           kappaRU(i,j,k) = kappaRU(i,j,k) + bblViscAr
+           kappaRV(i,j,k) = kappaRV(i,j,k) + bblViscAr
           ENDIF
          ENDDO
         ENDDO

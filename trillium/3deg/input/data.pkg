@@ -6,4 +6,5 @@
  useKPP        = .TRUE.,
  useSALT_PLUME = .TRUE.,
  useGMRedi     = .TRUE.,
+ useDiagnostics = .TRUE.,
  /
