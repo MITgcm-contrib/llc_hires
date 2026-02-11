@@ -413,20 +413,35 @@ C--   end of k loop
       ENDIF
 #endif /* ndef EXCLUDE_PCELL_MIX_CODE */
 
-      IF ( shallowDiffKrDepth .LT. 0 ) THEN
+      IF ( shallowDiffKrDepth .LT. 0.0 ) THEN
 C--   Alter vertical diffusivity in shallow regions
-C     to account for lack of bottom boundary layer
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
          DO i = 1-OLx, sNx+OLx
-          IF ( R_low(i,j,bi,bj) .GE. shallowDiffKrDepth ) THEN
+          IF ( R_low(i,j,bi,bj) .GE. shallowDiffKrDepth .AND.
+     &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
            KappaRTr(i,j,k) = KappaRTr(i,j,k) + shallowDiffKr
           ENDIF
          ENDDO
         ENDDO
        ENDDO
       ENDIF
-      
+
+      IF ( bblDiffKrThickness .GT. 0.0 ) THEN
+C--   Alter vertical diffusivity in bottom boundary layer
+       DO k = 1,Nr+1
+        DO j = 1-OLy, sNy+OLy
+         DO i = 1-OLx, sNx+OLx
+          IF ( rF(k) .GE. R_low(i,j,bi,bj) .AND.
+     &         rF(k) .LE. R_low(i,j,bi,bj)+bblDiffKrThickness .AND.
+     &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
+           KappaRTr(i,j,k) = KappaRTr(i,j,k) + bblDiffKr
+          ENDIF
+         ENDDO
+        ENDDO
+       ENDDO
+      ENDIF
+
 C-    Apply mask to vertical diffusivity
 C jmc: do not have the impression that masking is needed
 C      but could be removed later if it is the case.
