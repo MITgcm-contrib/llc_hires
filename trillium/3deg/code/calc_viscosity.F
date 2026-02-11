@@ -394,7 +394,7 @@ C--   end of k loop
       ENDIF
 #endif /* ndef EXCLUDE_PCELL_MIX_CODE */
 
-      IF ( shallowViscArDepth .LT. 0 ) THEN
+      IF ( shallowViscArDepth .LT. 0.0 ) THEN
 C--   Alter vertical viscosity in shallow regions
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
@@ -409,7 +409,7 @@ C--   Alter vertical viscosity in shallow regions
        ENDDO
       ENDIF
 
-      IF ( bblViscArThickness .GT. 0. ) THEN
+      IF ( bblViscArThickness .GT. 0.0 ) THEN
 C--   Alter vertical diffusivity in bottom boundary layer
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy

@@ -212,6 +212,8 @@ C--   Continuous equation parameters
      & viscAr, diffKrT, diffKrS, viscArNr, diffKrNrT, diffKrNrS,
      & shallowDiffKr, shallowDiffKrDepth,
      & shallowViscAr, shallowViscArDepth,
+     & bblDiffKr, bblDiffKrThickness,
+     & bblViscAr, bblViscArThickness,
      & diffKhT, diffK4T, diffKhS, diffK4S, smag3D_diffCoeff,
      & diffKr4T, diffKr4S, BL79LatVary,
      & diffKrBL79surf, diffKrBL79deep, diffKrBL79scl, diffKrBL79Ho,

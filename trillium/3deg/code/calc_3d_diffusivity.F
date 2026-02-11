@@ -413,7 +413,7 @@ C--   end of k loop
       ENDIF
 #endif /* ndef EXCLUDE_PCELL_MIX_CODE */
 
-      IF ( shallowDiffKrDepth .LT. 0. ) THEN
+      IF ( shallowDiffKrDepth .LT. 0.0 ) THEN
 C--   Alter vertical diffusivity in shallow regions
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
@@ -427,7 +427,7 @@ C--   Alter vertical diffusivity in shallow regions
        ENDDO
       ENDIF
 
-      IF ( bblDiffKrThickness .GT. 0. ) THEN
+      IF ( bblDiffKrThickness .GT. 0.0 ) THEN
 C--   Alter vertical diffusivity in bottom boundary layer
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
