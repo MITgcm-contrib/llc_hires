@@ -1,4 +1,5 @@
 # example instructions for creating blank tiles
+ WORKDIR=/nobackup/$USER/llc_4320
 
 # for very large configurations, it is possible to reduce
 # the number of MPI ranks either by using multiple processes per cpu
@@ -11,19 +12,21 @@
 # Choose 2 of following lines for MItgcm shared memory example
 # RANKS=23400
 # TILES=_72x72x2x$RANKS
+#
 # RANKS=41600
 # TILES=_54x54x2x$RANKS
+#
 # RANKS=52650
 # TILES=_48x48x2x$RANKS
+#
 # RANKS=59904
 # TILES=_45x45x2x$RANKS
+#
 RANKS=62400
 TILES=_36x36x3x$RANKS
 
 # 1. If not already done, download MITgcm checkpoint69f
 #    and MITgcm-contrib/llc_hires on athena
- ssh athfe01
- WORKDIR=/nobackup/$USER/llc_4320
  mkdir $WORKDIR
  cd $WORKDIR
  git clone https://github.com/MITgcm/MITgcm
@@ -34,21 +37,23 @@ TILES=_36x36x3x$RANKS
  ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
 
 # 2. Create a SIZE.h without blank tiles, for example,
-#    llc_hires/athena/llc_4320/code/SIZE.h_$TILES
+#    llc_hires/athena/llc_4320/code/SIZE.h$TILES
 #    Note that sNx and sNy must be factors of 4320
 #    and nPx = 4320*4320*13/sNx/sNy/nSx/nSy
 
 # 3. Run a 1-time step job to get a list of the blank tiles
 #    Create a jobfile, for example,
-#    llc_hires/athena/llc_4320/jobfiles/llc4320_$TILES_init.sh
+#    llc_hires/athena/llc_4320/jobfiles/llc4320$TILES\_init.sh
  cd $WORKDIR/llc_hires/athena/llc_4320/jobfiles
- qsub llc4320_$TILES_init.sh
+ qsub llc4320$TILES\_init.sh
 
 # 4. Extract Empty tile list
  cd $WORKDIR/MITgcm/run$TILES
- grep Empty STDO* > Empty_$TILES.txt
+ cp $WORKDIR/llc_hires/athena/llc_4320/jobfiles/llc4320$TILES\_init.sh .
+ mv $WORKDIR/llc_hires/athena/llc_4320/jobfiles/llc4320$TILES\_init.sh.* .
+ grep Empty STDO* > Empty$TILES.txt
  chmod +x extract_blank.sh
- ./extract_blank.sh Empty_$TILES.txt
+ ./extract_blank.sh Empty$TILES.txt
  wc -l blank
 
 # 5. Create new SIZE.h and data.exch2, for example,

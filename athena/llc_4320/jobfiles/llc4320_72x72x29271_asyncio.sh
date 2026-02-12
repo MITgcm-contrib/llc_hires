@@ -16,13 +16,14 @@ module swap PrgEnv-cray PrgEnv-intel
 #set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
 export FI_CXI_RX_MATCH_MODE=hybrid
+export FI_CXI_DEFAULT_TX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
 
-mkdir build_asyncio run_asyncio
+mkdir build$TILES run$TILES
 
-cd $WORKDIR/MITgcm/build_asyncio
+cd $WORKDIR/MITgcm/build$TILES
 
 cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods \
@@ -31,9 +32,9 @@ cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
 make depend
 make -j
 
-cd $WORKDIR/MITgcm/run_asyncio
+cd $WORKDIR/MITgcm/run$TILES
 
-cp ../build_asyncio/mitgcmuv mitgcmuv$TILES_asyncio
+cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data.exch2$TILES data.exch2
 
@@ -42,5 +43,6 @@ ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
+ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
 
-mpiexec -n 30208 ./mitgcmuv$TILES_asyncio
+mpiexec -n 30208 ./mitgcmuv$TILES

@@ -6,7 +6,7 @@
 #PBS -q R2345
 
 # define tiling configuration
-RANKS=113847
+RANKS=116857
 TILES=_36x36x$RANKS
 
 # Switch to ProEnv-intel instead of PrgEnv-cray

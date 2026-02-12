@@ -16,15 +16,14 @@ module swap PrgEnv-cray PrgEnv-intel
 #set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
 export FI_CXI_RX_MATCH_MODE=hybrid
+export FI_CXI_DEFAULT_TX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
 
-mv run run_old
-mv build build_old
-mkdir build run
+mkdir build$TILES run$TILES
 
-cd $WORKDIR/MITgcm/build
+cd $WORKDIR/MITgcm/build$TILES
 
 cp ../../llc_hires/athena/llc_4320/code/SIZE.h$TILES SIZE.h
 ../tools/genmake2 -mpi -mods ../../llc_hires/athena/llc_4320/code \
@@ -32,9 +31,9 @@ cp ../../llc_hires/athena/llc_4320/code/SIZE.h$TILES SIZE.h
 make depend
 make -j
 
-cd $WORKDIR/MITgcm/run
+cd $WORKDIR/MITgcm/run$TILES
 
-cp ../build/mitgcmuv mitgcmuv$TILES
+cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data.exch2$TILES data.exch2
 #sed -i \
