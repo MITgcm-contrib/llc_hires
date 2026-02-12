@@ -8,9 +8,17 @@
 # RANKS=46800
 # TILES=_72x72x$RANKS
 
-# uncomment following 2 lines for MItgcm shared memory example
-RANKS=23400
-TILES=_72x72x2x$RANKS
+# Choose 2 of following lines for MItgcm shared memory example
+# RANKS=23400
+# TILES=_72x72x2x$RANKS
+# RANKS=41600
+# TILES=_54x54x2x$RANKS
+# RANKS=52650
+# TILES=_48x48x2x$RANKS
+# RANKS=59904
+# TILES=_45x45x2x$RANKS
+RANKS=62400
+TILES=_36x36x3x$RANKS
 
 # 1. If not already done, download MITgcm checkpoint69f
 #    and MITgcm-contrib/llc_hires on athena
@@ -33,14 +41,11 @@ TILES=_72x72x2x$RANKS
 # 3. Run a 1-time step job to get a list of the blank tiles
 #    Create a jobfile, for example,
 #    llc_hires/athena/llc_4320/jobfiles/llc4320_$TILES_init.sh
- cd $WORKDIR
- mkdir jobs
- cd $WORKDIR/jobs
- cp $WORKDIR/llc_hires/athena/llc_4320/jobfiles/* .
+ cd $WORKDIR/llc_hires/athena/llc_4320/jobfiles
  qsub llc4320_$TILES_init.sh
 
 # 4. Extract Empty tile list
- cd $WORKDIR/MITgcm/run
+ cd $WORKDIR/MITgcm/run$TILES
  grep Empty STDO* > Empty_$TILES.txt
  chmod +x extract_blank.sh
  ./extract_blank.sh Empty_$TILES.txt
