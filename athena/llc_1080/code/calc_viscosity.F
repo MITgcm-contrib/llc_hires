@@ -51,6 +51,7 @@ C     == Local variables ==
 C     i, j, k :: Loop counters
       INTEGER i,j,k
       INTEGER ki
+      _RL NormDist, SmoothStep
 #ifndef EXCLUDE_PCELL_MIX_CODE
       INTEGER km, mixSurf, mixBott
       _RL pC_kFac
@@ -414,11 +415,19 @@ C--   Alter vertical diffusivity in bottom boundary layer
        DO k = 1,Nr+1
         DO j = 1-OLy, sNy+OLy
          DO i = 1-OLx, sNx+OLx
-          IF ( rF(k) .GE. R_low(i,j,bi,bj) .AND.
-     &         rF(k) .LE. R_low(i,j,bi,bj)+bblViscArThickness .AND.
-     &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
-           kappaRU(i,j,k) = kappaRU(i,j,k) + bblViscAr
-           kappaRV(i,j,k) = kappaRV(i,j,k) + bblViscAr
+          IF ( rF(k) .GE. rlowW(i,j,bi,bj) .AND.
+     &         rF(k) .LE. rlowW(i,j,bi,bj)+bblViscArThickness .AND.
+     &         rlowW(i,j,bi,bj) .NE. 0.0 ) THEN
+           NormDist = (rF(k)-rlowW(i,j,bi,bj)) / bblViscArThickness
+           SmoothStep = 1. + NormDist * NormDist * (NormDist*2.- 3.)
+           kappaRU(i,j,k) = kappaRU(i,j,k) + bblViscAr * SmoothStep
+          ENDIF
+          IF ( rF(k) .GE. rlowS(i,j,bi,bj) .AND.
+     &         rF(k) .LE. rlowS(i,j,bi,bj)+bblViscArThickness .AND.
+     &         rlowS(i,j,bi,bj) .NE. 0.0 ) THEN
+           NormDist = (rF(k)-rlowW(i,j,bi,bj)) / bblViscArThickness
+           SmoothStep = 1. + NormDist * NormDist * (NormDist*2.- 3.)
+           kappaRV(i,j,k) = kappaRV(i,j,k) + bblViscAr * SmoothStep
           ENDIF
          ENDDO
         ENDDO
