@@ -436,7 +436,7 @@ C--   Alter vertical diffusivity in bottom boundary layer
           IF ( rF(k) .GE. R_low(i,j,bi,bj) .AND.
      &         rF(k) .LE. R_low(i,j,bi,bj)+bblDiffKrThickness .AND.
      &         R_low(i,j,bi,bj) .NE. 0.0 ) THEN
-           NormDist = (rF(k)-R_low(i,j,bi,bj)) / bblViscArThickness
+           NormDist = (rF(k)-R_low(i,j,bi,bj)) / bblDiffKrThickness
            SmoothStep = 1. + NormDist * NormDist * (NormDist*2.- 3.)
            KappaRTr(i,j,k) = KappaRTr(i,j,k) + bblDiffKr * SmoothStep
           ENDIF
