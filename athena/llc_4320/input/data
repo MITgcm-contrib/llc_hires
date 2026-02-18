@@ -111,12 +111,12 @@
  &PARM03
  nIter0 = 0,
  endtime= 86400.,
- deltaT = 5.,
+ deltaT = 12.,
  abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
  dumpfreq = 3600.,
- monitorFreq = 5.,
+ monitorFreq = 60.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -159,7 +159,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC4320_v15.bin',
+ bathyFile      ='GEBCO2025_on_LLC4320_v16b.bin',
  hydrogThetaFile='R_ThetaF.0000007200.data',
  hydrogSaltFile ='R_SaltF.0000007200.data',
  uVelInitFile   ='R_U.0000007200.data',

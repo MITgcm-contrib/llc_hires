@@ -1,11 +1,12 @@
 #!/bin/bash -x
 
 #PBS -l select=128:ncpus=256:mpiprocs=160:model=tur_ath
-#PBS -l walltime=2:00:00
+#PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
+#PBS -j oe
 
-# define tiling configuration
+# Define tiling configuration
 RANKS=19492
 TILES=_90x90x$RANKS
 
@@ -43,6 +44,6 @@ ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
-ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
+ln -sf /nobackupp27/dbwhitt/llc_4320/MITgcm_tillfeb112026/run_36x36x113847/R_*data .
 
 mpiexec -n 20480 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
