@@ -77,7 +77,7 @@
  viscC4Leithd=2.15,
  viscA4GridMax=0.8,
  useAreaViscLength=.TRUE.,
- bottomDragQuadratic = 0.0021,
+ bottomDragQuadratic = 0.006,
  selectImplicitDrag = 2,
  selectP_inEOS_Zc = 1,
  selectVortScheme = 2,
@@ -97,6 +97,10 @@
  implicDiv2DFlow = 0.6,
  select_rStar=2,
  nonlinFreeSurf=4,
+ bblViscArThickness=30.,
+ bblViscAr=1.0,
+ bblDiffKrThickness=30.,
+ bblDiffKr=0.1,
  /
 
 # Elliptic solver parameters
@@ -105,7 +109,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0  =224640,
+ nIter0  =223200,
  endtime =31536000.,
  deltaT  = 60.,
  abEps   = 0.1,
@@ -120,8 +124,8 @@
  &PARM04
  usingCurvilinearGrid=.TRUE.,
  pCellMix_select = 22,
- pCellMix_viscAr = 173*4.e-4,
- pCellMix_diffKr = 173*2.e-4,
+ pCellMix_viscAr = 173*1.0,
+ pCellMix_diffKr = 173*0.1,
  delR = 3.6311,    3.6933,   3.7563,   3.8201,   3.8845,   3.9495,
         4.0144,    4.0783,   4.1377,   4.1933,   4.2653,   4.3537,
         4.4521,    4.5596,   4.6746,   4.7944,   4.9169,   5.0408,
@@ -156,9 +160,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC1080_v13b.bin',
- hydrogThetaFile='../run_1080_exp02_dy115_dy156/Theta.0000224640.data',
- hydrogSaltFile ='../run_1080_exp02_dy115_dy156/Salt.0000224640.data',
- uVelInitFile   ='../run_1080_exp02_dy115_dy156/U.0000224640.data',
- vVelInitFile   ='../run_1080_exp02_dy115_dy156/V.0000224640.data',
- pSurfInitFile  ='../run_1080_exp02_dy115_dy156/Eta.0000224640.data',
+ hydrogThetaFile='../run_1080_exp02_dy115_dy155/Theta.0000223200.data',
+ hydrogSaltFile ='../run_1080_exp02_dy115_dy155/Salt.0000223200.data',
+ uVelInitFile   ='../run_1080_exp02_dy115_dy155/U.0000223200.data',
+ vVelInitFile   ='../run_1080_exp02_dy115_dy155/V.0000223200.data',
+ pSurfInitFile  ='../run_1080_exp02_dy115_dy155/Eta.0000223200.data',
  /
