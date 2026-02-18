@@ -58,8 +58,8 @@
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   find ../../llc_hires/trillium/llc_1080/input/ -type f -exec cp -t . -- {} +
 
-  cp -f data_exp05_dy204 data
-  cp -f data.seaice_exp05_dy204 data.seaice
+  cp -f data_exp05_dy235 data
+  cp -f data.seaice_exp05_dy235 data.seaice
   cp -f data.kpp_exp05 data.kpp
   cp -f data.exch2_30x30x11152 data.exch2
   unset I_MPI_PMI_LIBRARY
