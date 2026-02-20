@@ -1,0 +1,19 @@
+#PBS -N tide_SAL
+#PBS -q normal
+#PBS -l select=1:ncpus=1:model=tur_ath
+#PBS -l walltime=8:00:00
+#PBS -J 0-12
+# The placeholders for logs on NAS use ^array_index^ inside the PBS headers
+#PBS -o logs/out_^array_index^.txt
+#PBS -e logs/err_^array_index^.txt
+
+cd $PBS_O_WORKDIR
+. /etc/profile.d/modules.sh
+module use -a /swbuild/analytix/tools/modulefiles
+module load miniconda3/v4
+source /u/hplombat/mitgcm-env/bin/activate
+echo "The Job Array ID is: $PBS_ARRAYID"
+echo "The Job Array index is: $PBS_ARRAY_INDEX"
+
+# Crucial: On NAS, the variable is PBS_ARRAYID, not PBS_ARRAY_INDEX
+python pbs_compute_ampli_phase_from_mitgcm_output.py $PBS_ARRAY_INDEX

@@ -1,0 +1,61 @@
+Written 02/20/2026 by Hugo Plombat
+
+Guide to use my tidal analysis programs.
+####################
+1) Harmonic analysis
+####################
+
+IN THE CLUSTER:
+- create a directory for the run you want to analyse (preferably in nobackup, as the output will be a bit heavy). e.g. run_ATH_SAL
+- Put the two files 'pbs_compute_ampli_phase_from_mitgcm_output.py' and 'run_tiles.pbs' in there
+
+- In 'pbs_compute_ampli_phase_from_mitgcm_output.py', change the following according to what you want to do:
+	- data_dir (where you take the time series)
+	- grid_dir (where you take the grid files)
+	- save_path (where you want to save the tide files)
+	- maxfile (the number in the name of the last file you want to read)
+	- file_interval (interval betwen two file numbers)
+	- model_timestep (timestep used in the model)
+	
+- Create a logs subdirectory where you are. 
+
+BEFORE RUNNING THE SCRIPT:
+
+- Activate miniconda:
+	module use -a /swbuild/analytix/tools/modulefiles
+	module load miniconda3/v4
+- Install the packages required to run the script: xmitgcm, warnings, xarray, datetime, numpy, pyTMD, sys
+
+RUNNING THE SCRIPT:
+
+- write 'qsub run_tides.pbs'. This starts an array of 13 jobs (1 per tile). 
+I put a walltime of 8h to be safe, but a job never took more than 6hours from my experiences.
+
+- Once everything is done, you should have 13 .nc files. If not, check the err_*.txt in the logs directory. 
+
+	
+Note: you will need .meta files associated with your time series. I you don't have them, you can generate them yourself, e.g. by adapting 'generate_meta.py'	
+	
+####################################
+2) Tides investigation (RMS, plots...)
+####################################
+- This part will make use of JupyterNotebook. I prefer to do the analysis locally, which requires to pull a bunch of stuff from the cluster:
+	- The 13 .nc files generated above
+	- The grid files folder (e.g. run_dan. I left a copy of it in /nobackup/hplombat)
+	- A folder containing 1 point of a time series from a simulation using the same grid files as the one we are studying
+		(I use Eta_1point and left a copy of it it /nobackup/hplombat).  
+		Doesn't matter which simulation it's from or the physical quantity it is, the point is just to easily access grid files.
+		There is for sure a smarter way, but that's the one I came up with.
+
+- You will also need TPXO files. I use TPXO9.1, I leave them on the NASA NAS at this address '/nobackup/hplombat/TMD'. Pull the whole folder.
+
+- You will also need to install a bunch of python modules: xarray, dumpy, pyTMD, xmitgcm, matplotlib, xmitgcm, ecco_v4_py (optional: warnings, cmcrameri for nice colormaps)  
+
+- run the notebook 'TPXO_interpolation_to_LLC.ipynb'. TPXO solution is available on a regular 1/6° latlon grid. We interpolate it to the LLC1080 grid.
+
+- run the notebook 'analyze_mitgcm_compare_tpxollc.ipynb'. In this notebook, we open the mitgcm tidal outputs,
+	and compute the RMSE and Percentage of variance explained (PVE) between MITgcm and TPXO. 
+	There are filter options to separate deep and shallow parts of the ocean, or to exclude the poles. 
+	I left an example of usage of the notebook to give an idea. But you will need to bring your own mitgcm tides files :)
+	
+	
