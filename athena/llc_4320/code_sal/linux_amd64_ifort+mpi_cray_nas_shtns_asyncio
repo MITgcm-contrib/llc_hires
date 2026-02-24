@@ -1,9 +1,11 @@
 #! /usr/bin/env bash
 
 # build_options for intel compiler on athena (NASA Ames Cray)
-# including ASYNCIO flag and link to spice library for tides
+# including ASYNCIO flag and link to spice and shtns libraries for tides and SAL
 #  source /opt/cray/pe/modules/3.2.11.7/init/bash
 #  module switch PrgEnv-cray PrgEnv-intel
+#  module use /u/ojahn/software/modulefiles
+#  module load jahn/shtns/3.4.5_intel-2023.2.1
 
 CC=icx
 FC=ifort
@@ -84,3 +86,9 @@ fi
 
 LIBS="$LIBS -L${CRAY_LIBSCI_PREFIX}/lib -lsci_intel"
 LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"
+LIBS="$LIBS -lshtns_omp -lfftw3_omp -lfftw3 -lm -liomp5"
+
+#CDM is this needed?
+#if [ -n "$SPICELIBS" ]; then
+#    LIBS="$LIBS $SPICELIBS"
+#fi

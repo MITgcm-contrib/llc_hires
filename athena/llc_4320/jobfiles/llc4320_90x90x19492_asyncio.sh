@@ -14,27 +14,15 @@ TILES=_90x90x$RANKS
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module swap PrgEnv-cray PrgEnv-intel
 
-#set FI_PROVIDER may reduce MPI startup time 
+# Set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
 export FI_CXI_RX_MATCH_MODE=hybrid
 export FI_CXI_DEFAULT_TX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_4320
 cd $WORKDIR/MITgcm
-
-mkdir build$TILES run$TILES
-
-cd $WORKDIR/MITgcm/build$TILES
-
-cp ../../llc_hires/athena/llc_4320/code-async/SIZE.h$TILES SIZE.h
-../tools/genmake2 -mpi -mods \
- '../../llc_hires/athena/llc_4320/code-async ../../llc_hires/athena/llc_4320/code' \
- -of ../../llc_hires/athena/llc_4320/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
-make depend
-make -j
-
+mkdir run$TILES
 cd $WORKDIR/MITgcm/run$TILES
-
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp data.exch2$TILES data.exch2

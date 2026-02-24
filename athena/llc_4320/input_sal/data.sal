@@ -1,0 +1,10 @@
+ &SAL_PARM01
+ sal_LoveFile= 'Load_Love2_CM.dat',
+ sal_refFile= '/nobackupp27/dbwhitt/llc_4320/MITgcm_tillfeb112026/run_36x36x113847/proc/calc_mean/PhiBotMean.data',
+ sal_startTime=0.,
+ sal_maskLand=.TRUE.,
+ sal_model2llFile= '/nobackup/ojahn/forcing/sal/llc4320/llc4320_to_GL360x180XC0NS_conservative',
+# Gaussian grid origin
+ sal_lon_0= 0.,
+ sal_loadSaveCfg=.TRUE.,
+ /
