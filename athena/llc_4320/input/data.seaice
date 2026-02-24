@@ -33,10 +33,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = 'R_SIarea.0000007200.data',
- HsnowFile             = 'R_SIhsnow.0000007200.data',
- HeffFile              = 'R_SIheff.0000007200.data',
- HsaltFile             = 'R_SIhsalt.0000007200.data',
- UiceFile              = 'R_SIuice.0000007200.data',
- ViceFile              = 'R_SIvice.0000007200.data',
+ AreaFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIarea.0000230100.data',
+ HsnowFile             = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIhsnow.0000230100.data',
+ HeffFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIheff.0000230100.data',
+ HsaltFile             = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIhsalt.0000230100.data',
+ UiceFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIuice.0000230100.data',
+ ViceFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIvice.0000230100.data',
  &

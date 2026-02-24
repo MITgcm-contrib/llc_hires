@@ -160,9 +160,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC4320_v16b.bin',
- hydrogThetaFile='R_ThetaF.0000007200.data',
- hydrogSaltFile ='R_SaltF.0000007200.data',
- uVelInitFile   ='R_U.0000007200.data',
- vVelInitFile   ='R_V.0000007200.data',
- pSurfInitFile  ='R_Eta.0000007200.data',
+ hydrogThetaFile='/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/ThetaF.0000230100.data',
+ hydrogSaltFile ='/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SaltF.0000230100.data',
+ uVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/U.0000230100.data',
+ vVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/V.0000230100.data',
+ pSurfInitFile  ='/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/Eta.0000230100.data',
  /
