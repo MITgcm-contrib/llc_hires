@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=10:ncpus=256:mpiprocs=256:model=tur_ath
+#PBS -l select=1:ncpus=1:model=tur_ath+10:ncpus=256:mpiprocs=256:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q normal
@@ -13,6 +13,8 @@ TILES=_90x54x$RANKS
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module swap PrgEnv-cray PrgEnv-intel
+module use /u/ojahn/software/modulefiles
+module load jahn/shtns/3.4.5_intel-2023.2.1
 
 # Set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
@@ -21,35 +23,21 @@ export FI_CXI_DEFAULT_TX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_1080
 cd $WORKDIR/MITgcm
-echo $PWD
-
-mv run run_old
-mv build build_old
-mkdir build run
-
-cd $WORKDIR/MITgcm/build
-echo $PWD
-
-cp ../../llc_hires/athena/llc_1080/code-async/SIZE.h_90x54x2229 SIZE.h
-../tools/genmake2 -mpi -mods \
- '../../llc_hires/athena/llc_1080/code-async ../../llc_hires/athena/llc_1080/code' \
- -of ../../llc_hires/athena/llc_1080/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
-make depend
-make -j
-
-cd $WORKDIR/MITgcm/run
-echo $PWD
-
-cp ../build/mitgcmuv mitgcmuv_90x54x2229_asyncio
+mkdir run$TILES
+cd $WORKDIR/MITgcm/run$TILES
+cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_1080/input/* .
+cp ../../llc_hires/athena/llc_1080/input_sal/* .
 cp data_asyncio data
-cp data.exch2_90x54x2229 data.exch2
+cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc1080/run_template/*1jan23* .
 ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
+ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
+ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 2560 ./mitgcmuv_90x54x2229_asyncio
+mpiexec -n 2561 ./mitgcmuv$TILES

@@ -40,10 +40,10 @@
  make -j
 
 # 3. Run asyncio test
- cd $WORKDIR/llc_hires/athena/llc_4320/jobfiles
- qsub llc4320$TILES\_sal.sh
+ cd $WORKDIR/llc_hires/athena/llc_1080/jobfiles
+ qsub llc1080$TILES\_sal.sh
 
 # 4. After completion, collect jobfiles in run directory
  cd $WORKDIR/MITgcm/run$TILES
- cp $WORKDIR/llc_hires/athena/llc_4320/jobfiles/llc4320$TILES\_sal.sh .
- mv $WORKDIR/llc_hires/athena/llc_4320/jobfiles/llc4320$TILES\_sal.sh.* .
+ cp $WORKDIR/llc_hires/athena/llc_1080/jobfiles/llc1080$TILES\_sal.sh .
+ mv $WORKDIR/llc_hires/athena/llc_1080/jobfiles/llc1080$TILES\_sal.sh.* .
