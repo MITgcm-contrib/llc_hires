@@ -13,8 +13,6 @@ TILES=_90x54x$RANKS
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module swap PrgEnv-cray PrgEnv-intel
-module use /u/ojahn/software/modulefiles
-module load jahn/shtns/3.4.5_intel-2023.2.1
 
 # Set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
@@ -40,4 +38,5 @@ ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
 ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 2561 ./mitgcmuv$TILES
+ulimit -s unlimited
+mpiexec -n 2560 ./mitgcmuv$TILES

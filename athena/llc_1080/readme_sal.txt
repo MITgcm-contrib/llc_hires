@@ -132,7 +132,6 @@ mkdir build run
 cd $WORKDIR/MITgcm/build
 MOD='../../llc_hires/athena/llc_1080'
 cp $MOD/code-async/SIZE.h_90x54x2229 SIZE.h
-cp $MOD/code_sal/packages_init_fixed.F_async packages_init_fixed.F
 ../tools/genmake2 -mpi -mods "$MOD/code_sal $MOD/code-async $MOD/code" \
  -of $MOD/code_sal/linux_amd64_ifort+mpi_cray_nas_shtns_asyncio
 make depend
