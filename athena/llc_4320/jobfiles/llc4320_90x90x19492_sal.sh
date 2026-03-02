@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=1:ncpus=1:model=tur_ath+160:ncpus=128:mpiprocs=128:model=tur_ath
+#PBS -l select=1:ncpus=1:model=tur_ath+127:ncpus=160:mpiprocs=160:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -36,4 +36,5 @@ ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
-mpiexec -n 20481 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
+#mpiexec -n 20321 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
+mpiexec -n 20321 ./mitgcmuv$TILES
