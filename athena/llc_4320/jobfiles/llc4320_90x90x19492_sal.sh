@@ -26,6 +26,7 @@ cd $WORKDIR/MITgcm/run$TILES
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
 cp ../../llc_hires/athena/llc_4320/input_sal/* .
+cp ../../llc_hires/athena/llc_1080/input_sal/Load_Love2_CM.dat .
 cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
