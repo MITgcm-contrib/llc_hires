@@ -89,6 +89,6 @@ LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"
 LIBS="$LIBS -lshtns_omp -lfftw3_omp -lfftw3 -lm -liomp5"
 
 #CDM is this needed?
-#if [ -n "$SPICELIBS" ]; then
-#    LIBS="$LIBS $SPICELIBS"
-#fi
+if [ -n "$SPICELIBS" ]; then
+    LIBS="$LIBS $SPICELIBS"
+fi
