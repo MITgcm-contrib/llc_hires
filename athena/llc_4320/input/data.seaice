@@ -33,10 +33,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIarea.0000230100.data',
- HsnowFile             = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIhsnow.0000230100.data',
- HeffFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIheff.0000230100.data',
- HsaltFile             = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIhsalt.0000230100.data',
- UiceFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIuice.0000230100.data',
- ViceFile              = '/nobackupp27/dbwhitt/llc_4320/OUT/2023_02_20_210000_to_2023_02_24_200000/SIvice.0000230100.data',
+ AreaFile              = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIarea.0000040200.data',
+ HsnowFile             = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIhsnow.0000040200.data',
+ HeffFile              = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIheff.0000040200.data',
+ HsaltFile             = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIhsalt.0000040200.data',
+ UiceFile              = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIuice.0000040200.data',
+ ViceFile              = '/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/SIvice.0000040200.data',
  &
