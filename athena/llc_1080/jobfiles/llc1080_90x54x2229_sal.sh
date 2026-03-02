@@ -39,4 +39,4 @@ ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
-mpiexec -n 2560 ./mitgcmuv$TILES
+mpiexec -n 2561 ./mitgcmuv$TILES
