@@ -1151,7 +1151,6 @@ C---  if fluid Is Water: end
       ENDIF
 #endif /* ALLOW_SAL */
 
-
 #ifdef ALLOW_DIAGNOSTICS
       IF ( fluidIsWater .AND. useDiagnostics ) THEN
         CALL DIAGS_RHO_G(

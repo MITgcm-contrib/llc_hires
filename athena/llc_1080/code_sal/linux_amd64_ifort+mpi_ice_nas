@@ -91,4 +91,3 @@ SAL='/nobackup/hzhang1/pub/SAL'
 INCLUDES="$INCLUDES -I${SAL}/include"
 LIBS="$LIBS -L${SAL}/lib -lshtns_omp -lfftw3_omp -lfftw3 -lm -liomp5"
 LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"
-

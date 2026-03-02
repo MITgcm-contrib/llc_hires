@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # build_options for intel compiler on athena (NASA Ames Cray)
-# including link to spice library for tides and ASYNCIO flag
+# including ASYNCIO flag and link to spice library for tides
 #  source /opt/cray/pe/modules/3.2.11.7/init/bash
 #  module switch PrgEnv-cray PrgEnv-intel
 

@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=256:mpiprocs=160:model=tur_ath
+#PBS -l select=1:ncpus=1:model=tur_ath+160:ncpus=128:mpiprocs=128:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -13,8 +13,6 @@ TILES=_90x90x$RANKS
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module swap PrgEnv-cray PrgEnv-intel
-module use /u/ojahn/software/modulefiles
-module load jahn/shtns/3.4.5_intel-2023.2.1
 
 # Set FI_PROVIDER may reduce MPI startup time 
 export FI_PROVIDER=cxi
@@ -36,4 +34,5 @@ ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
-mpiexec -n 20480 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
+ulimit -s unlimited
+mpiexec -n 20481 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES

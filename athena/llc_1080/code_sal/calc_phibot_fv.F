@@ -9,7 +9,7 @@ C     *==========================================================*
 C     | SUBROUTINE CALC_PHIBOT_FV                                |
 C     | o Integrate the in-situ density to find the 2-D mass     |
 C     |   anomaly                                                |
-C     | o This is basically he bouyancy relation 'OCEANIC',      |
+C     | o This is basically the bouyancy relation 'OCEANIC',     |
 C     |   integr_GeoPot=1 part of calc_phi_hyd.                  |
 C     *==========================================================*
 C     !USES:

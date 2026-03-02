@@ -120,12 +120,16 @@ C       |-- EMBED_FILES_INIT
 C       |
 C       |-- TIDES_INIT_FIXED
 C       |
+C       |-- SAL_INIT_FIXED
+C       |
 C       |-- MYPACKAGE_INIT_FIXED
 C       |
 C       |-- CTRL_INIT_FIXED
 C       |-- CTRL_ADMTLM
 C       |
 C       |-- DIAGNOSTICS_INIT_FIXED
+C       |
+C       |-- ASYNCIO_DRIVER_CONFIG
 
 C     !USES:
       IMPLICIT NONE
@@ -642,6 +646,15 @@ C--   needs to be called after the OASIS_INIT
       ENDIF
 #endif
 
+#ifdef ALLOW_SAL
+      IF (useSAL) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('SAL_INIT_FIXED',myThid)
+# endif
+        CALL SAL_INIT_FIXED(myThid)
+      ENDIF
+#endif
+
 #ifdef ALLOW_MYPACKAGE
       IF (useMYPACKAGE) THEN
 # ifdef ALLOW_DEBUG
@@ -680,6 +693,13 @@ C-    needs to call DIAGNOSTICS_INIT_FIXED after all package-diag-init calls
 # endif
         CALL DIAGNOSTICS_INIT_FIXED( myThid )
       ENDIF
+#endif
+
+#ifdef ALLOW_ASYNCIO
+#  ifdef ALLOW_DEBUG
+      IF (debugMode) CALL DEBUG_CALL('ASYNCIO_DRIVER_CONFIG',myThid)
+#  endif
+      CALL ASYNCIO_DRIVER_CONFIG( myThid  )
 #endif
 
 #ifdef ALLOW_DEBUG

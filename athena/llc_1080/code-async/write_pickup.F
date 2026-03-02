@@ -84,14 +84,12 @@ C     msgBuf      :: Informational/error message buffer
      &            AdamsBashforth_S = .FALSE. )
 #endif
 
-
 chenze
       COMMON /ICOUNTER_COMM/ ICOUNTER
       INTEGER ICOUNTER
       CHARACTER*(MAX_LEN_MBUF) suff
       WRITE(suff,'(I10.10)') myIter
 chenze
-
 
 C-    Initialise:
       DO j=1,listDim
@@ -103,7 +101,6 @@ C     Write model fields
 C     Going to really do some IO. Make everyone except master thread wait.
 C     this is done within IO routines => no longer needed
 c     _BARRIER
-
 
 chenze
 
@@ -123,8 +120,6 @@ chenze
 
       return
 chenze
-
-
 
       IF (pickup_write_mdsio) THEN
 
