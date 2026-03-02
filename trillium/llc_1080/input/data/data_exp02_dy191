@@ -109,7 +109,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0  =1105920,
+ nIter0  =1100160,
  endtime =31536000.,
  deltaT  = 15.,
  abEps   = 0.1,
@@ -160,9 +160,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC1080_v13b.bin',
- hydrogThetaFile='../run_1080_exp02_dy167_dy192/Theta.0001105920.data',
- hydrogSaltFile ='../run_1080_exp02_dy167_dy192/Salt.0001105920.data',
- uVelInitFile   ='../run_1080_exp02_dy167_dy192/U.0001105920.data',
- vVelInitFile   ='../run_1080_exp02_dy167_dy192/V.0001105920.data',
- pSurfInitFile  ='../run_1080_exp02_dy167_dy192/Eta.0001105920.data',
+ hydrogThetaFile='../run_1080_exp02_dy167_dy191/Theta.0001100160.data',
+ hydrogSaltFile ='../run_1080_exp02_dy167_dy191/Salt.0001100160.data',
+ uVelInitFile   ='../run_1080_exp02_dy167_dy191/U.0001100160.data',
+ vVelInitFile   ='../run_1080_exp02_dy167_dy191/V.0001100160.data',
+ pSurfInitFile  ='../run_1080_exp02_dy167_dy191/Eta.0001100160.data',
  /
