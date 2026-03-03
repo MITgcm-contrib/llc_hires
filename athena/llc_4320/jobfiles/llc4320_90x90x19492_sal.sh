@@ -1,6 +1,7 @@
 #!/bin/bash -x
 
 #PBS -l select=1:ncpus=1:model=tur_ath+127:ncpus=160:mpiprocs=160:model=tur_ath
+# #PBS -l select=1:ncpus=2:mpiprocs=1:ompthreads=2:model=tur_ath+127:ncpus=160:mpiprocs=160:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
