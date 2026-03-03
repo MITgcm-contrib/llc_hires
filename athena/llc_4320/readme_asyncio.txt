@@ -38,10 +38,11 @@
  cd $WORKDIR/MITgcm
  mkdir build$TILES
  cd $WORKDIR/MITgcm/build$TILES
- MOD=$WORKDIR/llc_hires/athena/llc_4320
- cp $MOD/code-async/SIZE.h$TILES SIZE.h
- ../tools/genmake2 -mpi -mods '$MOD/code-async $MOD/code' \
-  -of $MOD/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
+ MOD="$WORKDIR/llc_hires/athena/llc_4320"
+ cp "$MOD/code-async/SIZE.h$TILES" SIZE.h
+ ../tools/genmake2 -mpi \
+  -mods "$MOD/code-async $MOD/code" \
+  -of "$MOD/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio"
  make depend
  make -j
 
