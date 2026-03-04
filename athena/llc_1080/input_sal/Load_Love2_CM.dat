@@ -3,8 +3,8 @@
 # From: "Jean-Paul Boy" <jpboy@eost.u-strasbg.fr>
 # Date: Mon, 10 Jan 2005 15:10:08 +0100
 #
-# I send you first an updated version of Love numbers (from P. Gegout) up to 
-# degree 1024, expressed in the total Earth system (solid Earth + here 
+# I send you first an updated version of Love numbers (from P. Gegout, 2010)
+# up to degree 1024, expressed in the total Earth system (solid Earth + here 
 # atmosphere) reference frame.
 # k'n is of course -1 in this reference frame (the total contribution is 1+k), 
 # because there are no changes in the total Earth center of mass...
