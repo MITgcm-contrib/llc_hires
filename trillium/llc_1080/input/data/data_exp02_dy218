@@ -165,4 +165,5 @@
  uVelInitFile   ='../run_1080_exp02_dy154_dy218/U.0000313920.data',
  vVelInitFile   ='../run_1080_exp02_dy154_dy218/V.0000313920.data',
  pSurfInitFile  ='../run_1080_exp02_dy154_dy218/Eta.0000313920.data',
- /
+ checkIniSalt    = .FALSE.,
+/
