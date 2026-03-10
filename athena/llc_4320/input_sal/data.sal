@@ -4,7 +4,7 @@
  sal_model2llFile= '/nobackup/ojahn/forcing/sal/llc4320/llc4320_to_GL360x180XC0NS_conservative',
  sal_startTime=0.,
  sal_maskLand=.TRUE.,
- sal_loadSaveCfg=.TRUE.,
+ sal_loadSaveCfg=.FALSE.,
  sal_lon_0=0.,
  SAL_lat=89.23664166921837, 88.24777410640237, 87.25306674644102, 86.25703992758461, 85.26051260723112,
  84.26374309344151, 83.26683822854905, 82.26985012280363, 81.27280719835930, 80.27572626803541,

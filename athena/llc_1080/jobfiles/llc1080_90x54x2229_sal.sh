@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=1:ncpus=1:model=tur_ath+10:ncpus=256:mpiprocs=256:model=tur_ath
+#PBS -l select=10:ncpus=248:mpiprocs=248:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q normal
@@ -39,4 +39,4 @@ ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
-mpiexec -n 2561 ./mitgcmuv$TILES
+mpiexec -n 2480 ./mitgcmuv$TILES
