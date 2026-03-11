@@ -1,7 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=1:ncpus=1:model=tur_ath+127:ncpus=160:mpiprocs=160:model=tur_ath
-# #PBS -l select=1:ncpus=2:mpiprocs=1:ompthreads=2:model=tur_ath+127:ncpus=160:mpiprocs=160:model=tur_ath
+#PBS -l select=128:ncpus=158:mpiprocs=158:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -38,4 +37,9 @@ ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
 #mpiexec -n 20321 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
-mpiexec -n 20321 ./mitgcmuv$TILES
+
+# select * ncpus = 128 * 158 = 2024
+#mpiexec -n 20224 ./mitgcmuv$TILES
+
+# 4 * 158 (IO) + 123 * 158 + 58 (Compute) = 20124 
+mpiexec -n 20124 ./mitgcmuv$TILES

@@ -62,7 +62,9 @@ char (*allHostnames)[HOST_NAME_MAX+1]  = NULL;
 // If numRanksPerNode is set to be > 0, we just use that setting.
 // If it is <= 0, we dynamically determine the number of cores on
 // a node, and use that.  (N.B.: we assume *all* nodes being used in
-// the run have the *same* number of MPI processes on each.)
+// the run have the *same* number of MPI processes on each, except
+// possibly the last node, which is allowed to be short.)
+//int numRanksPerNode = 4;  //  FOR DEBUG ONLY !!  MUST BE ZERO FOR PRODUCTION !!
 int numRanksPerNode = 0;
 
 // Just an error check; can be zero (if you're confident it's all correct).
@@ -239,7 +241,7 @@ fieldInfoThisEpoch_t *epochStyles[] = {
 //    fieldsForEpochStyle_1,
 //    fieldsForEpochStyle_2,
 };
-int numEpochStyles = 1;
+int numEpochStyles = (sizeof(epochStyles) / sizeof(fieldInfoThisEpoch_t *));
 
 
 typedef enum {
@@ -289,7 +291,8 @@ int maxTagValue = -1;
 
 // routine to convert double to float during memcpy
 // need to get byteswapping in here as well
-void memcpy_r8_2_r4(float *f, double *d, long long *n)
+void
+memcpy_r8_2_r4 (float *f, double *d, long long *n)
 {
 long long i, rem;
 	rem = *n%16LL;
@@ -337,7 +340,8 @@ long long i, rem;
 
 
 // Debug routine
-void countBufs(int nbufs)
+void
+countBufs(int nbufs)
 {
     int nInUse, nFree;
     bufHdr_t *bufPtr;
@@ -1130,7 +1134,7 @@ ioRankMain (void)
 
 	      if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
 		char f;
-		while ((f = fieldInfo->dataFieldID) != 0){
+		while ((f = fieldInfo->dataFieldID) != '\0') {
 		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
 		  fprintf(stderr,"%s\n",s);
 		  res = unlink(s);
@@ -1563,17 +1567,29 @@ int
 isIORank(int commRank, int totalNumNodes, int numIONodes)
 {
     // Figure out if this rank is on a node that will do i/o.
-    // Note that the i/o nodes are distributed throughout the
-    // task, not clustered together.
+    // Note that the i/o nodes are interleaved throughout the
+    // job, not clustered together.
     int thisRankNode = commRank / numRanksPerNode;
 
     int ioNodeStride = totalNumNodes / numIONodes;
     int extra = totalNumNodes % numIONodes;
 
+    // The idea is simply to interleave the I/O nodes among the total
+    // nodes (starting with the first node) at the computed stride.
+    // This is fine, but due to round off it can leave a large block of
+    // nodes at the end (represented by the value "extra") that don't have
+    // a "nearby" I/O node.  It's not at all clear that this actually
+    // matters in any meaningful way, but I thought it looked ugly.
+    // So the overly-complicated scheme below increases the ioNodeStride
+    // by one until the "extra" nodes are used up (the "inflectionPoint"),
+    // and then reverts back to the un-augmented stride for the rest
+    // of the way.
+
     int inflectionPoint = (ioNodeStride+1)*extra;
     if (thisRankNode <= inflectionPoint) {
         return (thisRankNode % (ioNodeStride+1)) == 0;
-    } else {
+    }
+    else {
         return ((thisRankNode - inflectionPoint) % ioNodeStride) == 0;
     }
 
@@ -1586,49 +1602,66 @@ isIORank(int commRank, int totalNumNodes, int numIONodes)
 // node before going to the next, and that each node has the same
 // number of ranks (except possibly the last node, which is allowed
 // to be short).
+// Note that this is a collective routine for the comm, and requires
+// the global "allHostnames" to already be set in rank 0.
 int
 getNumRanksPerNode (MPI_Comm comm)
 {
-    char myHostname[HOST_NAME_MAX+1];
-    int status, count;
+    char tmpHostname[HOST_NAME_MAX+1];
+    int status, indx;
+    int blockSize, firstBlockSize;
     int commSize, commRank;
 
     MPI_Comm_size (comm, &commSize);
     MPI_Comm_rank (comm, &commRank);
 
-    status = gethostname (myHostname, HOST_NAME_MAX);
-    myHostname[HOST_NAME_MAX] = '\0';
-    ASSERT (0 == status);
+
+    // We assume "allHostnames" is already in order and doesn't need
+    // to be sorted.
 
     if (0 == commRank) {
+
         int nBlocks, ii, jj;
         assert (allHostnames != NULL);
 
-        // We assume these are already in-order and so don't
-        // need to be sorted.
+        // Count how many ranks have the same hostname as rank 0 (i.e. this rank)
+        status = gethostname (tmpHostname, HOST_NAME_MAX);
+        ASSERT (0 == status);
+        tmpHostname[HOST_NAME_MAX] = '\0';
 
-        // Count how many ranks have the same hostname as rank 0
-        for (count = 0;
-               (count < commSize) &&
-               (strcmp(&(allHostnames[count][0]), myHostname) == 0);
-             ++count);
-        ASSERT (count > 0);
+        indx = 0;
+        for (blockSize = 0;
+             (indx < commSize) && (strcmp (allHostnames[indx], tmpHostname) == 0);
+             ++indx, ++blockSize);
+        ASSERT (blockSize > 0);
+
+        firstBlockSize = blockSize;
+        ASSERT (indx < commSize);
 
         // Check that the count is consistent for each block of hostnames
         // (except possibly the last block, which might not be full).
-        nBlocks = commSize / count;
-
-        for (jj = 1;  jj < nBlocks;  ++jj) {
-            char *p = &(allHostnames[jj*count][0]);
-            for (ii = 0;  ii < count;  ++ii) {
-                char *q = &(allHostnames[jj*count + ii][0]);
-                ASSERT (strcmp (p, q) == 0);
+        while (indx < commSize) {
+            strcpy (tmpHostname, allHostnames[indx]);
+            for (blockSize = 0;
+                 (indx < commSize) && (strcmp (allHostnames[indx], tmpHostname) == 0);
+                 ++indx, ++blockSize);
+            if (blockSize != firstBlockSize) {
+                if (indx < commSize) {
+fprintf (stderr, "ERROR: mismatched ranks-per-host: firstHost = %d, thisHost = %d\n",
+firstBlockSize, blockSize);
+                    ASSERT (blockSize == firstBlockSize);
+                }
+                else {
+                    // The last block of hostnames may be short
+                    ASSERT (blockSize <= firstBlockSize);
+                }
             }
         }
     }
 
-    MPI_Bcast (&count, 1, MPI_INT, 0, comm);
-    return count;
+    // Rank 0 broadcasts the info
+    MPI_Bcast (&firstBlockSize, 1, MPI_INT, 0, comm);
+    return firstBlockSize;
 }
 
 
@@ -1722,15 +1755,35 @@ f1(
     // Figure out how many nodes we can use for i/o.
     // To make things (e.g. memory calculations) simpler, we want
     // a node to have either all compute ranks, or all i/o ranks.
-    // If numComputeRanks does not evenly divide numRanksPerNode, we have
-    // to round up in favor of the compute side.
+    // This gets a little tricky when e.g. we want to launch the
+    // code such that rank 0 is on a node with few (or none) other
+    // ranks (to give it extra memory).  The way we allow for this
+    // is that the last node (which is allowed to have fewer ranks)
+    // is assigned to be a compute node, and when we do the Comm_split,
+    // we reverse the numbering of the ranks, so that rank zero is
+    // assigned to be on that last node.
 
     totalNumNodes = divCeil(parentSize, numRanksPerNode);
-    numComputeNodes = divCeil(numComputeRanks, numRanksPerNode);
-    numIONodes = (parentSize - numComputeRanks) / numRanksPerNode;
-    ASSERT(numIONodes > 0);
-    ASSERT(numIONodes <= (totalNumNodes - numComputeNodes));
+
+    // Figure out the number of nodes we need for the compute side.
+
+    // Compute how many ranks are on the last node
+    int ranksLastNode = parentSize % numRanksPerNode;
+    if (0 == ranksLastNode) ranksLastNode = numRanksPerNode;
+
+    // Subtract off the number of ranks in the (possibly short) last node.
+    int remainingRanks = numComputeRanks - ranksLastNode;
+    if (remainingRanks < 0) remainingRanks = 0;
+
+    // numComputeNodes will be the last node, plus however many additional
+    // full nodes (rounded up) are required to cover the remaining ranks.
+    numComputeNodes = 1 + divCeil (remainingRanks, numRanksPerNode);
+
+    numIONodes = totalNumNodes - numComputeNodes;
     numIORanks = numIONodes * numRanksPerNode;
+
+    ASSERT (numIONodes > 0);
+    ASSERT (numIORanks + numComputeRanks <= parentSize);
 
 
     // Print out the hostnames, identifying which ones are i/o nodes
@@ -1751,33 +1804,74 @@ f1(
 
 
 
-    // It is surprisingly easy to launch the job with the wrong number
-    // of ranks, particularly if the number of compute ranks is not a
-    // multiple of numRanksPerNode (the tendency is to just launch one
-    // rank per core for all available cores).  So we introduce a third
-    // option for a rank: besides being an i/o rank or a compute rank,
-    // it might instead be an "excess" rank, in which case it just
-    // calls MPI_Finalize and exits.
+    // Split the parent comm into the compute part and the I/O part.
+    // There is a third option:  because the compute side uses an exact
+    // number of ranks, but we allocate in units of whole nodes, there
+    // can be some "excess" ranks on one compute node due to rounding.
+    // Ranks identified as "excess" just immediately call MPI_Finalize.
+    //
+    // In order to enable the option of launching rank zero onto a node
+    // with few (or none) other ranks, we reverse the numbering of the
+    // compute ranks as compared to their ordering in the parentComm.
+    // The last node (only) is allowed to be short, and the renumbering
+    // forces rank zero onto that last node.
 
-    typedef enum { isCompute, isIO, isExcess } rankType;
-    rankType thisRanksType;
+    typedef enum { isUnknown, isCompute, isIO, isExcess } rankType_t;
 
-    if (isIORank(parentRank, totalNumNodes, numIONodes)) {
-        thisRanksType = isIO;
-    } else if (parentRank >= numComputeRanks + numIORanks) {
-        thisRanksType = isExcess;
-    } else {
-        thisRanksType = isCompute;
+    // Figure out the rank assignments for *all* the ranks in the parentComm.
+    // And also the "key" value, which will determine the rank-order numbering
+    // in the MPI_Comm_split.  I/O ranks are numbered bottom-up, compute ranks
+    // are numbered top-down, w.r.t. the parentComm.
+    rankType_t rankType[parentSize];
+    int key[parentSize];
+    for (i = 0;  i < parentSize;  ++i) {
+        rankType[i] = isIORank(i, totalNumNodes, numIONodes) ? isIO : isUnknown;
+        key[i] = i;
+    }
+    j = 0;
+    for (i = parentSize - 1;  i >= 0;  --i) {
+        if (isUnknown == rankType[i]) {
+            rankType[i] = (j < numComputeRanks) ? isCompute : isExcess;
+            key[i] = j++;
+        }
     }
 
-    // Split the parent communicator into parts
-    MPI_Comm_split(parentComm, thisRanksType, parentRank, &newIntracomm);
+    // Pull out this rank's type and key
+    rankType_t thisRanksType = rankType[parentRank];
+    int thisRanksKey = key[parentRank];
+    ASSERT ( (isIO == thisRanksType) ||
+             (isCompute == thisRanksType) ||
+             (isExcess == thisRanksType) );
+
+    // Print out the rank assignments
+    if (0 == parentRank) {
+        fprintf (stderr, "Rank assignments:");
+        char *runningType = "isUnknown";
+        for (i = 0;  i < parentSize;  ++i) {
+            char *curType = (isCompute == rankType[i]) ? "isCompute" :
+                            (isIO == rankType[i]) ? "isIO" :
+                            (isExcess == rankType[i]) ? "isExcess" :
+                            "isUnknown";
+            if (strcmp(runningType,curType) != 0) {
+                fprintf (stderr, "%d\n%s  %d to ", i-1, curType, i);
+                runningType = curType;
+            }
+        }
+        fprintf (stderr, "%d\n", i-1);
+    }
+
+    // Split the parent communicator into parts.
+    // Note that the key value will cause the ordering of the isCompute
+    // ranks to be the reverse of their order in the parentComm.
+    MPI_Comm_split(parentComm, thisRanksType, thisRanksKey, &newIntracomm);
     MPI_Comm_rank(newIntracomm, &newIntracommRank);
 
     // Excess ranks disappear
     // N.B. "parentComm" (and parentSize) still includes these ranks, so
     // we cannot do MPI *collectives* using parentComm after this point,
-    // although the communicator can still be used for other things.
+    // although the communicator can still be used for other things
+    // (In particular, we use parentComm as the peer communicator when
+    // we set up the IO <--> Compute  inter-communicator.)
     if (isExcess == thisRanksType) {
         MPI_Finalize();
         exit(0);
@@ -1787,33 +1881,40 @@ f1(
     MPI_Comm_size(newIntracomm, &newIntracommSize);
     if (isIO == thisRanksType) {
         ASSERT(newIntracommSize == numIORanks);
+        if (0 == newIntracommRank) {
+            fprintf (stderr, "I/O Rank0:  pid %d on %s\n", getpid(), myHostname);
+        }
     } else {
+        ASSERT(isCompute == thisRanksType);
         ASSERT(newIntracommSize == numComputeRanks);
+        if (0 == newIntracommRank) {
+            fprintf (stderr, "COMPUTE Rank0:  pid %d on %s\n", getpid(), myHostname);
+        }
     }
 
 
     // Create a special intercomm from the i/o and compute parts
+    int remoteLeader;
     if (isIO == thisRanksType) {
         // Set globals
         ioIntracomm = newIntracomm;
         MPI_Comm_rank(ioIntracomm, &ioIntracommRank);
 
-        // Find the lowest computation rank
-        for (i = 0;  i < parentSize;  ++i) {
-            if (!isIORank(i, totalNumNodes, numIONodes)) break;
-        }
-    } else {  // isCompute
+        // Find the parentComm rank id that corresponds to rank-0
+        // of the isCompute intra-communicator.
+        remoteLeader = parentSize - 1;
+    }
+    else {  // isCompute
         // Set globals
         computeIntracomm = newIntracomm;
         MPI_Comm_rank(computeIntracomm, &computeIntracommRank);
 
-        // Find the lowest IO rank
-        for (i = 0;  i < parentSize;  ++i) {
-            if (isIORank(i, totalNumNodes, numIONodes)) break;
-        }
+        // Find the parentComm rank id that corresponds to rank-0
+        // of the isIO intra-communicator.
+        remoteLeader = 0;
     }
-    MPI_Intercomm_create(newIntracomm, 0, parentComm, i, 0, &globalIntercomm);
-
+    MPI_Intercomm_create (newIntracomm, 0, parentComm, remoteLeader, 0,
+                          &globalIntercomm);
 
 
     ///////////////////////////////////////////////////////////////////
@@ -1827,7 +1928,6 @@ f1(
 
         fieldInfoThisEpoch_t *thisEpochStyle = epochStyles[epochStyleIndex];
         int fieldAssignments[numIORanks];
-        int rankAssignments[numComputeRanks + numIORanks];
 
         // Count the number of fields in this epoch style
         for (nF = 0;  thisEpochStyle[nF].dataFieldID != '\0';  ++nF) ;
@@ -1843,19 +1943,19 @@ f1(
             ASSERT((fieldAssignments[i] >= 0) && (fieldAssignments[i] < nF));
         }
 
-        // Embed the i/o rank assignments into an array holding
-        // the assignments for *all* the ranks (i/o and compute).
-        // Rank assignment of "-1" means "compute".
+        // Take the "fieldAssignments" array, which is dense on the i/o ranks,
+        // and expand it to all the ranks in the parentComm, filling in -1
+        // for the non-IO ranks.
+        int ioField[parentSize];
         j = 0;
-        for (i = 0;  i < numComputeRanks + numIORanks;  ++i) {
-            rankAssignments[i] = isIORank(i, totalNumNodes, numIONodes)  ?
-                                 fieldAssignments[j++]  :  -1;
+        for (i = 0;  i < parentSize;  ++i) {
+            ioField[i] = isIORank(i, totalNumNodes, numIONodes) ?  fieldAssignments[j++] : -1;
         }
         // Sanity check.  Check the assignment for this rank.
         if (isIO == thisRanksType) {
-            ASSERT(fieldAssignments[newIntracommRank] == rankAssignments[parentRank]);
+            ASSERT(fieldAssignments[newIntracommRank] == ioField[parentRank]);
         } else {
-            ASSERT(-1 == rankAssignments[parentRank]);
+            ASSERT(-1 == ioField[parentRank]);
         }
         ASSERT(j == numIORanks);
 
@@ -1866,26 +1966,26 @@ f1(
         fflush (stdout);
 
 
-        // Find the lowest rank assigned to computation; use it as
-        // the "root" for the upcoming intercomm creates.
-        for (compRoot = 0; rankAssignments[compRoot] != -1;  ++compRoot);
-        // Sanity check
-        if ((isCompute == thisRanksType) && (0 == newIntracommRank)) ASSERT(compRoot == parentRank);
+        // We number the compute ranks backwards, so compute-rank-0 is the
+        // last rank of parentComm.  We use this as the "root" for the
+        // upcoming intercomm creates.
+        compRoot = parentSize - 1;
 
         // If this is an I/O rank, split the newIntracomm (which, for
         // the i/o ranks, is a communicator among all the i/o ranks)
-        // into the pieces as assigned.
+        // into the pieces assigned to each field.
 
         if (isIO == thisRanksType) {
             MPI_Comm fieldIntracomm;
-            int myField = rankAssignments[parentRank];
+            int myField = ioField[parentRank];
             ASSERT(myField >= 0);
 
             MPI_Comm_split(newIntracomm, myField, parentRank, &fieldIntracomm);
             thisEpochStyle[myField].ioRanksIntracomm = fieldIntracomm;
 
             // Now create an inter-communicator between the computational
-            // ranks, and each of the newly split off field communicators.
+            // rank's intra-communicator, and each of the newly split off
+            // per-field intra-communicators.
             for (i = 0;  i < nF;  ++i) {
 
                 // Do one field at a time to avoid clashes on parentComm
@@ -1925,9 +2025,9 @@ f1(
 
             for (fieldIndex = 0;  fieldIndex < nF;  ++fieldIndex) {
 
-                // Find the remote "root" process for this field
+                // Find the remote (i.e. isIO) "root" process for this field
                 int fieldRoot = -1;
-                while (rankAssignments[++fieldRoot] != fieldIndex);
+                while (ioField[++fieldRoot] != fieldIndex);
 
                 // Create the intercomm for this field for this epoch style
                 MPI_Intercomm_create(newIntracomm, 0, parentComm, fieldRoot,
@@ -1967,9 +2067,15 @@ f1(
 
             printf("\ncpu assignments, epoch style %d\n", epochStyleIndex);
             int whichIONode = -1;
-            for (i = 0; i < numComputeNodes + numIONodes ; ++i) {
+            for (i = 0;  i < numComputeNodes + numIONodes ;  ++i) {
 
-                if (rankAssignments[i*numRanksPerNode] >= 0) {
+                // We allocate whole nodes (to either I/O or compute),
+                // and we require that all the nodes except possibly the
+                // last node all have a full set of ranks.  So we can
+                // tell what type a node is by looking at the type of
+                // the first rank on that node.
+
+                if (ioField[i*numRanksPerNode] >= 0) {
 
                     // i/o node
                     ++whichIONode;
@@ -1980,7 +2086,7 @@ f1(
 
                     for (j = 0; j < numRanksPerNode; ++j) {
 
-                        int assignedField = rankAssignments[i*numRanksPerNode + j];
+                        int assignedField = ioField[i*numRanksPerNode + j];
                         int k, commRank, nChunks, isWriter;
                         nChunks = thisEpochStyle[assignedField].nChunks;
                         commRank = fieldIOCounts[assignedField];
@@ -2001,14 +2107,17 @@ f1(
                 } else {
 
                     // compute node
+                    int excessRankCount = 0,  computeRankCount = 0;
                     for (j = 0; j < numRanksPerNode; ++j) {
-                        if ((i*numRanksPerNode + j) >= (numComputeRanks + numIORanks)) break;
-                        ASSERT(-1 == rankAssignments[i*numRanksPerNode + j]);
+                        int rankIndex = i*numRanksPerNode + j;
+                        if (rankIndex >= parentSize) break;
+                        ASSERT(-1 == ioField[rankIndex]);
+                        if (isExcess == rankType[rankIndex]) ++excessRankCount;
+                        if (isCompute == rankType[rankIndex]) ++computeRankCount;
                     }
-                    printf(" #");
-                    for (; j < numRanksPerNode; ++j) {  // "excess" ranks (if any)
-                        printf("X");
-                    }
+                    printf(" #(%d", computeRankCount);
+                    if (excessRankCount > 0) printf("+%dexcess", excessRankCount);
+                    printf(")");
                 }
                 printf(" ");
             }
@@ -2207,6 +2316,11 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
         for (p = epochStyles[currentEpochStyle]; p->dataFieldID != '\0'; ++p) {
             if (p->dataFieldID == dataFieldID) break;
         }
+if (p->dataIntercomm == MPI_COMM_NULL) {
+fprintf(stderr,"ERROR f3: dataFieldID:%c(%d), style:%d, epoch:%d, priorField:%c(%d), priorEpoch:%d\n",
+dataFieldID, (int)dataFieldID, currentEpochStyle, epochID, priorDataFieldID, (int)priorDataFieldID, priorEpoch);
+sleep(2);  // Give the MPI infrastructute time to forward the message before we abort
+}
         // Make sure we found a valid field
         ASSERT(p->dataIntercomm != MPI_COMM_NULL);
 
