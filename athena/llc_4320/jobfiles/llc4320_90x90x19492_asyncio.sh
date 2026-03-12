@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=256:mpiprocs=160:model=tur_ath
+#PBS -l select=128:ncpus=158:mpiprocs=158:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -32,6 +32,9 @@ ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
-ln -sf /nobackupp27/dbwhitt/llc_4320/MITgcm_tillfeb112026/run_36x36x113847/R_*data .
 
-mpiexec -n 20480 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
+ulimit -s unlimited
+#mpiexec -n 20480 --cpu-bind none /u/scicon/tools/bin/mxbind.x -cs ./mitgcmuv$TILES
+
+# 4 * 158 (IO) + 123 * 158 + 58 (Compute) = 20124 
+mpiexec -n 20124 ./mitgcmuv$TILES

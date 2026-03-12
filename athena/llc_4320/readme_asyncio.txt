@@ -3,8 +3,8 @@
  WORKDIR=/nobackup/$USER/llc_4320
 
 # Uncomment 2 of following set of lines
-# RANKS=19492
-# TILES=_90x90x$RANKS
+ RANKS=19492
+ TILES=_90x90x$RANKS
 #
 # RANKS=29271
 # TILES=_72x72x$RANKS
@@ -18,8 +18,8 @@
 # RANKS=75435
 # TILES=_45x45x$RANKS
 #
- RANKS=116857
- TILES=_36x36x$RANKS
+# RANKS=116857
+# TILES=_36x36x$RANKS
 
 # 1. If not already done, download MITgcm checkpoint69f
 #    and MITgcm-contrib/llc_hires on athena
@@ -38,11 +38,10 @@
  cd $WORKDIR/MITgcm
  mkdir build$TILES
  cd $WORKDIR/MITgcm/build$TILES
- MOD="$WORKDIR/llc_hires/athena/llc_4320"
- cp "$MOD/code-async/SIZE.h$TILES" SIZE.h
- ../tools/genmake2 -mpi \
-  -mods "$MOD/code-async $MOD/code" \
-  -of "$MOD/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio"
+ MOD=$WORKDIR/llc_hires/athena/llc_4320
+ cp $MOD/code-async/SIZE.h$TILES SIZE.h
+ ../tools/genmake2 -mpi -mods "$MOD/code-async $MOD/code" \
+  -of $MOD/code-async/linux_amd64_ifort+mpi_cray_nas_tides_asyncio
  make depend
  make -j
 
