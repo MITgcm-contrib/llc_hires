@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=128:ncpus=163:mpiprocs=163:model=tur_ath
+#PBS -l select=128:ncpus=256:mpiprocs=163:model=tur_ath
 #PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
@@ -36,16 +36,12 @@ ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
-#mpiexec -n 20321 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
 
-# select * ncpus = 128 * 158 = 2024
-#mpiexec -n 20224 ./mitgcmuv$TILES
+# 3 * 156 (3 IO nodes) + 19492 (124 * 156 + 148 compute ranks) = 19960
+#mpiexec -n 19960 ./mitgcmuv$TILES
 
-# 8 * 163 (IO) + 19492 (119 * 163 + 95 Compute) = 20796
-mpiexec -n 20796 ./mitgcmuv$TILES
-
-# 4 * 158 (IO) + 19492 (123 * 158 + 58 Compute) = 20124 
+# 4 * 158 (4 IO nodes) + 19492 (123 * 158 + 58 compute ranks) = 20124 
 #mpiexec -n 20124 ./mitgcmuv$TILES
 
-# 3 * 156 (IO) + 19492 (124 * 156 + 148 Compute) = 19960
-#mpiexec -n 19960 ./mitgcmuv$TILES
+# 8 * 163 (8 IO nodes) + 19492 (119 * 163 + 95 compute ranks) = 20796
+mpiexec -n 20796 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES
