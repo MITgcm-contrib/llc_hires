@@ -1,0 +1,107 @@
+# *********************
+# External Forcing Data
+# *********************
+#
+ &EXF_NML_01
+#
+ useAtmWind        = .TRUE.,
+#
+#TO COMBINE WITH ALLOW_ZENITH_ANGLE:
+ exf_albedo        = 0.1,
+ useExfZenIncoming = .TRUE., 
+ select_ZenAlbedo  = 1,
+#
+ ocean_emissivity = 0.97,
+ ice_emissivity = 0.95,
+ snow_emissivity = 0.95,
+#
+ exf_iprec         = 32,
+ exf_yftype        = 'RL',
+ useExfYearlyFields= .TRUE.,
+ useExfCheckRange  = .FALSE.,
+ /
+#
+ &EXF_NML_02
+ atempfile         = 'EIG_tmp2m_degC_plus_ECCO_v4r1_ctrl_2000',
+ aqhfile           = 'EIG_spfh2m_plus_ECCO_v4r1_ctrl_2000',
+ precipfile        = 'EIG_rain_plus_ECCO_v4r1_ctrl_2000',
+ uwindfile         = 'EIG_u10m_2000',
+ vwindfile         = 'EIG_v10m_2000',
+ swdownfile        = 'EIG_dsw_plus_ECCO_v4r1_ctrl_2000',
+ lwdownfile        = 'EIG_dlw_plus_ECCO_v4r1_ctrl_2000',
+ runofffile        = 'runoff-2d-Fekete-1deg-mon-V4-SMOOTH.bin',
+#
+ atempperiod       = -12.,
+ aqhperiod         = -12.,
+ precipperiod      = -12.,
+ uwindperiod       = -12.,
+ vwindperiod       = -12.,
+ swdownperiod      = -12.,
+ lwdownperiod      = -12.,
+ runoffperiod      = -12,
+ /
+#
+ &EXF_NML_03
+ exf_offset_atemp  = 273.15,
+ exf_inscal_swdown = -1.0,
+ exf_inscal_lwdown = -1.0,
+ /
+#
+ &EXF_NML_04
+#
+ atemp_lon0      = -178.5,
+ atemp_lon_inc   = 3.0,
+ atemp_lat0      = -88.5,
+ atemp_lat_inc   = 59*3.0,
+ atemp_nlon      = 120,
+ atemp_nlat      = 60,
+#
+ aqh_lon0        = -178.5,
+ aqh_lon_inc     = 3.0,
+ aqh_lat0        = -88.5,
+ aqh_lat_inc     = 59*3.0,
+ aqh_nlon        = 120,
+ aqh_nlat        = 60,
+#
+ precip_lon0     = -178.5,
+ precip_lon_inc  = 3.0,
+ precip_lat0     = -88.5,
+ precip_lat_inc  = 59*3.0,
+ precip_nlon     = 120,
+ precip_nlat     = 60,
+#
+ uwind_lon0      = -178.5,
+ uwind_lon_inc   = 3.0,
+ uwind_lat0      = -88.5,
+ uwind_lat_inc   = 59*3.0,
+ uwind_nlon      = 120,
+ uwind_nlat      = 60,
+#
+ vwind_lon0      = -178.5,
+ vwind_lon_inc   = 3.0,
+ vwind_lat0      = -88.5,
+ vwind_lat_inc   = 59*3.0,
+ vwind_nlon      = 120,
+ vwind_nlat      = 60,
+#
+ swdown_lon0     = -178.5,
+ swdown_lon_inc  = 3.0,
+ swdown_lat0     = -88.5,
+ swdown_lat_inc  = 59*3.0,
+ swdown_nlon     = 120,
+ swdown_nlat     = 60,
+#
+ lwdown_lon0     = -178.5,
+ lwdown_lon_inc  = 3.0,
+ lwdown_lat0     = -88.5,
+ lwdown_lat_inc  = 59*3.0,
+ lwdown_nlon     = 120,
+ lwdown_nlat     = 60,
+#
+ runoff_lon0     = -178.5,
+ runoff_lon_inc  = 3.0,
+ runoff_lat0     = -88.5,
+ runoff_lat_inc  = 59*3.0,
+ runoff_nlon     = 120,
+ runoff_nlat     = 60,
+ /

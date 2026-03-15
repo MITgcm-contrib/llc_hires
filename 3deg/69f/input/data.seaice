@@ -1,0 +1,93 @@
+# SEAICE parameters
+ &SEAICE_PARM01
+
+      SEAICE_area_reg = 2.0e-2
+      SEAICE_hice_reg = 2.5e-3
+
+      SEAICEpresH0=2.,
+      SEAICEpresPow0=1,
+      SEAICEpresPow1=1,
+
+      SEAICE_strength = 2.25e4,
+
+# IGF Removing this hack 
+#      SEAICE_area_max = 0.97,      
+      SEAICE_area_max = 1.0,
+
+      SEAICE_no_slip     = .TRUE.,
+
+# IGF default values are 0.001.  Why are these values 1000 times larger
+# IGF      SEAICE_drag=1.00,
+# IGF      OCEAN_drag=1.00,
+
+# from Martin
+      SEAICEuseTILT=.FALSE.,
+	  
+      SEAICE_multDim=1,
+      SEAICErestoreUnderIce=.TRUE.,
+
+      SEAICE_salt0=4.,
+
+# ML:  I recommend 1.e-5 (only slightly more expensive)
+      LSR_ERROR          = 1.0e-5,
+
+      SEAICEuseDYNAMICS  = .TRUE.,
+      MIN_ATEMP          = -40.,
+      MIN_TICE           = -40.,
+      SEAICEadvScheme    = 33,
+
+# IGF THESE ARE ALL DEFAULTS
+#      SEAICEuseFluxForm = .TRUE.,
+#      SEAICEadvSnow      = .TRUE.,
+#      SEAICEuseFlooding  = .TRUE.,
+
+# ML : thinks we do not need these diffusion terms
+#      SEAICEdiffKhHeff   = 400.,
+#      SEAICEdiffKhArea   = 400.,
+#      SEAICEdiffKhSnow   = 400.,
+
+# IGF  unused
+#      SEAICE_frazilFrac  = 1.,
+#      SEAICEheatConsFix  = .TRUE.,
+
+      SEAICE_tempFrz0    = -1.96,
+      SEAICE_dTempFrz_dS = 0.,
+      SEAICEuseMetricTerms = .TRUE.,
+
+# ML says we don't need this anymore	  
+      SEAICE_clipVelocities = .FALSE.,
+
+# ML: will lead to zero velocities where there is no ice (no need for clipping
+# velocities anymore) 
+      SEAICEscaleSurfStress = .TRUE.,
+
+# ML: not important just more consistent
+      SEAICEaddSnowMass = .TRUE.,
+
+# ML this makes more sense than 30, but may not work with adjoint. If you
+# don't use the adjoint, then I would use this default or 33
+# SEAICEadvScheme = 77,
+
+# only makes sense with SEAICE_multDim > 1, but then it makes a lot of sense
+# SEAICE_useMultDimSnow = .TRUE.
+
+# ML: the following are for better stability of the solver
+      SEAICE_OLx = 2
+      SEAICE_OLy = 2
+      SEAICEetaZmethod = 3
+
+
+#take 33% out of (1-albedo)
+      SEAICE_dryIceAlb   = 0.84,
+      SEAICE_wetIceAlb   = 0.78,
+      SEAICE_drySnowAlb  = 0.90,
+      SEAICE_wetSnowAlb  = 0.8 ,
+#default albedos
+      SEAICE_dryIceAlb_south   = 0.75
+      SEAICE_wetIceAlb_south   = 0.66
+      SEAICE_drySnowAlb_south  = 0.84
+      SEAICE_wetSnowAlb_south  = 0.7 
+ /
+#
+ &SEAICE_PARM02
+ /
