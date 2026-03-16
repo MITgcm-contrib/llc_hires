@@ -96,7 +96,7 @@
  useRealFreshWaterFlux=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
- temp_EvPrRn=0.,
+#DBW temp_EvPrRn=0.,
  implicSurfPress = 0.6,
  implicDiv2DFlow = 0.6,
  select_rStar=2,
@@ -109,14 +109,14 @@
 
 # Time stepping parameters
  &PARM03
- nIter0 = 40200,
- endtime= 486000.,
- deltaT = 12.,
+ nIter0 = 7400,
+ endtime= 136800.,
+ deltaT = 18.,
  abEps  = 0.1,
  forcing_In_AB=.FALSE.,
  momDissip_In_AB=.FALSE.,
- dumpfreq = 600.,
- monitorFreq = 60.,
+ dumpfreq = 900.,
+ monitorFreq = 90.,
  dumpInitAndLast=.FALSE.,
  /
 
@@ -160,9 +160,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC4320_v16b.bin',
- hydrogThetaFile='/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/Theta.0000040200.data',
- hydrogSaltFile ='/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/Salt.0000040200.data',
- uVelInitFile   ='/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/U.0000040200.data',
- vVelInitFile   ='/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/V.0000040200.data',
- pSurfInitFile  ='/nobackup/kzhang/llc_4320/MITgcm/run_0000040200/Eta.0000040200.data',
+ hydrogThetaFile='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/Theta.0000007400.data',
+ hydrogSaltFile ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/Salt.0000007400.data',
+ uVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/U.0000007400.data',
+ vVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/V.0000007400.data',
+ pSurfInitFile  ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/Eta.0000007400.data',
  /

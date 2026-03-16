@@ -3,10 +3,10 @@
  WORKDIR=/nobackup/$USER/llc_4320
 
 # Uncomment 2 of following set of lines
- RANKS=19492
+ RANKS=19493
  TILES=_90x90x$RANKS
 #
-# RANKS=29271
+# RANKS=30069
 # TILES=_72x72x$RANKS
 #
 # RANKS=52771

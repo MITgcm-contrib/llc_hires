@@ -1,14 +1,14 @@
 #!/bin/bash -x
 
-#PBS -l select=118:ncpus=256:mpiprocs=256:model=tur_ath
-#PBS -l walltime=2:00:00
+#PBS -l select=128:ncpus=256:mpiprocs=163:model=tur_ath
+#PBS -l walltime=24:00:00
 #PBS -l place=scatter:excl
 #PBS -q wide
 #PBS -j oe
 
 # Define tiling configuration
-RANKS=29271
-TILES=_72x72x$RANKS
+RANKS=19493
+TILES=_90x90x$RANKS
 
 # Switch to ProEnv-intel instead of PrgEnv-cray
 source /opt/cray/pe/modules/3.2.11.7/init/bash
@@ -25,6 +25,8 @@ mkdir run$TILES
 cd $WORKDIR/MITgcm/run$TILES
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
+cp ../../llc_hires/athena/llc_4320/input_sal/* .
+cp ../../llc_hires/athena/llc_1080/input_sal/Load_Love2_CM.dat .
 cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
@@ -32,6 +34,8 @@ ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
-ln -sf /nobackup/dbwhitt/llc_4320/grid_interp_out/*.bin .
 
-mpiexec -n 30208 ./mitgcmuv$TILES
+ulimit -s unlimited
+
+# 8 * 163 (8 IO nodes) + 19493 (119 * 163 + 96 compute ranks) = 20797
+mpiexec -n 20797 --cpu-bind none /u/scicon/tools/bin/mbind.x -cs ./mitgcmuv$TILES

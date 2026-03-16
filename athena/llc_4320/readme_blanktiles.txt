@@ -10,8 +10,8 @@
 # TILES=_72x72x$RANKS
 
 # Choose 2 of following lines for MItgcm shared memory example
-# RANKS=23400
-# TILES=_72x72x2x$RANKS
+RANKS=23400
+TILES=_72x72x2x$RANKS
 #
 # RANKS=41600
 # TILES=_54x54x2x$RANKS
@@ -22,8 +22,8 @@
 # RANKS=59904
 # TILES=_45x45x2x$RANKS
 #
-RANKS=62400
-TILES=_36x36x3x$RANKS
+# RANKS=62400
+# TILES=_36x36x3x$RANKS
 
 # 1. If not already done, download MITgcm checkpoint69f
 #    and MITgcm-contrib/llc_hires on athena
@@ -57,9 +57,9 @@ TILES=_36x36x3x$RANKS
  wc -l blank
 
 # 5. Create new SIZE.h and data.exch2, for example,
-#    llc_hires/athena/llc_4320/code-async/SIZE.h_72x72x29271
-#    llc_hires/athena/llc_4320/input/data.exch2_72x72x29271
-#    where 11152 = 4320*4320*13/sNx/sNy - "results of wc -l blank"
+#    llc_hires/athena/llc_4320/code-async/SIZE.h_72x72x30069
+#    llc_hires/athena/llc_4320/input/data.exch2_72x72x30069
+#    where 30069 = 4320*4320*13/sNx/sNy - "results of wc -l blank"
 #    in SIZE.h adjust __sNx __sNy __nPx
 #    and blanklist in data.exch2 comes from file "blank"
 
