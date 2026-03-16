@@ -3,23 +3,20 @@
 # *********************
 #
  &EXF_NML_01
-#
- useAtmWind        = .TRUE.,
-#
 #TO COMBINE WITH ALLOW_ZENITH_ANGLE:
  exf_albedo        = 0.1,
  useExfZenIncoming = .TRUE., 
  select_ZenAlbedo  = 1,
 #
- ocean_emissivity = 0.97,
- ice_emissivity = 0.95,
- snow_emissivity = 0.95,
-#
+ ocean_emissivity  = 0.97,
+ ice_emissivity    = 0.95,
+ snow_emissivity   = 0.95,
  exf_iprec         = 32,
  exf_yftype        = 'RL',
  useExfYearlyFields= .TRUE.,
  useExfCheckRange  = .FALSE.,
- /
+ useRelativeWind   = .TRUE.,
+ &
 #
  &EXF_NML_02
  atempfile         = 'EIG_tmp2m_degC_plus_ECCO_v4r1_ctrl_2000',
@@ -34,18 +31,18 @@
  atempperiod       = -12.,
  aqhperiod         = -12.,
  precipperiod      = -12.,
+ runoffperiod      = -12,
  uwindperiod       = -12.,
  vwindperiod       = -12.,
  swdownperiod      = -12.,
  lwdownperiod      = -12.,
- runoffperiod      = -12,
- /
+ &
 #
  &EXF_NML_03
- exf_offset_atemp  = 273.15,
- exf_inscal_swdown = -1.0,
- exf_inscal_lwdown = -1.0,
- /
+ exf_offset_atemp   = 273.15,
+ exf_inscal_swdown  = -1.0,
+ exf_inscal_lwdown  = -1.0,
+ &
 #
  &EXF_NML_04
 #
@@ -104,4 +101,4 @@
  runoff_lat_inc  = 59*3.0,
  runoff_nlon     = 120,
  runoff_nlat     = 60,
- /
+ &

@@ -14,14 +14,23 @@
 #
   dumpatlast = .TRUE.,
 #---   
-  frequency(1) = 86400.,
-   fields(1,1) = 'SIarea  ',
-   filename(1) = 'SIarea',
+  frequency(1) = 3600.,
+   fields(1,1) = 'SALT    ',
+   levels(1,2) = 1.,
+   filename(1) = 'SSS',
 #--- 
-  frequency(2) = 86400.,
+  frequency(2) = 3600.,
    fields(1,2) = 'THETA   ',
    levels(1,2) = 1.,
    filename(2) = 'SST',
+#--- 
+  frequency(3) = 3600.,
+   fields(1,3) = 'oceQnet ',
+   filename(3) = 'oceQnet',
+#--- 
+  frequency(4) = 3600.,
+   fields(1,4) = 'oceFWflx',
+   filename(4) = 'oceFWflx',
  /
 
 # Parameter for Diagnostics of per level statistics:
