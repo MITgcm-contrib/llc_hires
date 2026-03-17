@@ -38,14 +38,6 @@ C--  Print out some key parameters:
 
 C--  Check parameters:
 
-       IF (SAL_NLON.NE.SAL_NLAT .AND. SAL_NLON.NE.2*SAL_NLAT) THEN
-        WRITE(msgBuf,'(2A)') 'SAL_CHECK:',
-     &       ' SAL_NLON must equal SAL_NLAT or 2*SAL_NLAT'
-        CALL PRINT_ERROR( msgBuf , 1)
-        CALL ALL_PROC_DIE( 0 )
-        STOP 'ABNORMAL END: S/R SAL_CHECK'
-       ENDIF
-
        IF (SAL_ll2modelMethod.LT.1 .OR. SAL_ll2modelMethod.GT.2) THEN
         WRITE(msgBuf,'(2A)') 'SAL_CHECK:',
      &       ' SAL_ll2modelMethod must be 1 or 2'
