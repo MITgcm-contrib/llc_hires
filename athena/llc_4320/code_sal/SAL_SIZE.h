@@ -16,8 +16,8 @@ C                   larger for bilinear and bicubic
       INTEGER SAL_LMAX
       INTEGER SAL_MAXM2G
       PARAMETER(SAL_NLAT   = 48)
-      PARAMETER(SAL_NLON   = SAL_NLAT*2)
+      PARAMETER(SAL_NLON   = 84)
       PARAMETER(SAL_LMAX   = 40)
-      PARAMETER(SAL_MAXM2G = 20000)
+      PARAMETER(SAL_MAXM2G = (sNx+2*OLx)*(sNy+2*OLy))
 CEOP
 #endif /* ALLOW_SAL */

@@ -1,7 +1,7 @@
  &SAL_PARM01
  sal_LoveFile= 'Load_Love2_CM.dat',
  sal_refFile= '/nobackupp27/dbwhitt/llc_4320/OUT/proc/calc_mean/PhiBotMean_spnp.data',
- sal_model2llFile= '/nobackup/ojahn/forcing/sal/llc4320/llc4320_to_GL96x48XC0NS_conservative',
+ sal_model2llFile= '/nobackup/ojahn/forcing/sal/llc4320/llc4320_to_GL84x48XC0NS_conservative',
  sal_startTime=0.,
  sal_maskLand=.TRUE.,
  sal_loadSaveCfg=.FALSE.,
