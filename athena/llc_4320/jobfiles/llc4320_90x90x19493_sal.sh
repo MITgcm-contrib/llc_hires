@@ -20,8 +20,7 @@ export FI_CXI_RX_MATCH_MODE=hybrid
 export FI_CXI_DEFAULT_TX_SIZE=4096
 
 WORKDIR=/nobackup/$USER/llc_4320
-cd $WORKDIR/MITgcm
-mkdir run$TILES
+mkdir $WORKDIR/MITgcm/run$TILES
 cd $WORKDIR/MITgcm/run$TILES
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_4320/input/* .
