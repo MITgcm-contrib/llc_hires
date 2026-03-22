@@ -56,7 +56,7 @@ ssh athfe01
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module switch PrgEnv-cray PrgEnv-intel
 module use /u/ojahn/software/modulefiles
-module load jahn/shtns/3.4.5_intel-2023.2.1
+module load jahn/shtns/3.7.5_intel-2023.2.1
 
 # 1
 # download MITgcm checkpoint69f and MITgcm-contrib/llc_hires
@@ -110,7 +110,7 @@ ssh athfe01
 source /opt/cray/pe/modules/3.2.11.7/init/bash
 module switch PrgEnv-cray PrgEnv-intel
 module use /u/ojahn/software/modulefiles
-module load jahn/shtns/3.4.5_intel-2023.2.1
+module load jahn/shtns/3.7.5_intel-2023.2.1
 
 # 1
 # download MITgcm checkpoint69f and MITgcm-contrib/llc_hires

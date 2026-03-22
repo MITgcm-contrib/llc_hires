@@ -37,7 +37,7 @@
  source /opt/cray/pe/modules/3.2.11.7/init/bash
  module swap PrgEnv-cray PrgEnv-intel
  module use /u/ojahn/software/modulefiles
- module load jahn/shtns/3.4.5_intel-2023.2.1_cray-fftw
+ module load jahn/shtns/3.7.5_intel-2023.2.1
  cd $WORKDIR/MITgcm
  mkdir build$TILES
  cd $WORKDIR/MITgcm/build$TILES
