@@ -1,4 +1,5 @@
 Written 02/20/2026 by Hugo Plombat
+Edited 03/23/2026 
 
 Guide to use my tidal analysis programs.
 ####################
@@ -41,9 +42,9 @@ Note: you will need .meta files associated with your time series. I you don't ha
 ####################################
 - This part will make use of JupyterNotebook. I prefer to do the analysis locally, which requires to pull a bunch of stuff from the cluster:
 	- The 13 .nc files generated above
-	- The grid files folder (e.g. run_dan. I left a copy of it in /nobackup/hplombat)
+	- The grid files folder (e.g. run_dan)
 	- A folder containing 1 point of a time series from a simulation using the same grid files as the one we are studying
-		(I use Eta_1point and left a copy of it it /nobackup/hplombat).  
+		(I use Eta_1point that I added in the github repo so you can avoid this pull by using it).  
 		Doesn't matter which simulation it's from or the physical quantity it is, the point is just to easily access grid files.
 		There is for sure a smarter way, but that's the one I came up with.
 
@@ -58,4 +59,6 @@ Note: you will need .meta files associated with your time series. I you don't ha
 	There are filter options to separate deep and shallow parts of the ocean, or to exclude the poles. 
 	I left an example of usage of the notebook to give an idea. But you will need to bring your own mitgcm tides files :)
 	
-	
+03/23/2026 edit:
+A new function is available in 'analyze_mitgcm_compare_tpxollc.ipynb'. We can now compute the tidal workrate for 8 of the constituents. 
+An example is available at the end of the notebook.
