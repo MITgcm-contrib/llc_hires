@@ -165,4 +165,5 @@
  uVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/U.0000007400.data',
  vVelInitFile   ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/V.0000007400.data',
  pSurfInitFile  ='/nobackupp27/dbwhitt/llc_4320/MITgcm/run_sal_90x90x19493/run_0000007400/Eta.0000007400.data',
+ checkIniSalt    = .FALSE.,
  /
