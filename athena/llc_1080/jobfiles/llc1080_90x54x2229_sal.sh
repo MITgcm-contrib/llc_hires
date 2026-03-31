@@ -29,7 +29,7 @@ cp data_asyncio data
 cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc1080/run_template/*1jan23* .
-ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
+ln -sf /nobackup/kzhang/llc1080/run_template/*JRA55* .
 ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
 ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
