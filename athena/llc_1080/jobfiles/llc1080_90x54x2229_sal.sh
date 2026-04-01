@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-#PBS -l select=10:ncpus=248:mpiprocs=248:model=tur_ath
+#PBS -l select=10:ncpus=256:mpiprocs=248:model=tur_ath
 #PBS -l walltime=2:00:00
 #PBS -l place=scatter:excl
 #PBS -q normal
@@ -38,4 +38,5 @@ ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited
-mpiexec -n 2480 ./mitgcmuv$TILES
+# 1 * 248 (1 IO nodes) + 2229 (8 * 248 + 245 compute ranks) = 2477
+mpiexec -n 2477 ./mitgcmuv$TILES

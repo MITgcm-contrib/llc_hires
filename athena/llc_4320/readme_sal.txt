@@ -38,8 +38,7 @@
  module swap PrgEnv-cray PrgEnv-intel
  module use /u/ojahn/software/modulefiles
  module load jahn/shtns/3.7.5_intel-2023.2.1
- cd $WORKDIR/MITgcm
- mkdir build$TILES
+ mkdir $WORKDIR/MITgcm/build$TILES
  cd $WORKDIR/MITgcm/build$TILES
  MOD=$WORKDIR/llc_hires/athena/llc_4320
  cp $MOD/code-async/SIZE.h$TILES SIZE.h

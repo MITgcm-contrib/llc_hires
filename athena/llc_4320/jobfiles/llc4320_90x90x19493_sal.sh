@@ -29,7 +29,7 @@ cp ../../llc_hires/athena/llc_1080/input_sal/Load_Love2_CM.dat .
 cp data.exch2$TILES data.exch2
 
 ln -sf /nobackup/kzhang/llc_4320/run_template/* .
-ln -sf /nobackup/kzhang/llc1080/run_template/jra55* .
+ln -sf /nobackup/kzhang/llc1080/run_template/*JRA55* .
 ln -sf /nobackup/dmenemen/tarballs/llc_4320/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
