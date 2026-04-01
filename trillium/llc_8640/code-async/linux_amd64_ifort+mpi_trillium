@@ -88,6 +88,12 @@ if [ "x$NETCDF" != x ] ; then
 fi
 
 CSPICE_ROOT=/project/rrg-peltier-ac/momenika/SPICE
+FFTW_ROOT=/project/rrg-peltier-ac/momenika/FFTW
+SHTns_ROOT=/project/rrg-peltier-ac/momenika/SHTns
 
 INCLUDES="$INCLUDES -I${CSPICE_ROOT}/include"
+INCLUDES="$INCLUDES -I${FFTW_ROOT}/include"
+INCLUDES="$INCLUDES -I${SHTns_ROOT}/include"
+
 LIBS="$LIBS -L${CSPICE_ROOT}/lib -lcspice -lcsupport"
+LIBS="$LIBS -L${SHTns_ROOT}/lib -lshtns -L${FFTW_ROOT}/lib -lfftw3 -lm"
