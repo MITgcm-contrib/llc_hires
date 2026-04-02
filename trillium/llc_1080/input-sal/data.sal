@@ -1,7 +1,7 @@
  &SAL_PARM01
  sal_LoveFile= 'Load_Love2_CM.dat',
  sal_refFile= 'Dan_PhiBot_ref.bin',
- sal_model2llFile= '/nobackup/ojahn/forcing/sal/llc1080/llc1080_to_GL84x48XC0NS_conservative',
+ sal_model2llFile= '/project/rrg-peltier-ac/momenika/sal/llc1080/llc1080_to_GL84x48XC0NS_conservative',
  sal_startTime=0.,
  sal_maskLand=.TRUE.,
  sal_loadSaveCfg=.FALSE.,
