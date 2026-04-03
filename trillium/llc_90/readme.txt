@@ -49,4 +49,4 @@
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 113 ./mitgcmuv
+  mpiexec -n 96 ./mitgcmuv
