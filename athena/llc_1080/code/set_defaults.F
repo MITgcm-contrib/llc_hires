@@ -370,6 +370,9 @@ C-    I/O params:
       readBinaryPrec    = precFloat32
       writeBinaryPrec   = precFloat32
       rwSuffixType      = 0
+      asyncio_2Dcompressed = .FALSE.
+      asyncio_3Dcompressed = .FALSE.
+      asyncio_3DtopLevel   = .FALSE.
 
 C--   Input files
       bathyFile       = ' '

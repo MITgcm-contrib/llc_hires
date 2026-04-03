@@ -287,7 +287,8 @@ C--   Time stepping parammeters
      & tauThetaClimRelax, tauSaltClimRelax, latBandClimRelax,
      & tauThetaClimRelax3Dim, tauSaltClimRelax3Dim,
      & periodicExternalForcing, externForcingPeriod, externForcingCycle,
-     & calendarDumps
+     & calendarDumps,
+     & asyncio_2Dcompressed, asyncio_3Dcompressed, asyncio_3DtopLevel
 
 C--   Gridding parameters
       NAMELIST /PARM04/

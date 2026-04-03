@@ -428,6 +428,10 @@ C     snapshot_mdsio     :: use mdsio for "snapshot" (dumpfreq/diagfreq) output
 C     monitor_stdio      :: use stdio for monitor output
 C     dumpInitAndLast :: dumps model state to files at Initial (nIter0)
 C                        & Last iteration, in addition multiple of dumpFreq iter.
+C     asyncio_2Dcompressed :: Whether or not asyncio writes out 2D fields in compressed format
+C     asyncio_3Dcompressed :: Whether or not asyncio writes out 3D fields in compressed format
+C     asyncio_3DtopLevel   :: Whether or not asyncio writes out SSU, SSV, SST, and SSS,
+C                             the top-levels of following 3D fields: U, V, Theta, and Salt
 
       COMMON /PARM_L/
      & fluidIsAir, fluidIsWater,
@@ -469,7 +473,8 @@ C                        & Last iteration, in addition multiple of dumpFreq iter
      & pickup_read_mdsio, pickup_write_mdsio, pickup_write_immed,
      & writePickupAtEnd,
      & timeave_mdsio, snapshot_mdsio, monitor_stdio,
-     & outputTypesInclusive, dumpInitAndLast
+     & outputTypesInclusive, dumpInitAndLast,
+     & asyncio_2Dcompressed, asyncio_3Dcompressed, asyncio_3DtopLevel
 
       LOGICAL fluidIsAir
       LOGICAL fluidIsWater
@@ -570,6 +575,9 @@ C                        & Last iteration, in addition multiple of dumpFreq iter
       LOGICAL timeave_mdsio, snapshot_mdsio, monitor_stdio
       LOGICAL outputTypesInclusive
       LOGICAL dumpInitAndLast
+      LOGICAL asyncio_2Dcompressed
+      LOGICAL asyncio_3Dcompressed,
+      LOGICAL asyncio_3DtopLevel
 
 C--   COMMON /PARM_R/ "Real" valued parameters used by the model.
 C     cg2dTargetResidual
