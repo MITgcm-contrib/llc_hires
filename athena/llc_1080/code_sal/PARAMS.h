@@ -581,9 +581,9 @@ C                               the top-levels of following 3D fields: U, V, The
       LOGICAL outputTypesInclusive
       LOGICAL dumpInitAndLast
       LOGICAL asyncio_2Dcompressed
-      LOGICAL asyncio_3Dcompressed,
+      LOGICAL asyncio_3Dcompressed
       LOGICAL asyncio_2Duncompressed
-      LOGICAL asyncio_3Duncompressed,
+      LOGICAL asyncio_3Duncompressed
       LOGICAL asyncio_3DtopLevel
 
 C--   COMMON /PARM_R/ "Real" valued parameters used by the model.

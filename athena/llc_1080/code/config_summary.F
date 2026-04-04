@@ -851,6 +851,23 @@ c    &     'pickup_write_immed =','   /* Model IO flag. */')
       CALL WRITE_0D_L(snapshot_mnc,INDEX_NONE,
      &     'snapshot_mnc =', '   /* Model IO flag. */')
 #endif
+#ifdef ALLOW_ASYNCIO
+      CALL WRITE_0D_L(asyncio_2Dcompressed,INDEX_NONE,
+     &     'asyncio_2Dcompressed =', '   /* Model ASYNCIO flag. */')
+      CALL WRITE_0D_L(asyncio_3Dcompressed,INDEX_NONE,
+     &     'asyncio_3Dcompressed =', '   /* Model ASYNCIO flag. */')
+      CALL WRITE_0D_L(asyncio_2Duncompressed,INDEX_NONE,
+     &     'asyncio_2Duncompressed =', '   /* Model ASYNCIO flag. */')
+      CALL WRITE_0D_L(asyncio_3Duncompressed,INDEX_NONE,
+     &     'asyncio_3Duncompressed =', '   /* Model ASYNCIO flag. */')
+      CALL WRITE_0D_L(asyncio_3DtopLevel,INDEX_NONE,
+     &     'asyncio_3DtopLevel =', '   /* Model ASYNCIO flag. */')
+      i = ILNBLNK(asyncio_maskDir)
+      IF ( i.GT.0 ) THEN
+        CALL WRITE_0D_C( asyncio_maskDir, i, INDEX_NONE,
+     &    'asyncio_maskDir = ', '/* Directory of mask files */' )
+      ENDIF
+#endif
       CALL WRITE_0D_RL( monitorFreq, INDEX_NONE,'monitorFreq =',
      &'   /* Monitor output interval ( s ). */')
       CALL WRITE_0D_I( monitorSelect, INDEX_NONE, 'monitorSelect =',
