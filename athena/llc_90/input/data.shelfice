@@ -2,7 +2,7 @@
 # Parameter for SHELFICE package
 # ******************************
  &SHELFICE_PARM01
- SHELFICEtopoFile   = 'BEDMACHINE_on_LLC1080_v13.bin',
+ SHELFICEtopoFile   = 'ICE_DRAFT_ICE_SHELF_CAVITY_PLUS_ICE_FRONT_LLC_0090.bin',
  SHELFICEconserve = .TRUE.,
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
