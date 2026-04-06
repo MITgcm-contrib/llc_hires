@@ -1,0 +1,9 @@
+\begindata
+KERNELS_TO_LOAD=(
+'kernels/lsk/naif0012.tls',
+'kernels/fk/planets/earth_assoc_itrf93.tf',
+'kernels/spk/planets/de430.bsp',
+'kernels/pck/pck00010.tpc',
+'kernels/pck/gm_de431.tpc'
+)
+\begintext
