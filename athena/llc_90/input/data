@@ -45,7 +45,6 @@
  implicDiv2DFlow = 0.6,
  select_rStar=2,
  nonlinFreeSurf=4,
- usesinglecpuio=.TRUE.,
  /
 
 # Elliptic solver parameters
@@ -63,6 +62,12 @@
  dumpfreq = 600.,
  monitorFreq = 15.,
  dumpInitAndLast=.FALSE.,
+ asyncio_2Dcompressed=.FALSE.,
+ asyncio_3Dcompressed=.FALSE.,
+ asyncio_2Duncompressed=.TRUE.,
+ asyncio_3Duncompressed=.TRUE.,
+ asyncio_3DtopLevel=.FALSE.,
+ asyncio_maskDir='/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/',
  /
 
 # Gridding parameters
