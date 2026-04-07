@@ -31,4 +31,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
+ AreaFile              = 'SIarea_2050212_dailymean.bin',
+ HsnowFile             = 'SIhsnow_2050212_dailymean.bin',
+ HeffFile              = 'SIheff_2050212_dailymean.bin',
+ HsaltFile             = 'SIhsalt_2050212_dailymean.bin',
+ UiceFile              = 'SIuice_2050212_dailymean.bin',
+ ViceFile              = 'SIvice_2050212_dailymean.bin',
  &

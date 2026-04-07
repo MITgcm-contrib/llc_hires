@@ -26,20 +26,13 @@ cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_90/input/* .
 cp ../../llc_hires/athena/llc_90/input_sal/* .
 
-  INPUTDIR='/nobackup/hzhang1/pub/Release5'
-  ln -s $INPUTDIR/input_bin/* .
-  ln -s $INPUTDIR/TBADJ .
-
-  MOD=$WORKDIR/ESS25-Team_TOTS/ECCOv4r5_tides_sal
-  cp -r $MOD/input/* .
-
-ln -sf /nobackup/kzhang/llc1080/run_template/*1jan23* .
+INPUTDIR='/nobackup/hzhang1/pub/Release5'
+ln -s $INPUTDIR/input_bin/tile* .
+ln -s $INPUTDIR/input_bin/ICE* .
+ln -s $INPUTDIR/input_bin/BATHY* .
+ln -s $INPUTDIR/input_bin/*_2050212_dailymean.bin .
 ln -sf /nobackup/kzhang/llc1080/run_template/*JRA55* .
-ln -sf /nobackup/kzhang/llc1080/run_template/*_on_LLC1080_v13* .
-ln -sf /nobackup/dmenemen/tarballs/llc_1080/run_template/tile00* .
 ln -sf /nobackup/hzhang1/forcing/era5 .
-ln -sf /nobackup/hzhang1/pub/llc1080/*.bin .
-ln -sf /nobackup/ojahn/forcing/sal/llc1080/*.bin .
 ln -sf /nobackup/dmenemen/forcing/SPICE/kernels .
 
 ulimit -s unlimited

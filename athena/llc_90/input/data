@@ -83,7 +83,7 @@
 # Input datasets
  &PARM05
  bathyFile      ='BATHY_ICE_SHELF_CAVITY_PLUS_ICE_FRONT_LLC_0090.bin',
- hydrogThetaFile='T_OWPv1_M_eccollc_90x50.bin',
- hydrogSaltFile ='S_OWPv1_M_eccollc_90x50.bin',
-  checkIniSalt    = .FALSE.,
+ hydrogThetaFile='THETA_2050212_dailymean.bin',
+ hydrogSaltFile ='SALT_2050212_dailymean.bin',
+ checkIniSalt   = .FALSE.,
  /

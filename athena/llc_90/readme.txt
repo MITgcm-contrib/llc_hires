@@ -3,6 +3,10 @@
  ssh athfe01
  WORKDIR=/nobackup/$USER/llc_90
 
+# Define tiling configuration
+RANKS=113
+TILES=_30x30x$RANKS
+
 # 1. If not already done, download MITgcm checkpoint69f
 #    and MITgcm-contrib/llc_hires on athena
  mkdir $WORKDIR
@@ -20,14 +24,23 @@
  module swap PrgEnv-cray PrgEnv-intel
  module use /u/ojahn/software/modulefiles
  module load jahn/shtns/3.7.5_intel-2023.2.1
- mkdir $WORKDIR/MITgcm/build_30x30x96
- cd $WORKDIR/MITgcm/build_30x30x96
+ mkdir $WORKDIR/MITgcm/build$TILES
+ cd $WORKDIR/MITgcm/build$TILES
  MOD=$WORKDIR/llc_hires/athena/llc_90
- ../tools/genmake2 -mpi -mods "$MOD/code_sal $MOD/code-async $MOD/code" \
-  -of $MOD/code_sal/linux_amd64_ifort+mpi_cray_nas_shtns_asyncio
+ ../tools/genmake2 -mpi -mods "$MOD/code-async $MOD/code" \
+  -of $MOD/code-async/linux_amd64_ifort+mpi_cray_nas_shtns_asyncio
  make depend
  make -j
 
 # 3. Run asyncio test
  cd $WORKDIR/llc_hires/athena/llc_90/jobfiles
- qsub llc90_30x30x96.sh
+ qsub llc90$TILES.sh
+
+# 4. Monitoring the job
+ cd $WORKDIR/MITgcm/run$TILES
+ tail -f STDOUT.0000 | grep advcfl_W
+
+# 5. After completion, collect jobfiles in run directory
+ cd $WORKDIR/MITgcm/run$TILES
+ cp $WORKDIR/llc_hires/athena/llc_90/jobfiles/llc90$TILES.sh .
+ mv $WORKDIR/llc_hires/athena/llc_90/jobfiles/llc90$TILES.sh.* .
