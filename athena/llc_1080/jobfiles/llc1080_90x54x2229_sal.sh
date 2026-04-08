@@ -25,6 +25,7 @@ cd $WORKDIR/MITgcm/run$TILES
 cp ../build$TILES/mitgcmuv mitgcmuv$TILES
 cp ../../llc_hires/athena/llc_1080/input/* .
 cp ../../llc_hires/athena/llc_1080/input_sal/* .
+cp eedata_asyncio eedata
 cp data_asyncio data
 cp data.exch2$TILES data.exch2
 
