@@ -23,10 +23,14 @@
 #include <mpi.h>
 #include <alloca.h>
 
-
 #include <stdint.h>
 #include <limits.h>
 #include <errno.h>
+#include <err.h>
+#include <stdbool.h>
+#include <sys/mman.h>
+#include <math.h>
+
 
 #define DEBUG 1
 
@@ -94,9 +98,19 @@ int numRanksPerNode = 0;
 #define NUM_Z   ((long int) Nr)
 #define MULTDIM ((long int) 7)
 
-// Some values derived from the above constants
-#define twoDFieldSizeInBytes  (NUM_X * NUM_Y * 1 * datumSize)
-#define threeDFieldSizeInBytes  (twoDFieldSizeInBytes * NUM_Z)
+// Some values derived from the above constants.
+#define numItemsIn2DField   (NUM_X * NUM_Y * 1)
+#define numItemsIn3DField (NUM_X * NUM_Y * NUM_Z)
+#define numItemsInMultDField  (NUM_X * NUM_Y * MULTDIM)
+#define numItemsInOneZLevel  (numItemsIn2DField)
+
+// Note that the "sizeInBytes" is the *in-core* size of the data.
+// When we write out a standard time-step epoch, the output is
+// typically converted to single precision, and so the *file*
+// might be only half this size.  But for a "pickup" epoch, we
+// write the full double-precision value to the file.
+#define twoDFieldSizeInBytes   (numItemsIn2DField * datumSize)
+#define threeDFieldSizeInBytes (twoDFieldSizeInBytes * NUM_Z)
 #define multDFieldSizeInBytes  (twoDFieldSizeInBytes * MULTDIM)
 
 // Info about the data tiles.  We assume that all the tiles are the same
@@ -251,8 +265,158 @@ typedef enum {
     cmd_exit,
 } epochCmd_t;
 
+///////////////////////////////////////////////////////////////////////
+// Info for applying compression to the output
+
+char maskDir[1000] = {'.', '/', '\0', };
+bool output_2Dcompressed = false;
+bool output_3Dcompressed = true;
+bool output_2Duncompressed = true;
+bool output_3Duncompressed = false;
+bool output_3DtopLevel = true;
+
+
+// Specify which mask is associated with which field
+typedef struct {
+  char *maskName;
+  unsigned char *inclusionMask;
+  char *fieldList;
+  int64_t compressedLevelItemOffset[Nr + 1];
+} maskInfo_t;
+
+// Note that "A" is currently not associated with any mask
+maskInfo_t maskInfo[] = {
+  {"hFacC.bits", NULL, "B,C,D,G,H,K,L,M,N,O,P,Q,R,S,T,W,X,Y,Z"},
+  {"hFacS.bits", NULL, "V,F,J"},
+  {"hFacW.bits", NULL, "U,E,I"},
+  {NULL, NULL, NULL},
+};
+
+
+
+bool
+isSet (int64_t ii, unsigned char *s)
+{ return ((s[ii>>3] & (1 << (ii&7))) != 0); }
+
+
+// Note: len is in bytes.  popCount is computed for whole bytes
+int64_t
+popCount(void *p, int64_t len)
+{
+  // Table of how many bits are set in a byte-sized value (2's complement)
+  // i.e. "popcount" for a single 8bit byte.
+  static uint8_t setBits[] = {
+    0,1,1,2, 1,2,2,3, 1,2,2,3, 2,3,3,4, 1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7, 4,5,5,6, 5,6,6,7, 5,6,6,7, 6,7,7,8,
+  };
+
+  if ((NULL == p) || (len < 0)) return -1;
+
+  uint8_t *pp = ((uint8_t*)p);
+  int64_t count = 0;
+  for (uint8_t *q = pp;  q < pp + len;  ++q) count += setBits[*q];
+
+  return count;
+}
+
+
+
+
+void *
+initCompressionInfo (void)
+{
+  {
+    // Get the compression settings from the Fortran side
+    extern void get_asyncio_settings_ (int *, int *, int *, int *, int *, int *);
+    int do2Dcomp, do3Dcomp, do2Duncomp, do3Duncomp, doTop;
+    int maskDirAsInts[1000], ii = 0;
+    get_asyncio_settings_ (&do2Dcomp, &do3Dcomp, &do2Duncomp, &do3Duncomp, &doTop, maskDirAsInts);
+    output_2Dcompressed = (1 == do2Dcomp);
+    output_3Dcompressed = (1 == do3Dcomp);
+    output_2Duncompressed = (1 == do2Duncomp);
+    output_3Duncompressed = (1 == do3Duncomp);
+    output_3DtopLevel = (1 == doTop);
+    do { maskDir[ii] == maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
+    assert (ii < sizeof(maskDir));
+  }
+
+  char filename[strlen(maskDir) + 100];
+
+  int maskIndex = -1;
+  while (maskInfo[++maskIndex].maskName != NULL)
+  {
+    // Initialize the inclusionMask mapping, if not already done.
+    if (NULL ==  maskInfo[maskIndex].inclusionMask)
+    {
+      strcat(strcat(strcpy(filename,  maskDir),"/"),maskInfo[maskIndex].maskName);
+
+      // Open and stat the mask file
+      int fd = open (filename, O_RDONLY);
+      if (fd < 0) err (1, "Can't open mask file: '%s'\n", filename);
+      struct stat statBuf;
+      if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", filename);
+
+      // Double check that the size of the mask file is correct
+      // (sFacet and Nr come from SIZE.h)
+      assert ( ("numItemsInOneZLevel is a multiple of 8",
+                ((numItemsInOneZLevel / 8) * 8) == numItemsInOneZLevel) );
+      int64_t expectedMaskSize = (numItemsInOneZLevel * Nr) / 8;
+      if (expectedMaskSize != statBuf.st_size) {
+        err (1, "Mask file '%s' is size %ld, but should be %ld\n",
+                filename, statBuf.st_size, expectedMaskSize);
+      }
+
+      // mmap the mask file
+      void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
+      if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", filename);
+      maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
+      close (fd);
+
+      // Pre-compute the compressed size of each level, i.e. the number
+      // of Items from the begining of the (compressed) output file where
+      // a (compressed) level will start.  Clearly we could do this
+      // statically and store the info in the same directory as the mask
+      // file, but it doesn't take all that long to compute, and by doing
+      // it here we don't need to depend on some additional external file
+      // (i.e.  one fewer thing to go wrong).
+      int64_t itemOffset = 0;
+      unsigned char *qq = maskInfo[maskIndex].inclusionMask;
+      int levelIndex;
+      for (levelIndex = 0;  levelIndex < Nr;  ++levelIndex) {
+        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
+        itemOffset += popCount (qq, numItemsInOneZLevel/8);
+        qq += numItemsInOneZLevel / 8;
+      }
+      // Store an extra "Nr'th" offset so we can compute the size of
+      // a level "j" by just (levelOffset[j+1] - levelOffset[j])
+      // without special-casing the last level.
+      maskInfo[maskIndex].compressedLevelItemOffset[Nr] = itemOffset;
+    }
+  }
+}
+
+
+int
+findMaskIndexForField (int fieldID)
+{
+    int maskIndex = -1;
+    while (maskInfo[++maskIndex].maskName != NULL)
+    {
+        // If we find the fieldID in a mask's fieldList, return that mask
+        if (index (maskInfo[maskIndex].fieldList, fieldID) != NULL) return maskIndex;
+    }
+    // Didn't find the fieldID
+    return -1;
+}
 
 ///////////////////////////////////////////////////////////////////////
+
 
 // Note that a rank will only have access to one of the Intracomms,
 // but all ranks will define the Intercomm.
@@ -388,6 +552,10 @@ long int readn(int fd, void *p, long int nbytes)
 }
 
 
+// write nbytes to fd
+// This routine automatically retries in the event of an interrupt or
+// a short write (which can happen if nbytes is larger than 0x7ffff000
+// among other reasons).
 ssize_t writen(int fd, void *p, size_t nbytes)
 {
   char *ptr = (char*)(p);
@@ -395,18 +563,38 @@ ssize_t writen(int fd, void *p, size_t nbytes)
   size_t nleft;
   ssize_t nwritten;
 
-    nleft = nbytes;
-    while (nleft > 0){
-	nwritten = write(fd, ptr, nleft);
-	if (nwritten <= 0){
-	  if (errno==EINTR) continue; // POSIX, not SVr4
-	  return(nwritten);           // non-EINTR error 
-	}
-
-	nleft -= nwritten;
-	ptr += nwritten;
+  nleft = nbytes;
+  while (nleft > 0) {
+    nwritten = write(fd, ptr, nleft);
+    if (nwritten <= 0) {
+      if (EINTR == errno) continue; // POSIX, not SVr4
+      return(nwritten);           // non-EINTR error 
     }
-    return(nbytes - nleft);
+
+    nleft -= nwritten;
+    ptr += nwritten;
+  }
+  return(nbytes - nleft);
+}
+
+
+void
+writeToFile (char *fileName, int64_t offset, void *data, size_t nbytes)
+{
+  int fd = open (fileName, O_CREAT|O_WRONLY,S_IRWXU|S_IRGRP);
+  if (fd < 0) err (1, "ERROR: can't open file '%s'", fileName);
+
+  off_t status = lseek (fd, offset, SEEK_SET);
+  if (status < 0) err (1, "ERROR: can't lseek('%s', %ld, SEEK_SET)", fileName, offset);
+
+  errno = 0;
+  ssize_t bwrit = writen (fd, data, nbytes);  
+  if (nbytes != bwrit) {
+    if (bwrit < 0) warn ("ERROR writing file '%s' ", fileName);
+    err (1, "WROTE %ld bytes rather than %ld bytes to file '%s'\n", bwrit, nbytes, fileName);
+  }
+  FPRINTF(stderr,"Wrote %d of %d bytes (file '%s'  offset %ld", bwrit, nbytes, fileName, offset);
+  close (fd);
 }
 
 
@@ -456,6 +644,7 @@ double *outBuf=NULL;//was [NUM_X*NUM_Y*NUM_Z], but only needs to be myNumZSlabs
 size_t outBufSize=0;
 
 
+#if 0
 void
 do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNumZ, int gcmIter)
 {
@@ -530,6 +719,143 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNum
 
 
   return;
+}
+#endif
+
+
+void
+do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNumZ, int gcmIter)
+{
+  if (0 == myNumZ) return;
+
+  // Note that the actual data is in the global "outBuf", and is either
+  // 8-byte reals (in the case of a "pickup" epoch), or 4-byte reals
+  // (in the case of a standard timestep epoch).
+
+  char fileName[1024];
+  int64_t offset, nbytes;
+  int64_t myTotalNumItems = numItemsInOneZLevel * myNumZ;
+
+  // If we are writing this field to a pickup file, do that
+  if (whichField->pickup)
+  {
+    // outBuf contains 8byte reals
+
+    // byte swap the 64bit values
+    // (i.e. convert from (native) little-endian to big-endian)
+    uint64_t *alias = (uint64_t*)outBuf;
+    size_t i;
+    for (i = 0;  i < myTotalNumItems; ++i)
+      alias[i] = __builtin_bswap64(alias[i]);
+
+    // We don't attempt to sanitize these values because for a pickup file
+    // we want the file to exactly mirror the code.  So the values are
+    // written out verbatim.
+
+    // Write the chunk to the pickup file
+    sprintf (fileName, whichField->filenameTemplate, gcmIter, "data");
+    offset = whichField->offset + (myFirstZ * numItemsInOneZLevel * datumSize);
+    nbytes = myTotalNumItems * datumSize;
+    writeToFile (fileName, offset, outBuf, nbytes);
+  }
+  else {
+    // Non-pickup
+
+    bool is2DField = (1 == whichField->zDepth);
+    bool is3DField = (NUM_Z == whichField->zDepth);
+    bool isMultDField = (MULTDIM == whichField->zDepth);
+
+    // Figure out which mask (if any) is associated with the current field.
+    int maskIndex = findMaskIndexForField (whichField->dataFieldID);
+
+    void *buf = (void*) &outBuf[0];
+    int64_t badCount = 0;
+
+    // Convert the data from (native) little-endian, to big-endian
+    size_t ii;
+    for (ii = 0;  ii < myTotalNumItems;  ++ii)
+    {
+      float value = ((float*)buf)[ii];
+
+      // Check for a bad value (NaN or Inf)
+      if (!isfinite(value)) badCount += 1;
+
+      // Sanitize the output data a little bit: replace -0.0 with +0.0,
+      // and ensure that data items not included by the mask are set to
+      // zero (not garbage).
+      bool isNegativeZero =  ((0.0 == value) && (signbit(value) != 0));
+      bool isIncluded =  (maskIndex < 0)  ?  true  :
+               isSet (ii + myFirstZ * numItemsInOneZLevel,
+                      maskInfo[maskIndex].inclusionMask);
+      if (isNegativeZero || !isIncluded) ((float*)buf)[ii] = 0.0;
+
+      // Convert to big-endian
+      ((int*)buf)[ii] = __builtin_bswap32(((int*)buf)[ii]);
+    }
+
+    if (badCount > 0) fprintf (stderr,
+            "WARNING :: %ld bad data items (NaN or INF) in field %c\n"
+            "WARNING :: at time-step %ld, levels %d through %d\n",
+            badCount, whichField->dataFieldID, gcmIter, myFirstZ, myFirstZ + myNumZ - 1);
+
+    if ((is2DField && output_2Duncompressed) || (is3DField && output_3Duncompressed))
+    {
+      sprintf (fileName, whichField->filenameTemplate, gcmIter, "data");
+      offset = whichField->offset + (myFirstZ * numItemsInOneZLevel * sizeof(float));
+      nbytes = myTotalNumItems * sizeof(float);
+      writeToFile (fileName, offset, outBuf, nbytes);
+    }
+
+    if (is3DField && output_3DtopLevel && (myFirstZ == 0))
+    {
+      sprintf (fileName, whichField->filenameTemplate, gcmIter, "level1");
+      offset = 0;
+      nbytes = numItemsInOneZLevel * sizeof(float);
+      writeToFile (fileName, offset, outBuf, nbytes);
+    }
+
+    if ((is2DField && output_2Dcompressed) || (is3DField && output_3Dcompressed))
+    {
+      if (maskIndex < 0)
+      {
+        fprintf (stderr,
+            "WARNING :: Trying to write compressed output for field %c\n"
+            "WARNING :: but no mask file is defined.\n",  whichField->dataFieldID);
+      }
+      else {
+
+        // Do this right away so fileName is available for error massages.
+        sprintf (fileName, whichField->filenameTemplate, gcmIter, "shrunk");
+
+        // Apply the compression mask
+        size_t bufIndex, compressedItemCount = 0;
+        size_t startIndex = myFirstZ * numItemsInOneZLevel;
+        unsigned char *inclusionMask = maskInfo[maskIndex].inclusionMask;
+        for (bufIndex = 0;  bufIndex < myTotalNumItems;  ++bufIndex) {
+          if (isSet(bufIndex + startIndex, inclusionMask)) {
+            ((int*)buf)[compressedItemCount++] = ((int*)buf)[bufIndex];
+          }
+        }
+        // Sanity check: the actual (compressed) count is the expected count.
+        int64_t expectedCount = 
+            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ + myNumZ] -
+            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ];
+        if (compressedItemCount != expectedCount)
+          err (1, "ERROR: Compression failure for '%s'.\n"
+                  "Is %ld items, but expected %ld (levels %d to %d)\n",
+                  fileName, compressedItemCount, expectedCount, myFirstZ, myFirstZ + myNumZ - 1);
+
+        // Note that we pre-computed the offset to the begining of a level
+        // within a compressed file.  (Currently, whichField->offset is
+        // typically zero, but one can imagine that might not always be true.)
+        offset = whichField->offset +
+                 (maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ] * sizeof(float));
+        nbytes = compressedItemCount * sizeof(float);
+        writeToFile (fileName, offset, outBuf, nbytes);
+      }
+    }
+  }
+
 }
 
 
@@ -1093,6 +1419,14 @@ ioRankMain (void)
 
     allocateTileBufs(numTileBufs, maxIntracommSize);
     countBufs(numTileBufs);
+
+
+    // Act on the settings from the input config file regarding what things
+    // to compress, what mask files to use, etc.
+    // (Note that all the resultant settings are held globals. Mostly
+    // the "output_*" flags and the maskInfo array.)
+    initCompressionInfo ();
+
 
 
     ////////////////////////////////////////////////////////////////////
@@ -2435,4 +2769,53 @@ bron_f4(int *ptr_epochID)
     f4(*ptr_epochID);
 }
 
+
+
+#if 0
+// Simple test program for the config file switch settings
+
+
+// Define a stub for this routine to facilitate debug/QA of recvTask.c
+void
+initSizesAndTypes (void) {;}
+
+
+extern void
+set_asyncio_settings_(void);
+    
+int
+main (int argc, char *argv[])
+{
+  MPI_Init (&argc, &argv);
+  errno = EINVAL;  // A catch-all default for "err" to report
+
+  ////////////////////////////////////////////////////////////////////
+  // Set some dummy info
+  fprintf (stderr, "set up dummy data\n");
+  int64_t ii;
+  for (ii = 0;  ii < 4;  ++ii) fieldsForEpochStyle_0[ii].zDepth = Nr;
+  for (ii = 6;  ii < 8;  ++ii) fieldsForEpochStyle_0[ii].zDepth = 1;
+
+  int64_t numOutputItems = numItemsInOneZLevel * 5;
+  outBuf = (double *) malloc (numOutputItems * sizeof(double));
+  for (ii = 0;  ii < numOutputItems;  ++ii) outBuf[ii] = ii & 0x0ff;
+
+  set_asyncio_settings_();
+
+  ////////////////////////////////////////////////////////////////////
+
+  fprintf (stderr, "initCompressionInfo\n");
+  initCompressionInfo ();
+
+  fprintf (stderr, "write a 2D field\n");
+  do_write (42, &(fieldsForEpochStyle_0[6]), 0, 1, 1234);
+  fprintf (stderr, "write a portion of a 3D field\n");
+  do_write (43, &(fieldsForEpochStyle_0[0]), 0, 2, 5678);
+
+  MPI_Finalize ();
+  return 0;
+}
+
+
+#endif
 
