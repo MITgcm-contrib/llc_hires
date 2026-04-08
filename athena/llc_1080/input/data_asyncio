@@ -117,12 +117,6 @@
  dumpfreq = 600.,
  monitorFreq = 15.,
  dumpInitAndLast=.FALSE.,
- asyncio_2Dcompressed=.TRUE.,
- asyncio_3Dcompressed=.TRUE.,
- asyncio_2Duncompressed=.TRUE.,
- asyncio_3Duncompressed=.TRUE.,
- asyncio_3DtopLevel=.TRUE.,
- asyncio_maskDir='/nobackupp29/bcnelson/MITgcm/compressedOutput/work/bitmask.1080x173/',
  /
 
 # Gridding parameters

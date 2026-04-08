@@ -82,7 +82,6 @@ C     lambdaThetaFile :: File containing SST relaxation coefficient
 C     lambdaSaltFile  :: File containing SSS relaxation coefficient
 C     wghtBalanceFile :: File containing weight used in balancing net EmPmR
 C     the_run_name    :: string identifying the name of the model "run"
-C     asyncio_maskDir :: The name of the directory where the mask files reside
       COMMON /PARM_C/
      &                buoyancyRelation, eosType,
      &                pickupSuff, mdsioLocalDir, adTapeDir,
@@ -101,7 +100,7 @@ C     asyncio_maskDir :: The name of the directory where the mask files reside
      &                pLoadFile, geoPotAnomFile, addMassFile,
      &                eddyPsiXFile, eddyPsiYFile, geothermalFile,
      &                lambdaThetaFile, lambdaSaltFile, wghtBalanceFile,
-     &                the_run_name, asyncio_maskDir
+     &                the_run_name
       CHARACTER*(MAX_LEN_FNAM) buoyancyRelation
       CHARACTER*(6)  eosType
       CHARACTER*(10) pickupSuff
@@ -147,7 +146,6 @@ C     asyncio_maskDir :: The name of the directory where the mask files reside
       CHARACTER*(MAX_LEN_FNAM) lambdaSaltFile
       CHARACTER*(MAX_LEN_FNAM) wghtBalanceFile
       CHARACTER*(MAX_LEN_PREC/2) the_run_name
-      CHARACTER*(MAX_LEN_FNAM) asyncio_maskDir
 
 C--   COMMON /PARM_I/ Integer valued parameters used by the model.
 C     cg2dMaxIters        :: Maximum number of iterations in the
@@ -430,12 +428,6 @@ C     snapshot_mdsio     :: use mdsio for "snapshot" (dumpfreq/diagfreq) output
 C     monitor_stdio      :: use stdio for monitor output
 C     dumpInitAndLast :: dumps model state to files at Initial (nIter0)
 C                        & Last iteration, in addition multiple of dumpFreq iter.
-C     asyncio_2Dcompressed   :: Whether or not asyncio writes out 2D fields in compressed format
-C     asyncio_3Dcompressed   :: Whether or not asyncio writes out 3D fields in compressed format
-C     asyncio_2Duncompressed :: Whether or not asyncio writes out 2D fields in compressed format
-C     asyncio_3Duncompressed :: Whether or not asyncio writes out 3D fields in compressed format
-C     asyncio_3DtopLevel     :: Whether or not asyncio writes out SSU, SSV, SST, and SSS,
-C                               the top-levels of following 3D fields: U, V, Theta, and Salt
 
       COMMON /PARM_L/
      & fluidIsAir, fluidIsWater,
@@ -477,10 +469,8 @@ C                               the top-levels of following 3D fields: U, V, The
      & pickup_read_mdsio, pickup_write_mdsio, pickup_write_immed,
      & writePickupAtEnd,
      & timeave_mdsio, snapshot_mdsio, monitor_stdio,
-     & outputTypesInclusive, dumpInitAndLast,
-     & asyncio_2Dcompressed, asyncio_3Dcompressed,
-     & asyncio_2Duncompressed, asyncio_3Duncompressed,
-     & asyncio_3DtopLevel
+     & outputTypesInclusive, dumpInitAndLast
+
       LOGICAL fluidIsAir
       LOGICAL fluidIsWater
       LOGICAL usingPCoords
@@ -580,11 +570,6 @@ C                               the top-levels of following 3D fields: U, V, The
       LOGICAL timeave_mdsio, snapshot_mdsio, monitor_stdio
       LOGICAL outputTypesInclusive
       LOGICAL dumpInitAndLast
-      LOGICAL asyncio_2Dcompressed
-      LOGICAL asyncio_3Dcompressed
-      LOGICAL asyncio_2Duncompressed
-      LOGICAL asyncio_3Duncompressed
-      LOGICAL asyncio_3DtopLevel
 
 C--   COMMON /PARM_R/ "Real" valued parameters used by the model.
 C     cg2dTargetResidual

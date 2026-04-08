@@ -1,0 +1,19 @@
+# Example "eedata" file
+# Lines beginning "#" are comments
+# nTx - No. threads per process in X
+# nTy - No. threads per process in Y
+ &EEPARMS
+ useCubedSphereExchange=.TRUE.,
+ nTx=1,
+ nTy=1,
+# debugMode=.TRUE.,
+ asyncio_2Dcompressed=.TRUE.,
+ asyncio_3Dcompressed=.TRUE.,
+ asyncio_2Duncompressed=.TRUE.,
+ asyncio_3Duncompressed=.TRUE.,
+ asyncio_3DtopLevel=.TRUE.,
+ asyncio_maskDir='/nobackupp29/bcnelson/MITgcm/compressedOutput/work/bitmask.1080x173/',
+ /
+# Note: Some systems use & as the
+# namelist terminator. Other systems
+# use a / character (as shown here).
