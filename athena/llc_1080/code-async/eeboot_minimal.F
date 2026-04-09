@@ -182,6 +182,8 @@ C--    Setup Nesting Execution Environment
 #endif /* ALLOW_NEST_PARENT | ALLOW_NEST_CHILD */
 
 #if defined(ALLOW_ASYNCIO)
+C      add a 1rst preliminary call EESET_PARAMS to set asyncio variables
+       CALL EESET_PARMS ( mpiMyWId, doReport )
 C--    Separate off asynchronous I/O nodes
 C--    For now this is incompatible with NEST and COMPONENT_MODULE modes
        CALL ASYNCIO_INIT(MPI_COMM_WORLD,
