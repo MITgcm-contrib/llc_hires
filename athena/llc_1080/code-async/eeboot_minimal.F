@@ -186,7 +186,9 @@ C--    Separate off asynchronous I/O nodes
 C--    For now this is incompatible with NEST and COMPONENT_MODULE modes
        CALL MPI_COMM_RANK( MPI_COMM_WORLD, mpiMyWId, mpiRC )
 C      add a 1rst preliminary call EESET_PARAMS to set asyncio variables
+       doReport = .TRUE.
        CALL EESET_PARMS ( mpiMyWId, doReport )
+       doReport = .FALSE.
 C--    Separate off asynchronous I/O nodes
 C--    For now this is incompatible with NEST and COMPONENT_MODULE modes
        CALL ASYNCIO_INIT(MPI_COMM_WORLD,
