@@ -328,7 +328,7 @@ popCount(void *p, int64_t len)
 
 
 
-void *
+void 
 initCompressionInfo (void)
 {
   {
@@ -342,9 +342,12 @@ initCompressionInfo (void)
     output_2Duncompressed = (1 == do2Duncomp);
     output_3Duncompressed = (1 == do3Duncomp);
     output_3DtopLevel = (1 == doTop);
-    do { maskDir[ii] == maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
+    do { maskDir[ii] = maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
     assert (ii < sizeof(maskDir));
   }
+  //fprintf (stderr, "initCompressionInfo: %d %d %d %d %d '%s'\n",
+  //         (int)output_2Dcompressed, (int)output_3Dcompressed, (int)output_2Duncompressed,
+  //         (int)output_3Duncompressed, (int)output_3DtopLevel, maskDir);
 
   char filename[strlen(maskDir) + 100];
 
