@@ -62,7 +62,7 @@ C     mpiRC      :: Error code reporting variable used with MPI.
       INTEGER mpiRC
       INTEGER mpiIsInitialized
       LOGICAL doReport
-#if defined(ALLOW_OASIS) || defined(COMPONENT_MODULE)
+#if defined(ALLOW_OASIS) || defined(COMPONENT_MODULE) || defined(ALLOW_ASYNCIO)
       INTEGER mpiMyWId
 #elif defined(ALLOW_NEST2W_COMMON)
       INTEGER mpiMyWId
@@ -182,6 +182,13 @@ C--    Setup Nesting Execution Environment
 #endif /* ALLOW_NEST_PARENT | ALLOW_NEST_CHILD */
 
 #if defined(ALLOW_ASYNCIO)
+C--    Separate off asynchronous I/O nodes
+C--    For now this is incompatible with NEST and COMPONENT_MODULE modes
+       CALL MPI_COMM_RANK( MPI_COMM_WORLD, mpiMyWId, mpiRC )
+C      add a 1rst preliminary call EESET_PARAMS to set asyncio variables
+       doReport = .TRUE.
+       CALL EESET_PARMS ( mpiMyWId, doReport )
+       doReport = .FALSE.
 C--    Separate off asynchronous I/O nodes
 C--    For now this is incompatible with NEST and COMPONENT_MODULE modes
        CALL ASYNCIO_INIT(MPI_COMM_WORLD,
