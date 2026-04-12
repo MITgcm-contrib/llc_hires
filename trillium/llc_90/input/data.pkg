@@ -4,5 +4,8 @@
  useEXF         = .TRUE.,
  useSEAICE      = .TRUE.,
  useKPP         = .TRUE.,
- useFRAZIL      = .TRUE.,
+ useTIDES       = .TRUE.,
+ useSAL         = .TRUE.,
+ useShelfIce    = .TRUE.,
+ useSALT_PLUME  = .TRUE.,
  /

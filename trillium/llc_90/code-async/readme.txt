@@ -1,3 +1,16 @@
+To add or replace diagnotics, edit write_state.F and recvTask.c
+
+>>>>>>>>>>>>>>>>>>>>
+
+NOTE: Eventually, asyncio needs to become a standard MITgcm package.  In which
+case the asyncio code would be moved to a pkg/asyncio subdirectory and the
+asyncio variables would be read-in from a data.asyncio file.  Also, move the
+ALLOW_ASYNCIO flag, which currently lives in the build options file to
+CPP_EEOPTIONS.h, or get rid of it altogether and automatically set it any time
+that pkg/asyncio is compiled.
+
+>>>>>>>>>>>>>>>>>>>>
+
 From Bron Nelson, February 28, 2019
 
 In the newest version, it is no longer necessary to hand-edit the

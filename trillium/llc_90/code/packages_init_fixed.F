@@ -63,7 +63,8 @@ C       |-- SEAICE_COST_INIT_FIXED
 C       |
 C       |-- SMOOTH_INIT_FIXED
 C       |
-C       |-- ECCO_COST_INIT_FIXED
+C       |-- ECCO_INIT_FIXED
+C       |   |- ECCO_COST_INIT_FIXED
 C       |
 C       |-- PROFILES_INIT_FIXED
 C       |
@@ -80,6 +81,8 @@ C       |
 C       |-- STREAMICE_INIT_FIXED
 C       |
 C       |-- SHELFICE_INIT_FIXED
+C       |
+C       |-- STIC_INIT_FIXED
 C       |
 C       |-- ICEFRONT_INIT_FIXED
 C       |
@@ -117,9 +120,11 @@ C       |-- EMBED_FILES_INIT
 C       |
 C       |-- TIDES_INIT_FIXED
 C       |
+C       |-- SAL_INIT_FIXED
+C       |
 C       |-- MYPACKAGE_INIT_FIXED
 C       |
-C       |-- CTRL_INIT
+C       |-- CTRL_INIT_FIXED
 C       |-- CTRL_ADMTLM
 C       |
 C       |-- DIAGNOSTICS_INIT_FIXED
@@ -353,7 +358,7 @@ C--   Initialize fixed arrays for Down-Slope pkg
 
 #ifdef ALLOW_SEAICE
 C--   Initialise ecco-specific cost function.
-C--   This needs to preceed the call ctrl_init
+C--   This needs to preceed the call CTRL_INIT_FIXED
 C--   in order to provide the weight files
       IF (useSEAICE) THEN
 # ifdef ALLOW_DEBUG
@@ -363,23 +368,15 @@ C--   in order to provide the weight files
       ENDIF
 #endif
 
-#ifdef ALLOW_SMOOTH
-      IF (useSMOOTH) THEN
-# ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('SMOOTH_INIT_FIXED',myThid)
-# endif
-        CALL SMOOTH_INIT_FIXED(myThid)
-      ENDIF
-#endif /* ALLOW_SMOOTH */
-
 #ifdef ALLOW_ECCO
       IF (useECCO) THEN
-C--   Initialise ecco-specific cost function. This needs to preceed
-C     the call ctrl_init in order to provide the weight files
+C--   Calls ECCO_COST_INIT_FIXED which initialises ecco-specific cost
+C--   function. This needs to preceed CTRL_INIT_FIXED call in order to
+C--   provide the weight files.
 # ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('ECCO_COST_INIT_FIXED',myThid)
+        IF (debugMode) CALL DEBUG_CALL('ECCO_INIT_FIXED',myThid)
 # endif
-        CALL ECCO_COST_INIT_FIXED( myThid )
+        CALL ECCO_INIT_FIXED( myThid )
       ENDIF
 #endif
 
@@ -392,7 +389,7 @@ C     the call ctrl_init in order to provide the weight files
       ENDIF
 #endif
 
-C--   Old place where CTRL_INIT & CTRL_ADMTLM used to be called
+C--   Old place where CTRL_INIT_FIXED & CTRL_ADMTLM used to be called
 
 #ifdef ALLOW_FLT
 C--   Initialise fixed array for Float pkg
@@ -461,6 +458,24 @@ C--   Initialise fixed array for Float pkg
         CALL SHELFICE_INIT_FIXED( myThid )
       ENDIF
 #endif /* ALLOW_SHELFICE */
+
+#ifdef ALLOW_STEEP_ICECAVITY
+      IF (useSTIC) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('STIC_INIT_FIXED',myThid)
+# endif
+        CALL STIC_INIT_FIXED( myThid )
+      ENDIF
+#endif /* ALLOW_STEEP_ICECAVITY */
+
+#ifdef ALLOW_SMOOTH
+      IF (useSMOOTH) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('SMOOTH_INIT_FIXED',myThid)
+# endif
+        CALL SMOOTH_INIT_FIXED(myThid)
+      ENDIF
+#endif /* ALLOW_SMOOTH */
 
 #ifdef ALLOW_ICEFRONT
       IF (useICEFRONT) THEN
@@ -631,6 +646,15 @@ C--   needs to be called after the OASIS_INIT
       ENDIF
 #endif
 
+#ifdef ALLOW_SAL
+      IF (useSAL) THEN
+# ifdef ALLOW_DEBUG
+        IF (debugMode) CALL DEBUG_CALL('SAL_INIT_FIXED',myThid)
+# endif
+        CALL SAL_INIT_FIXED(myThid)
+      ENDIF
+#endif
+
 #ifdef ALLOW_MYPACKAGE
       IF (useMYPACKAGE) THEN
 # ifdef ALLOW_DEBUG
@@ -645,9 +669,9 @@ C--   needs to be called after the OASIS_INIT
 C--   Initialise the control variables. Moved to the end of this S/R
 C     to allow other pkgs to set mask and weight fields.
 # ifdef ALLOW_DEBUG
-        IF (debugMode) CALL DEBUG_CALL('CTRL_INIT',myThid)
+        IF (debugMode) CALL DEBUG_CALL('CTRL_INIT_FIXED',myThid)
 # endif
-        CALL CTRL_INIT( myThid )
+        CALL CTRL_INIT_FIXED( myThid )
       ENDIF
 
 # ifdef ALLOW_ADMTLM
@@ -672,6 +696,9 @@ C-    needs to call DIAGNOSTICS_INIT_FIXED after all package-diag-init calls
 #endif
 
 #ifdef ALLOW_ASYNCIO
+#  ifdef ALLOW_DEBUG
+      IF (debugMode) CALL DEBUG_CALL('ASYNCIO_DRIVER_CONFIG',myThid)
+#  endif
       CALL ASYNCIO_DRIVER_CONFIG( myThid  )
 #endif
 
