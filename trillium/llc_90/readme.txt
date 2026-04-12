@@ -18,7 +18,7 @@ This version of LLC90 Includes Tides and Sal and asyncio and all complexities.
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
-  MOD=$SCRATCH/llc_hires/athena/llc_90
+  MOD=$SCRATCH/llc_hires/trillium/llc_90
   ../tools/genmake2 -mpi -mods "$MOD/code-async $MOD/code" \
    -of /project/rrg-peltier-ac/momenika/linux_amd64_ifort+mpi_trillium
   make depend
@@ -33,25 +33,6 @@ This version of LLC90 Includes Tides and Sal and asyncio and all complexities.
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   ln -sf /project/rrg-peltier-ac/momenika/Release5/input_bin/* .
   cp -sf $MOD/input/* .
-
-
-
-  #IMPORTANT 1:
-  #Change sal_model2llFile in $SCRATCH/MITgcm/run/data.sal
-  # from '/nobackup/ojahn/forcing/sal/llc90/llc90_to_GL84x48XC0NS_conservative' 
-  # to '/project/rrg-peltier-ac/momenika/sal/llc90/llc90_to_GL84x48XC0NS_conservative'
-
-  #IMPORTANT 2:
-  #Change KERNELS_TO_LOAD in $SCRATCH/MITgcm/run/meta_kernel
-  # from /nobackup/dmenemen/forcing/SPICE/*
-  # to /project/rrg-peltier-ac/momenika/SPICE/*
-  #This should be done one by one for all kernels.
-
-  #IMPORTANT 2:
-  #Comment out this line:
-  #runoftempfile     = 'wattmp_clim366_JRA55_do',
-  #in data.exf
-
 
   salloc --nodes 2 --time 24:00:00
   cd $SCRATCH/MITgcm/run
