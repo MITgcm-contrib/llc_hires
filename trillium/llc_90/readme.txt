@@ -6,16 +6,15 @@ This version of LLC90 Includes Tides and Sal and asyncio and all complexities.
   cd $SCRATCH
   git clone https://github.com/MITgcm-contrib/llc_hires
   git clone https://github.com/MITgcm/MITgcm
-  cd MITgcm
+  cd $SCRATCH/MITgcm
   git checkout checkpoint69f
-  cd pkg
+  cd $SCRATCH/MITgcm/pkg
   ln -s ../../llc_hires/llc_90/tides_exps/pkg_tides tides
   ln -s ../../llc_hires/llc_90/tides_exps/pkg_sal   sal
-  cd ..
 
 # 3. Build executable
-  mkdir build
-  cd build
+  mkdir $SCRATCH/MITgcm/build
+  cd $SCRATCH/MITgcm/build
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
@@ -26,8 +25,8 @@ This version of LLC90 Includes Tides and Sal and asyncio and all complexities.
   make -j 64
 
 # 4. Run simulation (1992-2019 period)
-  mkdir ../run
-  cd ../run
+  mkdir $SCRATCH/MITgcm/run
+  cd $SCRATCH/MITgcm/run
   ln -sf ../build/mitgcmuv .
   ln -sf /scratch/dmenemen/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
