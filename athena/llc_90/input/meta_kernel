@@ -1,9 +1,9 @@
 \begindata
 KERNELS_TO_LOAD=(
-'/project/rrg-peltier-ac/momenika/SPICE/kernels/lsk/naif0012.tls',
-'/project/rrg-peltier-ac/momenika/SPICE/kernels/fk/planets/earth_assoc_itrf93.tf',
-'/project/rrg-peltier-ac/momenika/SPICE/kernels/spk/planets/de430.bsp',
-'/project/rrg-peltier-ac/momenika/SPICE/kernels/pck/pck00010.tpc',
-'/project/rrg-peltier-ac/momenika/SPICE/kernels/pck/gm_de431.tpc'
+'/nobackup/dmenemen/forcing/SPICE/kernels/lsk/naif0012.tls',
+'/nobackup/dmenemen/forcing/SPICE/kernels/fk/planets/earth_assoc_itrf93.tf',
+'/nobackup/dmenemen/forcing/SPICE/kernels/spk/planets/de430.bsp',
+'/nobackup/dmenemen/forcing/SPICE/kernels/pck/pck00010.tpc',
+'/nobackup/dmenemen/forcing/SPICE/kernels/pck/gm_de431.tpc'
 )
 \begintext

@@ -28,7 +28,7 @@
  swdownfile        = 'era5/ERA5_dsw',
  lwdownfile        = 'era5/ERA5_dlw',
  runofffile        = 'jra55_do_runoff_JRA55-do',
-# runoftempfile     = 'wattmp_clim366_JRA55_do',
+ runoftempfile     = 'wattmp_clim366_JRA55_do',
 #
  apressurestartdate1 = 19920101,
  apressurestartdate2 = 000000,
