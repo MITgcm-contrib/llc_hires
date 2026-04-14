@@ -1,0 +1,4 @@
+# data_folder|theta_mask_file|u_mask_file|v_mask_file
+/nobackupp27/dbwhitt/llc_4320/OUT/2023_04_15_230000_to_2023_04_20_230000|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacC.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacW.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacS.data
+/nobackupp27/dbwhitt/llc_4320/OUT/2023_04_20_230000_to_2023_04_25_230000|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacC.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacW.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacS.data
+/nobackupp27/dbwhitt/llc_4320/OUT/2023_04_25_230000_to_2023_05_01_000000|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacC.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacW.data|/nobackupp27/dbwhitt/llc_4320/grid_90x90x19493/hFacS.data
