@@ -284,13 +284,19 @@ typedef struct {
   int64_t compressedLevelItemOffset[Nr + 1];
 } maskInfo_t;
 
-// Note that "A" is currently not associated with any mask
+// Note that "A" is currently not associated with any mask.
+// Fields N,P,H,R are 2D fields that need to be sanitized using
+// the OR of hFacC over all z-levels (not just k=1).  They use
+// a separate mask entry whose inclusionMask will be computed at
+// init time by OR-ing the hFacC.bits mask across all Nr levels.
 maskInfo_t maskInfo[] = {
-  {"hFacC.bits", NULL, "B,C,D,G,H,K,L,M,N,O,P,Q,R,S,T,W,X,Y,Z", {0} },
+  {"hFacC.bits", NULL, "B,C,D,G,K,L,M,O,Q,S,T,W,X,Y,Z", {0} },
   {"hFacS.bits", NULL, "V,F,J", {0} },
   {"hFacW.bits", NULL, "U,E,I", {0} },
+  {"hFacC.bits", NULL, "N,P,H,R", {0} },  // uses max-over-z mask; see initCompressionInfo
   {NULL, NULL, NULL, {0} },
 };
+#define MASK_INDEX_HFACC_ANYZ  3  // index of the N,P,H,R entry above
 
 
 
@@ -352,55 +358,124 @@ initCompressionInfo (void)
 
   char filename[strlen(maskDir) + 100];
 
+  if (((numItemsInOneZLevel / 8) * 8) != numItemsInOneZLevel)
+      err (1, "ERROR: numItemsInOneZLevel (%ld) is not a multiple of 8",
+           numItemsInOneZLevel);
+
+  int64_t bytesPerLevel = numItemsInOneZLevel / 8;
+  int64_t expectedMaskSize = bytesPerLevel * Nr;
+
   int maskIndex = -1;
   while (maskInfo[++maskIndex].maskName != NULL)
   {
     // Initialize the inclusionMask mapping, if not already done.
     if (NULL ==  maskInfo[maskIndex].inclusionMask)
     {
-      strcat(strcat(strcpy(filename,  maskDir),"/"),maskInfo[maskIndex].maskName);
+      if (maskIndex == MASK_INDEX_HFACC_ANYZ)
+      {
+        // Special handling for 2D fields N,P,H,R:
+        // Instead of using hFacC at level k=1 only (which is what happens
+        // for a 2D field because myFirstZ=0), we compute the OR of the
+        // hFacC mask across ALL Nr z-levels.  This way, a grid point that
+        // is wet at *any* depth will be considered "included" and its data
+        // will not be zeroed out during sanitization.
+        //
+        // We allocate only a SINGLE level (~30 MB for llc4320) rather than
+        // replicating across all Nr levels (~5.2 GB).  This is safe because
+        // fields N,P,H,R are 2D (zDepth==1), so do_write always has
+        // myFirstZ==0 and myNumZ==1.  Both the sanitization loop and the
+        // compression loop only call isSet with indices in [0, numItemsInOneZLevel),
+        // which stays within this single-level allocation.  The
+        // compressedLevelItemOffset entries are set so that [0]=0 and
+        // [1]=popcount, which is all the compression path needs for
+        // a single-level field (offset[myFirstZ+myNumZ] - offset[myFirstZ]).
+        //
+        // We require that maskInfo[0] (the regular hFacC.bits entry) has
+        // already been loaded.
+        ASSERT(maskInfo[0].inclusionMask != NULL);
 
-      // Open and stat the mask file
-      int fd = open (filename, O_RDONLY);
-      if (fd < 0) err (1, "Can't open mask file: '%s'\n", filename);
-      struct stat statBuf;
-      if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", filename);
+        unsigned char *srcMask = maskInfo[0].inclusionMask;
 
-      // Double check that the size of the mask file is correct
-      if (((numItemsInOneZLevel / 8) * 8) != numItemsInOneZLevel)
-          err (1, "ERROR: numItemsInOneZLevel (%ld) is not a multiple of 8",
-               numItemsInOneZLevel);
-      int64_t expectedMaskSize = (numItemsInOneZLevel * Nr) / 8;
-      if (expectedMaskSize != statBuf.st_size) {
-        err (1, "Mask file '%s' is size %ld, but should be %ld\n",
-                filename, statBuf.st_size, expectedMaskSize);
+        // Allocate only ONE level worth of mask data
+        unsigned char *anyZMask = (unsigned char *) malloc(bytesPerLevel);
+        if (NULL == anyZMask) err (1, "Can't allocate anyZ mask (%ld bytes)", bytesPerLevel);
+
+        // Compute the OR across all Nr levels.
+        // Use 64-bit word operations for throughput (~8x fewer loop
+        // iterations than byte-at-a-time).  bytesPerLevel is a multiple
+        // of 8 for any llc grid where sFacet is a multiple of 8.
+        ASSERT((bytesPerLevel % (int64_t)sizeof(uint64_t)) == 0);
+        int64_t wordsPerLevel = bytesPerLevel / (int64_t)sizeof(uint64_t);
+        memcpy(anyZMask, srcMask, bytesPerLevel);  // start with level 0
+        uint64_t *dst = (uint64_t *) anyZMask;
+        int levelIndex;
+        for (levelIndex = 1;  levelIndex < Nr;  ++levelIndex) {
+          uint64_t *src = (uint64_t *)(srcMask + levelIndex * bytesPerLevel);
+          int64_t wi;
+          for (wi = 0;  wi < wordsPerLevel;  ++wi) {
+            dst[wi] |= src[wi];
+          }
+        }
+
+        maskInfo[maskIndex].inclusionMask = anyZMask;
+
+        // compressedLevelItemOffset: only level 0 is meaningful for
+        // these 2D fields.  Fill in [0] and [1] so the offset math
+        // works for a single level; higher entries are set to the
+        // same value (no additional items beyond level 0).
+        int64_t oneLevel = popCount(anyZMask, bytesPerLevel);
+        maskInfo[maskIndex].compressedLevelItemOffset[0] = 0;
+        for (levelIndex = 1;  levelIndex <= Nr;  ++levelIndex) {
+          maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = oneLevel;
+        }
+
+        fprintf(stderr, "initCompressionInfo: built max-over-z hFacC mask"
+                        " for fields N,P,H,R (%ld bytes, %ld wet points)\n",
+                        bytesPerLevel, oneLevel);
       }
+      else
+      {
+        // Normal case: mmap the mask file directly
+        strcat(strcat(strcpy(filename,  maskDir),"/"),maskInfo[maskIndex].maskName);
 
-      // mmap the mask file
-      void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
-      if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", filename);
-      maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
-      close (fd);
+        // Open and stat the mask file
+        int fd = open (filename, O_RDONLY);
+        if (fd < 0) err (1, "Can't open mask file: '%s'\n", filename);
+        struct stat statBuf;
+        if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", filename);
 
-      // Pre-compute the compressed size of each level, i.e. the number
-      // of Items from the begining of the (compressed) output file where
-      // a (compressed) level will start.  Clearly we could do this
-      // statically and store the info in the same directory as the mask
-      // file, but it doesn't take all that long to compute, and by doing
-      // it here we don't need to depend on some additional external file
-      // (i.e.  one fewer thing to go wrong).
-      int64_t itemOffset = 0;
-      unsigned char *qq = maskInfo[maskIndex].inclusionMask;
-      int levelIndex;
-      for (levelIndex = 0;  levelIndex < Nr;  ++levelIndex) {
-        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
-        itemOffset += popCount (qq, numItemsInOneZLevel/8);
-        qq += numItemsInOneZLevel / 8;
+        // Double check that the size of the mask file is correct
+        if (expectedMaskSize != statBuf.st_size) {
+          err (1, "Mask file '%s' is size %ld, but should be %ld\n",
+                  filename, statBuf.st_size, expectedMaskSize);
+        }
+
+        // mmap the mask file
+        void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
+        if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", filename);
+        maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
+        close (fd);
+
+        // Pre-compute the compressed size of each level, i.e. the number
+        // of Items from the begining of the (compressed) output file where
+        // a (compressed) level will start.  Clearly we could do this
+        // statically and store the info in the same directory as the mask
+        // file, but it doesn't take all that long to compute, and by doing
+        // it here we don't need to depend on some additional external file
+        // (i.e.  one fewer thing to go wrong).
+        int64_t itemOffset = 0;
+        unsigned char *qq = maskInfo[maskIndex].inclusionMask;
+        int levelIndex;
+        for (levelIndex = 0;  levelIndex < Nr;  ++levelIndex) {
+          maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
+          itemOffset += popCount (qq, bytesPerLevel);
+          qq += bytesPerLevel;
+        }
+        // Store an extra "Nr'th" offset so we can compute the size of
+        // a level "j" by just (levelOffset[j+1] - levelOffset[j])
+        // without special-casing the last level.
+        maskInfo[maskIndex].compressedLevelItemOffset[Nr] = itemOffset;
       }
-      // Store an extra "Nr'th" offset so we can compute the size of
-      // a level "j" by just (levelOffset[j+1] - levelOffset[j])
-      // without special-casing the last level.
-      maskInfo[maskIndex].compressedLevelItemOffset[Nr] = itemOffset;
     }
   }
 }
