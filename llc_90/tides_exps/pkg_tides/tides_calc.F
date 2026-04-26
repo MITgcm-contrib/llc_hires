@@ -52,7 +52,7 @@ C bi,bj     :: Tile indices
       flat = 0D0
       rkm = tides_earthRadius/1 _d 3
 
-      CALL cal_GetDate( myIter, myTime, myDate, myThid )
+      CALL cal_GetDate( myIter, myTime+deltaT/2, myDate, myThid )
       yr = myDate(1)/10000
       mon = MOD(myDate(1)/100,100)
       day = MOD(myDate(1),100)
