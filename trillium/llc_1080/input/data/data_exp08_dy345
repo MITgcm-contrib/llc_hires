@@ -63,8 +63,8 @@
         34.7200, 34.7189, 34.7200, 34.7198, 34.7197, 34.7196,
         34.7194, 34.7193, 34.7191, 34.7190, 34.7188,
  viscAr= 1.e-05,
- diffKrT=1.e-7,
- diffKrS=1.e-7,
+ diffKrT=1.e-6,
+ diffKrS=1.e-6,
  rhonil=1029.,
  rhoConstFresh=1000.,
  eosType='JMD95Z',
@@ -105,7 +105,7 @@
 
 # Time stepping parameters
  &PARM03
- nIter0 = 437760,
+ nIter0 = 496800,
  endtime= 31536000.,
  deltaT = 60.,
  abEps  = 0.1,
@@ -156,9 +156,9 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC1080_v13b.bin',
- hydrogThetaFile='../run_1080_exp12_dy202_dy304/Theta.0000437760.data',
- hydrogSaltFile ='../run_1080_exp12_dy202_dy304/Salt.0000437760.data',
- uVelInitFile   ='../run_1080_exp12_dy202_dy304/U.0000437760.data',
- vVelInitFile   ='../run_1080_exp12_dy202_dy304/V.0000437760.data',
- pSurfInitFile  ='../run_1080_exp12_dy202_dy304/Eta.0000437760.data',
+ hydrogThetaFile='../run_1080_exp08_dy237_dy345/Theta.0000496800.data',
+ hydrogSaltFile ='../run_1080_exp08_dy237_dy345/Salt.0000496800.data',
+ uVelInitFile   ='../run_1080_exp08_dy237_dy345/U.0000496800.data',
+ vVelInitFile   ='../run_1080_exp08_dy237_dy345/V.0000496800.data',
+ pSurfInitFile  ='../run_1080_exp08_dy237_dy345/Eta.0000496800.data',
 /
