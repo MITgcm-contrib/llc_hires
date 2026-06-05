@@ -51,6 +51,14 @@ quikplot           :: quick and dirty llc plotting routine
 
 quikread           :: quick and dirty llc read routine
 
+llc2rect           :: convert llc to rectangular geometry
+
+llc2rect_v2        :: convert llc to rectangular geometry with multiple copies of Arctic face
+
+rect2llc           :: reverse llc2rect
+
+rect2llc_v2        :: reverse llc2rect_v2
+
 vel2latlon.m       :: Rotate vectors according pre-calculated angles
                    :: ( from calcFacetAngles ).
 
