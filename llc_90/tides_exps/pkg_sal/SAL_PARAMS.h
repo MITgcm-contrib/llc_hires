@@ -17,10 +17,10 @@ C     SAL_lon_0     :: starting longitude of grid for harmonic analysis (degrees
 C     SAL_lat       :: latitudes of grid for harmonic analysis (degrees North)
 C     SAL_wgt       :: Integration weights of Gaussian intermediate grid;
 C                      Only used for logging
-      COMMON /SAL_R/ 
+      COMMON /SAL_R/
      &               SAL_hLove, SAL_lLove, SAL_kLove,
      &               SAL_startTime, SAL_rhoEarth, SAL_lon_0, SAL_lat,
-     &               SAL_wgt
+     &               SAL_wgt, SAL_taperCutoff, SAL_taperWidth
       _RL SAL_hLove(SAL_MAXNLOVE)
       _RL SAL_lLove(SAL_MAXNLOVE)
       _RL SAL_kLove(SAL_MAXNLOVE)
@@ -29,6 +29,8 @@ C                      Only used for logging
       _RL SAL_lon_0
       _RL SAL_lat(SAL_NLAT)
       _RL SAL_wgt((SAL_NLAT+1)/2)
+      _RL SAL_taperCutoff
+      _RL SAL_taperWidth
 
 C     SAL_diagIter       :: iterations between lat-lon SAL debug diags (0: no diagnostics)
 C     SAL_cilmIter       :: iterations between spectral SAL debug diags (0: no diagnostics)

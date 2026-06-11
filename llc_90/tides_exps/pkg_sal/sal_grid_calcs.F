@@ -52,6 +52,10 @@ C     lm = (m*(2*lmax + 2 - (m+1)))//2 + l + 1
          SAL_lm(lm) = SAL_lm(lm)
      &     *(1 _d 0 + SAL_KLove(l+1) - SAL_HLove(l+1))/(2*l + 1)
      &     *3 _d 0*rhoConst/SAL_rhoEarth
+         IF (SAL_taperWidth .GT. 0 _d 0) THEN
+          SAL_lm(lm) = SAL_lm(lm)
+     &     *0.5 _d 0*(1 _d 0 - TANH((l-SAL_taperCutoff)/SAL_taperWidth))
+         ENDIF
        ENDDO
       ENDDO
 

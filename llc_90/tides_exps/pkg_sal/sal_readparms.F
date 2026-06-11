@@ -41,6 +41,8 @@ C     iUnit      :: Work variable for IO unit number
      &   SAL_lon_0,
      &   SAL_lat,
      &   SAL_rhoEarth,
+     &   SAL_taperCutoff,
+     &   SAL_taperWidth,
      &   SAL_startTime,
      &   SAL_diagIter,
      &   SAL_cilmIter
@@ -70,6 +72,8 @@ C--   Default values for SAL
       SAL_usePhiHydLow = .FALSE.
       SAL_maskLand = .TRUE.
       SAL_rhoEarth = 5517 _d 0
+      SAL_taperCutoff = 0 _d 0
+      SAL_taperWidth = 0 _d 0
       DO i=1,SAL_NLAT
         SAL_lat(i) = UNSET_RL
       ENDDO
