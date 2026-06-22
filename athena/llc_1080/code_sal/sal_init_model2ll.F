@@ -48,8 +48,11 @@ C     !LOCAL VARIABLES:
       INTEGER myTile
 #endif /* ALLOW_EXCH2 */
       INTEGER np, ip, ipo, ipstart, ill, iG1, jG1
-      INTEGER idx
+      INTEGER idx, errCnt, maxCnt
       _RL wgt
+#ifdef ALLOW_USE_MPI
+      INTEGER mpiRC
+#endif   /* ALLOW_USE_MPI */
 
       _BEGIN_MASTER( mythid )
 
@@ -67,16 +70,6 @@ C     !LOCAL VARIABLES:
       CLOSE(iUnit1)
 
       nM2G = SAL_M2Gindptr(SAL_NLON*SAL_NLAT+1)
-C      IF (nM2G .GT. SAL_MAXM2G) THEN
-C       WRITE(msgBuf,'(A,I10,A,I10,A)') 'SAL_INIT_INTERP: found ',
-C     & nM2G,' model2ll weights, but SAL_MAXM2G = ',SAL_MAXM2G
-C       CALL PRINT_ERROR( msgBuf, myThid )
-C       WRITE(msgBuf,'(2A)') 'SAL_INIT_INTERP: ',
-C     &  'need to increase SAL_MAXM2G'
-C       CALL PRINT_ERROR( msgBuf, myThid )
-C       CALL ALL_PROC_DIE( 0 )
-C       STOP 'ABNORMAL END: S/R SAL_INIT_INTERP (SAL_MAXM2G)'
-C      ENDIF
 
       WRITE(msgBuf,'(A,I10,A)') 'SAL_INIT_INTERP: reading ',
      &                          nM2G,' model2ll weights'
@@ -108,6 +101,7 @@ C     and map to tile indices
 #endif /* ALLOW_EXCH2 */
       np = myProcId + 1
       ipo = 0
+      errCnt = 0
       DO ill=1,SAL_NLON*SAL_NLAT
         ipstart = SAL_M2Gindptr(ill) + 1
         SAL_M2Gindptr(ill) = ipo
@@ -142,7 +136,11 @@ C-           default (face fit into global-IO-array)
               iG1=exch2_txGlobalo(myTile)+iGjLoc*(j-1)
               jG1=exch2_tyGlobalo(myTile)+jGjLoc*(j-1)
               IF (jG.EQ.jG1 .AND. iG.GE.iG1 .AND. iG.LT.iG1+sNx) THEN
-               ipo = ipo + 1
+               IF (ipo .LT. SAL_MAXM2G) THEN
+                ipo = ipo + 1
+               ELSE
+                errCnt = errCnt + 1
+               ENDIF
                SAL_M2Gind(ipo) = (((bj-1)*nSx+bi-1)*sNy+j-1)*sNx+iG-iG1
                SAL_M2Gwgt(ipo) = wgt
               ENDIF
@@ -171,9 +169,10 @@ C-           default (face fit into global-IO-array)
               iG1 = iBase+(bi-1)*sNx+1
               jG1 = jBase+(bj-1)*sNy+j
               IF (jG.EQ.jG1 .AND. iG.GE.iG1 .AND. iG.LT.iG1+sNx) THEN
-               ipo = ipo + 1
-               IF (ipo .GT. SAL_MAXM2G) THEN
-                 STOP 'SAL_INIT_MODEL2LL'
+               IF (ipo .LT. SAL_MAXM2G) THEN
+                ipo = ipo + 1
+               ELSE
+                errCnt = errCnt + 1
                ENDIF
                SAL_M2Gind(ipo) = (((bj-1)*nSx+bi-1)*sNy+j-1)*sNx+iG-iG1
                SAL_M2Gwgt(ipo) = wgt
@@ -190,6 +189,28 @@ C-           default (face fit into global-IO-array)
 
       CLOSE(iUnit1)
       CLOSE(iUnit2)
+
+      errCnt = errCnt + SAL_MAXM2G
+      maxCnt = errCnt
+#ifdef ALLOW_USE_MPI
+      IF ( usingMPI ) THEN
+       CALL MPI_ALLREDUCE(errCnt,maxCnt,1,MPI_INTEGER,MPI_MAX,
+     &                    MPI_COMM_MODEL,mpiRC)
+      ENDIF
+#endif /* ALLOW_USE_MPI */
+
+      IF (maxCnt .GT. SAL_MAXM2G) THEN
+       WRITE(msgBuf,'(2A,I10)') 'SAL_INIT_INTERP:',
+     &      ' increase SAL_MAXM2G to ',maxCnt
+       CALL PRINT_ERROR(msgBuf, myThid)
+       CALL ALL_PROC_DIE( myThid )
+       STOP 'SAL_INIT_MODEL2LL: insufficient SAL_MAXM2G'
+      ENDIF
+
+      WRITE(msgBuf,'(2A,I10,A)') 'SAL_INIT_INTERP:',
+     &     ' using',ipo,' weights'
+      CALL PRINT_MESSAGE(msgBuf,standardMessageUnit,
+     &                   SQUEEZE_RIGHT,myThid)
 
       _END_MASTER( mythid )
       _BARRIER
