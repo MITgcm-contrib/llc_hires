@@ -26,7 +26,7 @@
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
   MOD=$SCRATCH/llc_hires/trillium/llc_1080
-  cp $MOD/code-async/SIZE.h_30x30x11152 SIZE.h
+  cp $MOD/code-async/SIZE.h_30x30x11152_327l SIZE.h
 #  cp $MOD/code-async/SIZE.h_90x54x2229 SIZE.h
 #  cp $MOD/code-async/SIZE.h_60x72x3510 SIZE.h
 #  cp $MOD/code-async/SIZE.h_60x60x4212 SIZE.h
