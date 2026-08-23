@@ -63,8 +63,8 @@
   find $MOD/input/ -type f -exec cp -t . -- {} +
   cp $MOD/input-sal/* .
 
-  cp -f data_327l_classic_dy001 data
-  cp -f data.seaice_327l_classic_dy001 data.seaice
+  cp -f data_327l_classic_dy061 data
+  cp -f data.seaice_327l_classic_dy061 data.seaice
   cp -f data.kpp_327l_classic data.kpp
   cp -f data.exch2_30x30x11152 data.exch2
   unset I_MPI_PMI_LIBRARY
