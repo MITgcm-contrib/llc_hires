@@ -19,25 +19,29 @@
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
-  cp ../../llc_hires/trillium/llc_4320/code-async/SIZE.h_90x90x19492 SIZE.h
+  MOD=$SCRATCH/llc_hires/trillium/llc_4320
+  cp $MOD/code-async/SIZE.h_90x90x19492 SIZE.h
   ../tools/genmake2 -of \
-  ../../llc_hires/trillium/llc_4320/code-async/linux_amd64_ifort+mpi_trillium -mpi \
-  -mods '../../llc_hires/trillium/llc_4320/code-async ../../llc_hires/trillium/llc_4320/code'
+  /project/rrg-peltier-ac/momenika/linux_amd64_ifort+mpi_trillium -mpi \
+  -mods "$MOD/code-sal $MOD/code-async $MOD/code"
   make depend
   make -j 64
 
 #### RUN MODEL ####
   cd $SCRATCH/MITgcm/run_4320
 
+  MOD=$SCRATCH/llc_hires/trillium/llc_4320
   cp ../build_4320/mitgcmuv mitgcmuv_90x90x19492
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
   find ../../llc_hires/trillium/llc_4320/input/ -type f -exec cp -t . -- {} +
+  cp $MOD/input-sal/* .
 
-  cp -f data_LPNB_dy370hr17 data
-  cp -f data.seaice_LPNB_dy370hr17 data.seaice
+  cp -f data_327l_classic_dy182hr00 data
+  cp -f data.seaice_327l_classic_dy182hr00 data.seaice
+  cp -f data.kpp_327l_classic data.kpp
   cp -f data.exch2_90x90x19492 data.exch2
   
   unset I_MPI_PMI_LIBRARY
