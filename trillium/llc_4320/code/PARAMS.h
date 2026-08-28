@@ -661,6 +661,14 @@ C     omega      :: Angular velocity ( rad/s )
 C     rotationPeriod :: Rotation period (s) (= 2.pi/omega)
 C     viscArNr   :: vertical profile of Eddy viscosity coeff.
 C                   for vertical mixing of momentum ( units of r^2/s )
+C     shallowDiffKr      :: vertical diffusivity for shallow regions
+C     shallowDiffKrDepth :: depth threshhold for shallowDiffKr
+C     shallowViscAr      :: vertical viscosity for shallow regions
+C     shallowViscArDepth :: depth threshhold for shallowViscAr
+C     bblDiffKr          :: vertical diffusivity for bottom boundary layer
+C     bblDiffKrThickness :: thickness threshhold for bblDiffKr
+C     bblViscAr          :: vertical viscosity for bottom boundary layer
+C     bblViscArThickness :: depth threshhold for bblViscAr
 C     viscAh     :: Eddy viscosity coeff. for mixing of
 C                   momentum laterally ( m^2/s )
 C     viscAhW    :: Eddy viscosity coeff. for mixing of vertical
@@ -843,6 +851,10 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
      & viscA4Grid, viscA4GridMax, viscA4GridMin,
      & viscAhReMax, viscA4ReMax,
      & viscC4leith, viscC4leithD, viscArNr,
+     & shallowDiffKr, shallowDiffKrDepth,
+     & shallowViscAr, shallowViscArDepth,
+     & bblDiffKr, bblDiffKrThickness,
+     & bblViscAr, bblViscArThickness,
      & diffKhT, diffK4T, diffKrNrT, diffKr4T,
      & diffKhS, diffK4S, diffKrNrS, diffKr4S,
      & diffKrBL79surf, diffKrBL79deep, diffKrBL79scl, diffKrBL79Ho,
@@ -911,6 +923,14 @@ C     psiEuler      :: Euler angle, rotation about new z-axis
       _RL hFacInf
       _RL hFacSup
       _RL viscArNr(Nr)
+      _RL shallowDiffKr
+      _RL shallowDiffKrDepth
+      _RL shallowViscAr
+      _RL shallowViscArDepth
+      _RL bblDiffKr
+      _RL bblDiffKrThickness
+      _RL bblViscAr
+      _RL bblViscArThickness
       _RL viscFacAdj
       _RL viscAh
       _RL viscAhW

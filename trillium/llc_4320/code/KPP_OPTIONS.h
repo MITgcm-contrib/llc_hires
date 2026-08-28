@@ -74,6 +74,9 @@ C   usually not necessary, but useful for testing
 C o Vertically smooth Ri (for interior shear mixing)
 #undef ALLOW_KPP_VERTICALLY_SMOOTH
 
+C o Enable latitudinal dependence of Ricr
+#define KPP_VARY_RICR
+
 #endif /* ALLOW_KPP */
 #endif /* KPP_OPTIONS_H */
 

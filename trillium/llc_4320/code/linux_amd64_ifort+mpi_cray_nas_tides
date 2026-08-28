@@ -1,0 +1,86 @@
+#! /usr/bin/env bash
+
+# build_options for intel compiler on athena (NASA Ames Cray)
+# including link to spice library for tides
+#  source /opt/cray/pe/modules/3.2.11.7/init/bash
+#  module switch PrgEnv-cray PrgEnv-intel
+
+CC=icx
+FC=ifort
+F90C=ifort
+LINK="$F90C -shared-intel"
+
+CPP='/lib/cpp -traditional -P'
+DEFINES='-DWORDLENGTH=4 -DINTEL_COMMITQQ'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-qopenmp'
+
+#NOOPTFLAGS='-O1 -fp-model precise'
+NOOPTFLAGS='-O0'
+NOOPTFILES=''
+
+CFLAGS='-O0'
+FFLAGS="$FFLAGS -convert big_endian -assume byterecl"
+
+#- for big setups, compile & link with "-fPIC" or set memory-model to "medium":
+CFLAGS="$CFLAGS -fPIC"
+FFLAGS="$FFLAGS -fPIC"
+#- For really big executable (> 2 GB), uncomment following 2 lines
+FFLAGS="$FFLAGS -mcmodel=medium -shared-intel"
+CFLAGS="$CFLAGS -mcmodel=medium -shared-intel"
+#- might want to use '-r8' for fizhi pkg:
+#FFLAGS="$FFLAGS -r8"
+
+FFLAGS="$FFLAGS -W0 -WB"
+if test "x$IEEE" = x ; then     #- with optimisation:
+    FOPTIM='-O2 -ipo -fp-model precise -align -march=core-avx2 -mtune=core-avx2 -traceback -ftz'
+    NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
+    NOOPTFILES="$NOOPTFILES obcs_init_fixed.F"
+else
+  if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
+    FOPTIM='-O0 -noalign'
+  else                          #- development/check options:
+   #FFLAGS="$FFLAGS -debug all -debug-parameters all -fp-model strict"
+    FOPTIM="-O0 -noalign -g -traceback"
+    NOOPTFLAGS=$FOPTIM
+    NOOPTFILES='adread_adwrite.F'
+    FOPTIM="$FOPTIM -warn all -warn nounused"
+    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -check all -ftrapuv"
+  fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+
+INCLUDEDIRS=''
+INCLUDES=''
+LIBS=''
+
+if [ -n "$MPI_ROOT" -a "x$MPI" = xtrue ] ; then
+    if [ -z "$MPI_INC_DIR" ]; then
+      MPI_INC_DIR="${MPI_ROOT}/include"
+    fi
+    LIBS="$LIBS -L${MPI_ROOT}/lib -lmpi"
+fi
+MPI_INC_DIR="${CRAY_MPICH_DIR}/include"
+LIBS="$LIBS -L${CRAY_MPICH_DIR}/lib -lmpifort -lmpi"
+if [ -n "$MPI_INC_DIR" -a "x$MPI" = xtrue ] ; then
+    INCLUDES="$INCLUDES -I${MPI_INC_DIR}"
+    #INCLUDEDIRS="$INCLUDEDIRS $MPI_INC_DIR"
+    #- used for parallel (MPI) DIVA
+    MPIINCLUDEDIR="$MPI_INC_DIR"
+    #MPI_HEADER_FILES='mpif.h mpiof.h'
+fi
+
+INCLUDES="$INCLUDES -I${CRAY_MPICH_DIR}"
+
+if [ "x$NETCDF_DIR" != x ] ; then
+    INCLUDES="$INCLUDES -I${NETCDF_DIR}/include"
+    #INCLUDEDIRS="$INCLUDEDIRS ${NETCDF_DIR}/include"
+    LIBS="$LIBS -L${NETCDF_DIR}/lib"
+fi
+
+LIBS="$LIBS -L${CRAY_LIBSCI_PREFIX}/lib -lsci_intel"
+LIBS="$LIBS -L../../llc_hires/llc_90/tides_exps/lib -lspice"
