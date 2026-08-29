@@ -42,7 +42,7 @@
   cp -f data_327l_classic_dy182hr00 data
   cp -f data.seaice_327l_classic_dy182hr00 data.seaice
   cp -f data.kpp_327l_classic data.kpp
-  cp -f data.exch2_90x90x19492 data.exch2
+  cp -f data.exch2_90x90x19493 data.exch2
   
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 21120 ./mitgcmuv_90x90x19492

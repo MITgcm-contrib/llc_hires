@@ -64,6 +64,7 @@ C     msgBuf      :: Informational/error message buffer
 #endif
 CEOP
 
+
 chenze
 
       COMMON /ICOUNTER_COMM/ ICOUNTER
@@ -88,6 +89,8 @@ chenze
       return
 
 chenze
+
+
 
 C--   Write model fields
       WRITE(fn,'(A,A)') 'pickup_seaice.',suff
