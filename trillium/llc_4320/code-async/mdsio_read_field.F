@@ -425,10 +425,6 @@ C-           default (face fit into global-IO-array)
            ENDIF
 #endif /* ALLOW_EXCH2 */
 
-
-
-
-
 chenze : Our mpi-i/o-based routines don't yet support 32-bit elements
 chenze : so we are routing those through the standard i/o mechanism.
 chenze : Also, we're assuming that byte-swapping of the usual bigendian
@@ -446,7 +442,6 @@ chenze : so we swap explicitly here. If _BYTESWAPIO is set, this will break.
               call readField(MPI_COMM_MODEL, dataFName, 
      &             irec,
      &             shared3dBuf_r8, tN, nNz)
-
 
               CALL MDS_BYTESWAPR8( sNx*sNy*nNz*nSx*nSy, shared3dBuf_r8 )
               
@@ -475,9 +470,6 @@ C End of j,k loops
 #ifdef ALLOW_ASYNCIO
         endif
 #endif
-
-
-
 
 C end if fileIsOpen
 c         ENDIF

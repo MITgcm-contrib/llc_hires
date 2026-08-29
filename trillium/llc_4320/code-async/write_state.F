@@ -79,7 +79,6 @@ C     myTime - Current time of simulation ( s )
       INTEGER myThid
       INTEGER myIter
 
-
       INTEGER UCODE
       INTEGER IFLD
 
@@ -157,7 +156,6 @@ C         easier to transfer analyse a particular snap-shots
 # endif
 #else
 
-          
         call timer_start('asyncio   ',myThid)
         ICOUNTER = ICOUNTER+1
         CALL beginNewEpoch(icounter,myIter,0)

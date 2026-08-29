@@ -19,14 +19,19 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include <mpi.h>
 #include <alloca.h>
 
-
 #include <stdint.h>
 #include <limits.h>
 #include <errno.h>
+#include <err.h>
+#include <stdbool.h>
+#include <sys/mman.h>
+#include <math.h>
+
 
 #define DEBUG 1
 
@@ -62,7 +67,9 @@ char (*allHostnames)[HOST_NAME_MAX+1]  = NULL;
 // If numRanksPerNode is set to be > 0, we just use that setting.
 // If it is <= 0, we dynamically determine the number of cores on
 // a node, and use that.  (N.B.: we assume *all* nodes being used in
-// the run have the *same* number of MPI processes on each.)
+// the run have the *same* number of MPI processes on each, except
+// possibly the last node, which is allowed to be short.)
+//int numRanksPerNode = 4;  //  FOR DEBUG ONLY !!  MUST BE ZERO FOR PRODUCTION !!
 int numRanksPerNode = 0;
 
 // Just an error check; can be zero (if you're confident it's all correct).
@@ -92,9 +99,19 @@ int numRanksPerNode = 0;
 #define NUM_Z   ((long int) Nr)
 #define MULTDIM ((long int) 7)
 
-// Some values derived from the above constants
-#define twoDFieldSizeInBytes  (NUM_X * NUM_Y * 1 * datumSize)
-#define threeDFieldSizeInBytes  (twoDFieldSizeInBytes * NUM_Z)
+// Some values derived from the above constants.
+#define numItemsIn2DField   (NUM_X * NUM_Y * 1)
+#define numItemsIn3DField (NUM_X * NUM_Y * NUM_Z)
+#define numItemsInMultDField  (NUM_X * NUM_Y * MULTDIM)
+#define numItemsInOneZLevel  (numItemsIn2DField)
+
+// Note that the "sizeInBytes" is the *in-core* size of the data.
+// When we write out a standard time-step epoch, the output is
+// typically converted to single precision, and so the *file*
+// might be only half this size.  But for a "pickup" epoch, we
+// write the full double-precision value to the file.
+#define twoDFieldSizeInBytes   (numItemsIn2DField * datumSize)
+#define threeDFieldSizeInBytes (twoDFieldSizeInBytes * NUM_Z)
 #define multDFieldSizeInBytes  (twoDFieldSizeInBytes * MULTDIM)
 
 // Info about the data tiles.  We assume that all the tiles are the same
@@ -230,7 +247,7 @@ fieldInfoThisEpoch_t fieldsForEpochStyle_2[] = {
   { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 3, 2},
   { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 4, 2},
   { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 5, 2},
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0 },
+  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0, 0 },
 };
 
 
@@ -239,7 +256,7 @@ fieldInfoThisEpoch_t *epochStyles[] = {
 //    fieldsForEpochStyle_1,
 //    fieldsForEpochStyle_2,
 };
-int numEpochStyles = 1;
+int numEpochStyles = (sizeof(epochStyles) / sizeof(fieldInfoThisEpoch_t *));
 
 
 typedef enum {
@@ -249,8 +266,210 @@ typedef enum {
     cmd_exit,
 } epochCmd_t;
 
+///////////////////////////////////////////////////////////////////////
+// Info for applying compression to the output
+
+char maskDir[1000] = {'.', '/', '\0', };
+bool output_2Dcompressed = false;
+bool output_3Dcompressed = true;
+bool output_2Duncompressed = true;
+bool output_3Duncompressed = false;
+bool output_3DtopLevel = true;
+
+
+// Specify which mask is associated with which field
+typedef struct {
+  char *maskName;
+  unsigned char *inclusionMask;
+  char *fieldList;
+  int64_t compressedLevelItemOffset[Nr + 1];
+} maskInfo_t;
+
+// We rely on the fields in the fieldList string to be comma separated.
+// Note that "A" is currently not associated with any mask
+maskInfo_t maskInfo[] = {
+  /*   Center */ {"hFacC.bits", NULL, "B,C,D,G,K,L,M,O,Q,S,T,W,X,Y,Z", {0} },
+  /*    South */ {"hFacS.bits", NULL, "V,F,J", {0} },
+  /*     West */ {"hFacW.bits", NULL, "U,E,I", {0} },
+  /* Max of C */ {"hFacM.bits", NULL, "H,N,P,R", {0} },
+  /* List terminator */ {NULL, NULL, NULL, {0} },
+};
+
+
+
+bool
+isSet (int64_t ii, unsigned char *s)
+{ return ((s[ii>>3] & (1 << (ii&7))) != 0); }
+
+
+// Note: len is in bytes.  popCount is computed for whole bytes
+int64_t
+popCount(void *p, int64_t len)
+{
+  // Table of how many bits are set in a byte-sized value (2's complement)
+  // i.e. "popcount" for a single 8bit byte.
+  static uint8_t setBits[] = {
+    0,1,1,2, 1,2,2,3, 1,2,2,3, 2,3,3,4, 1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5, 2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    2,3,3,4, 3,4,4,5, 3,4,4,5, 4,5,5,6, 3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7,
+    3,4,4,5, 4,5,5,6, 4,5,5,6, 5,6,6,7, 4,5,5,6, 5,6,6,7, 5,6,6,7, 6,7,7,8,
+  };
+
+  if ((NULL == p) || (len < 0)) return -1;
+
+  uint8_t *pp = ((uint8_t*)p);
+  int64_t count = 0;
+  for (uint8_t *q = pp;  q < pp + len;  ++q) count += setBits[*q];
+
+  return count;
+}
+
+
+// Scan the fieldDepth array, and return the numZ value for the
+// given ID.  If the ID is not found, return zero.
+int
+findFieldDepth (int ID)
+{
+  int ii;
+  for (ii = 0;  ii < numAllFields;  ++ii) {
+    if (fieldDepths[ii].dataFieldID == ID) return fieldDepths[ii].numZ;
+  }
+  return 0;
+}
+
+
+// Given a comma-separated list of field ID's, return the maximum depth
+// of the specified fields.
+int
+maxFieldDepth (char *list)
+{
+  if (NULL == list) return 0;
+
+  int maxDepth = 0;
+  for (; '\0' == *list;  ++list) {
+    while (isspace(*list) || (',' == *list)) ++list;
+    int thisDepth = findFieldDepth (*list);
+    if (thisDepth > maxDepth) maxDepth = thisDepth;
+  }
+  return maxDepth;
+}
+
+
+void 
+initCompressionInfo (void)
+{
+  {
+    // Get the compression settings from the Fortran side
+    extern void get_asyncio_settings_ (int *, int *, int *, int *, int *, int *);
+    int do2Dcomp, do3Dcomp, do2Duncomp, do3Duncomp, doTop;
+    int maskDirAsInts[1000];
+    size_t ii = 0;
+    get_asyncio_settings_ (&do2Dcomp, &do3Dcomp, &do2Duncomp, &do3Duncomp, &doTop, maskDirAsInts);
+    output_2Dcompressed = (1 == do2Dcomp);
+    output_3Dcompressed = (1 == do3Dcomp);
+    output_2Duncompressed = (1 == do2Duncomp);
+    output_3Duncompressed = (1 == do3Duncomp);
+    output_3DtopLevel = (1 == doTop);
+    do { maskDir[ii] = maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
+    assert (ii < sizeof(maskDir));
+  }
+  fprintf (stderr, "initCompressionInfo: %d %d %d %d %d '%s'\n",
+           (int)output_2Dcompressed, (int)output_3Dcompressed, (int)output_2Duncompressed,
+           (int)output_3Duncompressed, (int)output_3DtopLevel, maskDir);
+
+  char filename[strlen(maskDir) + 100];
+
+  // Sanity check: make sure that the bitmask for a single level occupies
+  // an integral number of bytes (i.e. the number of items on one level
+  // is a multiple of 8).
+  int64_t numMaskBytesPerLevel = numItemsInOneZLevel / 8;
+  if ((numMaskBytesPerLevel * 8) != numItemsInOneZLevel)
+      err (1, "ERROR: numItemsInOneZLevel (%ld) is not a multiple of 8",
+           numItemsInOneZLevel);
+
+  int maskIndex = -1;
+  while (maskInfo[++maskIndex].maskName != NULL)
+  {
+    // Initialize the inclusionMask mapping, if not already done.
+    if (NULL ==  maskInfo[maskIndex].inclusionMask)
+    {
+      strcat(strcat(strcpy(filename,  maskDir),"/"),maskInfo[maskIndex].maskName);
+
+      // Open and stat the mask file
+      int fd = open (filename, O_RDONLY);
+      if (fd < 0) err (1, "Can't open mask file: '%s'\n", filename);
+      struct stat statBuf;
+      if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", filename);
+
+      // Check that the mask file is a plausible size.  It should be an
+      // integral number of levels (i.e. the file size is a multiple of
+      // numMaskBytesPerLevel), and have at least as many levels as the deepest
+      // field that is using the mask (it is ok if the mask has more).
+      int64_t numMaskLevels = statBuf.st_size / numMaskBytesPerLevel;
+      if (numMaskLevels > Nr) 
+        err (1, "Mask file '%s' has %ld Z-levels, but there are only %ld levels\n",
+                filename, numMaskLevels, (int64_t)Nr);
+      if ((numMaskLevels * numMaskBytesPerLevel) != statBuf.st_size)
+        err (1, "Mask file '%s' is size %ld, but should be a multiple of %ld\n",
+                filename, statBuf.st_size, numMaskBytesPerLevel);
+      int64_t deepest = maxFieldDepth (maskInfo[maskIndex].fieldList);
+      if (deepest > numMaskLevels) 
+        err (1, "Mask file '%s' has only %ld Z-levels, but is assigned field(s) with %ld levels\n",
+                filename, numMaskLevels, deepest);
+
+
+      // mmap the mask file
+      void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
+      if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", filename);
+      maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
+      close (fd);
+
+      // Pre-compute the compressed size of each level, i.e. the number
+      // of Items from the begining of the (compressed) output file where
+      // a (compressed) level will start.  Clearly we could do this
+      // statically and store the info in the same directory as the mask
+      // file, but it doesn't take all that long to compute, and by doing
+      // it here we don't need to depend on some additional external file
+      // (i.e.  one fewer thing to go wrong).
+      int64_t itemOffset = 0;
+      unsigned char *qq = maskInfo[maskIndex].inclusionMask;
+      int levelIndex;
+      for (levelIndex = 0;  levelIndex < numMaskLevels;  ++levelIndex) {
+        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
+        itemOffset += popCount (qq, numItemsInOneZLevel/8);
+        qq += numItemsInOneZLevel / 8;
+      }
+      // Store the final offset into any remaining entries of ItemOffset,
+      // including an extra "Nr'th" one.  This lets us compute the size of
+      // a level "j" by just (levelOffset[j+1] - levelOffset[j])
+      // without special-casing the last level.
+      for (; levelIndex <= Nr;  ++levelIndex) {
+        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
+      }
+    }
+  }
+}
+
+
+int
+findMaskIndexForField (int fieldID)
+{
+    int maskIndex = -1;
+    while (maskInfo[++maskIndex].maskName != NULL)
+    {
+        // If we find the fieldID in a mask's fieldList, return that mask
+        if (index (maskInfo[maskIndex].fieldList, fieldID) != NULL) return maskIndex;
+    }
+    // Didn't find the fieldID
+    return -1;
+}
 
 ///////////////////////////////////////////////////////////////////////
+
 
 // Note that a rank will only have access to one of the Intracomms,
 // but all ranks will define the Intercomm.
@@ -289,7 +508,8 @@ int maxTagValue = -1;
 
 // routine to convert double to float during memcpy
 // need to get byteswapping in here as well
-void memcpy_r8_2_r4(float *f, double *d, long long *n)
+void
+memcpy_r8_2_r4 (float *f, double *d, long long *n)
 {
 long long i, rem;
 	rem = *n%16LL;
@@ -337,7 +557,8 @@ long long i, rem;
 
 
 // Debug routine
-void countBufs(int nbufs)
+void
+countBufs(int nbufs)
 {
     int nInUse, nFree;
     bufHdr_t *bufPtr;
@@ -384,6 +605,10 @@ long int readn(int fd, void *p, long int nbytes)
 }
 
 
+// write nbytes to fd
+// This routine automatically retries in the event of an interrupt or
+// a short write (which can happen if nbytes is larger than 0x7ffff000
+// among other reasons).
 ssize_t writen(int fd, void *p, size_t nbytes)
 {
   char *ptr = (char*)(p);
@@ -391,18 +616,38 @@ ssize_t writen(int fd, void *p, size_t nbytes)
   size_t nleft;
   ssize_t nwritten;
 
-    nleft = nbytes;
-    while (nleft > 0){
-	nwritten = write(fd, ptr, nleft);
-	if (nwritten <= 0){
-	  if (errno==EINTR) continue; // POSIX, not SVr4
-	  return(nwritten);           // non-EINTR error 
-	}
-
-	nleft -= nwritten;
-	ptr += nwritten;
+  nleft = nbytes;
+  while (nleft > 0) {
+    nwritten = write(fd, ptr, nleft);
+    if (nwritten <= 0) {
+      if (EINTR == errno) continue; // POSIX, not SVr4
+      return(nwritten);           // non-EINTR error 
     }
-    return(nbytes - nleft);
+
+    nleft -= nwritten;
+    ptr += nwritten;
+  }
+  return(nbytes - nleft);
+}
+
+
+void
+writeToFile (char *fileName, int64_t offset, void *data, size_t nbytes)
+{
+  int fd = open (fileName, O_CREAT|O_WRONLY,S_IRWXU|S_IRGRP);
+  if (fd < 0) err (1, "ERROR: can't open file '%s'", fileName);
+
+  off_t status = lseek (fd, offset, SEEK_SET);
+  if (status < 0) err (1, "ERROR: can't lseek('%s', %ld, SEEK_SET)", fileName, offset);
+
+  errno = 0;
+  ssize_t bwrit = writen (fd, data, nbytes);  
+  if (bwrit < 0) err (1, "ERROR writing file '%s' ", fileName);
+  if (nbytes != (size_t)bwrit) {
+    err (1, "WROTE %ld bytes rather than %ld bytes to file '%s'\n", bwrit, nbytes, fileName);
+  }
+  FPRINTF(stderr,"Wrote %d of %d bytes (file '%s'  offset %ld", bwrit, nbytes, fileName, offset);
+  close (fd);
 }
 
 
@@ -455,77 +700,136 @@ size_t outBufSize=0;
 void
 do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNumZ, int gcmIter)
 {
-  if (0==myNumZ) return;
+  if (0 == myNumZ) return;
 
-  int pickup = whichField->pickup;
+  // Note that the actual data is in the global "outBuf", and is either
+  // 8-byte reals (in the case of a "pickup" epoch), or 4-byte reals
+  // (in the case of a standard timestep epoch).
 
-  ///////////////////////////////
-  // swap here, if necessary
-  //  int i,j;
+  char fileName[1024];
+  int64_t offset, nbytes;
+  int64_t myTotalNumItems = numItemsInOneZLevel * myNumZ;
 
-  //i = NUM_X*NUM_Y*myNumZ;
-  //mds_byteswapr8_(&i,outBuf);
+  // If we are writing this field to a pickup file, do that
+  if (whichField->pickup)
+  {
+    // outBuf contains 8byte reals
 
-  // mds_byteswapr8 expects an integer count, which is gonna overflow someday
-  // can't redefine to long without affecting a bunch of other calls
-  // so do a slab at a time here, to delay the inevitable
-  //  i = NUM_X*NUM_Y;
-  //for (j=0;j<myNumZ;++j)
-  //  mds_byteswapr8_(&i,&outBuf[i*j]);
-
-  // gnu builtin evidently honored by intel compilers
-  
-  if (pickup) {
+    // byte swap the 64bit values
+    // (i.e. convert from (native) little-endian to big-endian)
     uint64_t *alias = (uint64_t*)outBuf;
-    size_t i;
-    for (i=0;i<NUM_X*NUM_Y*myNumZ;++i)
+    int64_t i;
+    for (i = 0;  i < myTotalNumItems; ++i)
       alias[i] = __builtin_bswap64(alias[i]);
+
+    // We don't attempt to sanitize these values because for a pickup file
+    // we want the file to exactly mirror the code.  So the values are
+    // written out verbatim.
+
+    // Write the chunk to the pickup file
+    sprintf (fileName, whichField->filenameTemplate, gcmIter, "data");
+    offset = whichField->offset + (myFirstZ * numItemsInOneZLevel * datumSize);
+    nbytes = myTotalNumItems * datumSize;
+    writeToFile (fileName, offset, outBuf, nbytes);
   }
   else {
-    uint32_t *alias = (uint32_t*)outBuf;
-    size_t i;
-    for (i=0;i<NUM_X*NUM_Y*myNumZ;++i)
-      alias[i] = __builtin_bswap32(alias[i]);
+    // Non-pickup
+
+    bool is2DField = (1 == whichField->zDepth);
+    bool is3DField = (NUM_Z == whichField->zDepth);
+    bool isMultDField = (MULTDIM == whichField->zDepth);
+
+    // Figure out which mask (if any) is associated with the current field.
+    int maskIndex = findMaskIndexForField (whichField->dataFieldID);
+
+    void *buf = (void*) &outBuf[0];
+    int64_t badCount = 0;
+
+    // Convert the data from (native) little-endian, to big-endian
+    int64_t ii;
+    for (ii = 0;  ii < myTotalNumItems;  ++ii)
+    {
+      float value = ((float*)buf)[ii];
+
+      // Check for a bad value (NaN or Inf)
+      if (!isfinite(value)) badCount += 1;
+
+      // Sanitize the output data a little bit: replace -0.0 with +0.0,
+      // and ensure that data items not included by the mask are set to
+      // zero (not garbage).
+      bool isNegativeZero =  ((0.0 == value) && (signbit(value) != 0));
+      bool isIncluded =  (maskIndex < 0)  ?  true  :
+               isSet (ii + myFirstZ * numItemsInOneZLevel,
+                      maskInfo[maskIndex].inclusionMask);
+      if (isNegativeZero || !isIncluded) ((float*)buf)[ii] = 0.0;
+
+      // Convert to big-endian
+      ((int*)buf)[ii] = __builtin_bswap32(((int*)buf)[ii]);
+    }
+
+    if (badCount > 0) fprintf (stderr,
+            "WARNING :: %ld bad data items (NaN or INF) in field %c\n"
+            "WARNING :: at time-step %d, levels %d through %d\n",
+            badCount, whichField->dataFieldID, gcmIter, myFirstZ, myFirstZ + myNumZ - 1);
+
+    if ((is2DField && output_2Duncompressed) || (is3DField && output_3Duncompressed))
+    {
+      sprintf (fileName, whichField->filenameTemplate, gcmIter, "data");
+      offset = whichField->offset + (myFirstZ * numItemsInOneZLevel * sizeof(float));
+      nbytes = myTotalNumItems * sizeof(float);
+      writeToFile (fileName, offset, outBuf, nbytes);
+    }
+
+    if (is3DField && output_3DtopLevel && (myFirstZ == 0))
+    {
+      sprintf (fileName, whichField->filenameTemplate, gcmIter, "level1");
+      offset = 0;
+      nbytes = numItemsInOneZLevel * sizeof(float);
+      writeToFile (fileName, offset, outBuf, nbytes);
+    }
+
+    if ((is2DField && output_2Dcompressed) || (is3DField && output_3Dcompressed))
+    {
+      if (maskIndex < 0)
+      {
+        fprintf (stderr,
+            "WARNING :: Trying to write compressed output for field %c\n"
+            "WARNING :: but no mask file is defined.\n",  whichField->dataFieldID);
+      }
+      else {
+
+        // Do this right away so fileName is available for error massages.
+        sprintf (fileName, whichField->filenameTemplate, gcmIter, "shrunk");
+
+        // Apply the compression mask
+        int64_t bufIndex, compressedItemCount = 0;
+        int64_t startIndex = myFirstZ * numItemsInOneZLevel;
+        unsigned char *inclusionMask = maskInfo[maskIndex].inclusionMask;
+        for (bufIndex = 0;  bufIndex < myTotalNumItems;  ++bufIndex) {
+          if (isSet(bufIndex + startIndex, inclusionMask)) {
+            ((int*)buf)[compressedItemCount++] = ((int*)buf)[bufIndex];
+          }
+        }
+        // Sanity check: the actual (compressed) count is the expected count.
+        int64_t expectedCount = 
+            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ + myNumZ] -
+            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ];
+        if (compressedItemCount != expectedCount)
+          err (1, "ERROR: Compression failure for '%s'.\n"
+                  "Is %ld items, but expected %ld (levels %d to %d)\n",
+                  fileName, compressedItemCount, expectedCount, myFirstZ, myFirstZ + myNumZ - 1);
+
+        // Note that we pre-computed the offset to the begining of a level
+        // within a compressed file.  (Currently, whichField->offset is
+        // typically zero, but one can imagine that might not always be true.)
+        offset = whichField->offset +
+                 (maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ] * sizeof(float));
+        nbytes = compressedItemCount * sizeof(float);
+        writeToFile (fileName, offset, outBuf, nbytes);
+      }
+    }
   }
 
-  // end of swappiness
-  //////////////////////////////////
-
-  char s[1024];
-  //sprintf(s,"henze_%d_%d_%c.dat",io_epoch,gcmIter,whichField->dataFieldID);
-
-  sprintf(s,whichField->filenameTemplate,gcmIter,"data");
-
-  int fd = open(s,O_CREAT|O_WRONLY,S_IRWXU|S_IRGRP);
-  ASSERT(fd!=-1);
-
-  size_t nbytes;
-
-  if (pickup) {
-    lseek(fd,whichField->offset,SEEK_SET);
-    lseek(fd,myFirstZ*NUM_X*NUM_Y*datumSize,SEEK_CUR);
-    nbytes = NUM_X*NUM_Y*myNumZ*datumSize;
-  }
-  else {
-    lseek(fd,myFirstZ*NUM_X*NUM_Y*sizeof(float),SEEK_CUR);
-    nbytes = NUM_X*NUM_Y*myNumZ*sizeof(float);
-  }
-
-  ssize_t bwrit = writen(fd,outBuf,nbytes);  
-
-  if (-1==bwrit) perror("Henze : file write problem : ");
-
-  FPRINTF(stderr,"Wrote %d of %d bytes (%d -> %d) \n",bwrit,nbytes,myFirstZ,myNumZ);
-
-  //  ASSERT(nbytes == bwrit);
-
-  if (nbytes!=bwrit)
-    fprintf(stderr,"WROTE %ld /%ld\n",bwrit,nbytes);
-
-  close(fd);
-
-
-  return;
 }
 
 
@@ -675,8 +979,9 @@ tryToReceiveDataTile(
     }
 
     // Do sanity checks on the pending message
+    // [Note that the API for MPI_Get_count requires that "count" be an int.]
     MPI_Get_count(&mpiStatus, MPI_BYTE, &count);
-    ASSERT(count == expectedMsgSize);
+    ASSERT((size_t)count == expectedMsgSize);
     ASSERT((mpiStatus.MPI_TAG & bitMask) == (epochID & bitMask));
 
     // Recieve the data we saw in the iprobe
@@ -1091,6 +1396,14 @@ ioRankMain (void)
     countBufs(numTileBufs);
 
 
+    // Act on the settings from the input config file regarding what things
+    // to compress, what mask files to use, etc.
+    // (Note that all the resultant settings are held globals. Mostly
+    // the "output_*" flags and the maskInfo array.)
+    initCompressionInfo ();
+
+
+
     ////////////////////////////////////////////////////////////////////
     // Main loop.
     ////////////////////////////////////////////////////////////////////
@@ -1130,7 +1443,7 @@ ioRankMain (void)
 
 	      if (fieldInfo->pickup==0){    // for non-pickups, need to loop over individual fields
 		char f;
-		while ((f = fieldInfo->dataFieldID) != 0){
+		while ((f = fieldInfo->dataFieldID) != '\0') {
 		  sprintf(s,fieldInfo->filenameTemplate,gcmIter,"data");
 		  fprintf(stderr,"%s\n",s);
 		  res = unlink(s);
@@ -1211,7 +1524,7 @@ ioRankMain (void)
 int
 findField(const char c)
 {
-    int i;
+    size_t i;
     for (i = 0; i < numAllFields;  ++i) {
         if (c == fieldDepths[i].dataFieldID)  return i;
     }
@@ -1563,17 +1876,29 @@ int
 isIORank(int commRank, int totalNumNodes, int numIONodes)
 {
     // Figure out if this rank is on a node that will do i/o.
-    // Note that the i/o nodes are distributed throughout the
-    // task, not clustered together.
+    // Note that the i/o nodes are interleaved throughout the
+    // job, not clustered together.
     int thisRankNode = commRank / numRanksPerNode;
 
     int ioNodeStride = totalNumNodes / numIONodes;
     int extra = totalNumNodes % numIONodes;
 
+    // The idea is simply to interleave the I/O nodes among the total
+    // nodes (starting with the first node) at the computed stride.
+    // This is fine, but due to round off it can leave a large block of
+    // nodes at the end (represented by the value "extra") that don't have
+    // a "nearby" I/O node.  It's not at all clear that this actually
+    // matters in any meaningful way, but I thought it looked ugly.
+    // So the overly-complicated scheme below increases the ioNodeStride
+    // by one until the "extra" nodes are used up (the "inflectionPoint"),
+    // and then reverts back to the un-augmented stride for the rest
+    // of the way.
+
     int inflectionPoint = (ioNodeStride+1)*extra;
     if (thisRankNode <= inflectionPoint) {
         return (thisRankNode % (ioNodeStride+1)) == 0;
-    } else {
+    }
+    else {
         return ((thisRankNode - inflectionPoint) % ioNodeStride) == 0;
     }
 
@@ -1586,49 +1911,66 @@ isIORank(int commRank, int totalNumNodes, int numIONodes)
 // node before going to the next, and that each node has the same
 // number of ranks (except possibly the last node, which is allowed
 // to be short).
+// Note that this is a collective routine for the comm, and requires
+// the global "allHostnames" to already be set in rank 0.
 int
 getNumRanksPerNode (MPI_Comm comm)
 {
-    char myHostname[HOST_NAME_MAX+1];
-    int status, count;
+    char tmpHostname[HOST_NAME_MAX+1];
+    int status, indx;
+    int blockSize, firstBlockSize;
     int commSize, commRank;
 
     MPI_Comm_size (comm, &commSize);
     MPI_Comm_rank (comm, &commRank);
 
-    status = gethostname (myHostname, HOST_NAME_MAX);
-    myHostname[HOST_NAME_MAX] = '\0';
-    ASSERT (0 == status);
+
+    // We assume "allHostnames" is already in order and doesn't need
+    // to be sorted.
 
     if (0 == commRank) {
+
         int nBlocks, ii, jj;
         assert (allHostnames != NULL);
 
-        // We assume these are already in-order and so don't
-        // need to be sorted.
+        // Count how many ranks have the same hostname as rank 0 (i.e. this rank)
+        status = gethostname (tmpHostname, HOST_NAME_MAX);
+        ASSERT (0 == status);
+        tmpHostname[HOST_NAME_MAX] = '\0';
 
-        // Count how many ranks have the same hostname as rank 0
-        for (count = 0;
-               (count < commSize) &&
-               (strcmp(&(allHostnames[count][0]), myHostname) == 0);
-             ++count);
-        ASSERT (count > 0);
+        indx = 0;
+        for (blockSize = 0;
+             (indx < commSize) && (strcmp (allHostnames[indx], tmpHostname) == 0);
+             ++indx, ++blockSize);
+        ASSERT (blockSize > 0);
+
+        firstBlockSize = blockSize;
+        ASSERT (indx < commSize);
 
         // Check that the count is consistent for each block of hostnames
         // (except possibly the last block, which might not be full).
-        nBlocks = commSize / count;
-
-        for (jj = 1;  jj < nBlocks;  ++jj) {
-            char *p = &(allHostnames[jj*count][0]);
-            for (ii = 0;  ii < count;  ++ii) {
-                char *q = &(allHostnames[jj*count + ii][0]);
-                ASSERT (strcmp (p, q) == 0);
+        while (indx < commSize) {
+            strcpy (tmpHostname, allHostnames[indx]);
+            for (blockSize = 0;
+                 (indx < commSize) && (strcmp (allHostnames[indx], tmpHostname) == 0);
+                 ++indx, ++blockSize);
+            if (blockSize != firstBlockSize) {
+                if (indx < commSize) {
+fprintf (stderr, "ERROR: mismatched ranks-per-host: firstHost = %d, thisHost = %d\n",
+firstBlockSize, blockSize);
+                    ASSERT (blockSize == firstBlockSize);
+                }
+                else {
+                    // The last block of hostnames may be short
+                    ASSERT (blockSize <= firstBlockSize);
+                }
             }
         }
     }
 
-    MPI_Bcast (&count, 1, MPI_INT, 0, comm);
-    return count;
+    // Rank 0 broadcasts the info
+    MPI_Bcast (&firstBlockSize, 1, MPI_INT, 0, comm);
+    return firstBlockSize;
 }
 
 
@@ -1722,15 +2064,35 @@ f1(
     // Figure out how many nodes we can use for i/o.
     // To make things (e.g. memory calculations) simpler, we want
     // a node to have either all compute ranks, or all i/o ranks.
-    // If numComputeRanks does not evenly divide numRanksPerNode, we have
-    // to round up in favor of the compute side.
+    // This gets a little tricky when e.g. we want to launch the
+    // code such that rank 0 is on a node with few (or none) other
+    // ranks (to give it extra memory).  The way we allow for this
+    // is that the last node (which is allowed to have fewer ranks)
+    // is assigned to be a compute node, and when we do the Comm_split,
+    // we reverse the numbering of the ranks, so that rank zero is
+    // assigned to be on that last node.
 
     totalNumNodes = divCeil(parentSize, numRanksPerNode);
-    numComputeNodes = divCeil(numComputeRanks, numRanksPerNode);
-    numIONodes = (parentSize - numComputeRanks) / numRanksPerNode;
-    ASSERT(numIONodes > 0);
-    ASSERT(numIONodes <= (totalNumNodes - numComputeNodes));
+
+    // Figure out the number of nodes we need for the compute side.
+
+    // Compute how many ranks are on the last node
+    int ranksLastNode = parentSize % numRanksPerNode;
+    if (0 == ranksLastNode) ranksLastNode = numRanksPerNode;
+
+    // Subtract off the number of ranks in the (possibly short) last node.
+    int remainingRanks = numComputeRanks - ranksLastNode;
+    if (remainingRanks < 0) remainingRanks = 0;
+
+    // numComputeNodes will be the last node, plus however many additional
+    // full nodes (rounded up) are required to cover the remaining ranks.
+    numComputeNodes = 1 + divCeil (remainingRanks, numRanksPerNode);
+
+    numIONodes = totalNumNodes - numComputeNodes;
     numIORanks = numIONodes * numRanksPerNode;
+
+    ASSERT (numIONodes > 0);
+    ASSERT (numIORanks + numComputeRanks <= parentSize);
 
 
     // Print out the hostnames, identifying which ones are i/o nodes
@@ -1751,33 +2113,74 @@ f1(
 
 
 
-    // It is surprisingly easy to launch the job with the wrong number
-    // of ranks, particularly if the number of compute ranks is not a
-    // multiple of numRanksPerNode (the tendency is to just launch one
-    // rank per core for all available cores).  So we introduce a third
-    // option for a rank: besides being an i/o rank or a compute rank,
-    // it might instead be an "excess" rank, in which case it just
-    // calls MPI_Finalize and exits.
+    // Split the parent comm into the compute part and the I/O part.
+    // There is a third option:  because the compute side uses an exact
+    // number of ranks, but we allocate in units of whole nodes, there
+    // can be some "excess" ranks on one compute node due to rounding.
+    // Ranks identified as "excess" just immediately call MPI_Finalize.
+    //
+    // In order to enable the option of launching rank zero onto a node
+    // with few (or none) other ranks, we reverse the numbering of the
+    // compute ranks as compared to their ordering in the parentComm.
+    // The last node (only) is allowed to be short, and the renumbering
+    // forces rank zero onto that last node.
 
-    typedef enum { isCompute, isIO, isExcess } rankType;
-    rankType thisRanksType;
+    typedef enum { isUnknown, isCompute, isIO, isExcess } rankType_t;
 
-    if (isIORank(parentRank, totalNumNodes, numIONodes)) {
-        thisRanksType = isIO;
-    } else if (parentRank >= numComputeRanks + numIORanks) {
-        thisRanksType = isExcess;
-    } else {
-        thisRanksType = isCompute;
+    // Figure out the rank assignments for *all* the ranks in the parentComm.
+    // And also the "key" value, which will determine the rank-order numbering
+    // in the MPI_Comm_split.  I/O ranks are numbered bottom-up, compute ranks
+    // are numbered top-down, w.r.t. the parentComm.
+    rankType_t rankType[parentSize];
+    int key[parentSize];
+    for (i = 0;  i < parentSize;  ++i) {
+        rankType[i] = isIORank(i, totalNumNodes, numIONodes) ? isIO : isUnknown;
+        key[i] = i;
+    }
+    j = 0;
+    for (i = parentSize - 1;  i >= 0;  --i) {
+        if (isUnknown == rankType[i]) {
+            rankType[i] = (j < numComputeRanks) ? isCompute : isExcess;
+            key[i] = j++;
+        }
     }
 
-    // Split the parent communicator into parts
-    MPI_Comm_split(parentComm, thisRanksType, parentRank, &newIntracomm);
+    // Pull out this rank's type and key
+    rankType_t thisRanksType = rankType[parentRank];
+    int thisRanksKey = key[parentRank];
+    ASSERT ( (isIO == thisRanksType) ||
+             (isCompute == thisRanksType) ||
+             (isExcess == thisRanksType) );
+
+    // Print out the rank assignments
+    if (0 == parentRank) {
+        fprintf (stderr, "Rank assignments:");
+        char *runningType = "isUnknown";
+        for (i = 0;  i < parentSize;  ++i) {
+            char *curType = (isCompute == rankType[i]) ? "isCompute" :
+                            (isIO == rankType[i]) ? "isIO" :
+                            (isExcess == rankType[i]) ? "isExcess" :
+                            "isUnknown";
+            if (strcmp(runningType,curType) != 0) {
+                fprintf (stderr, "%d\n%s  %d to ", i-1, curType, i);
+                runningType = curType;
+            }
+        }
+        fprintf (stderr, "%d\n", i-1);
+    }
+
+    // Split the parent communicator into parts.
+    // Note that the key value will cause the ordering of the isCompute
+    // ranks to be the reverse of their order in the parentComm.
+    MPI_Comm_split(parentComm, thisRanksType, thisRanksKey, &newIntracomm);
     MPI_Comm_rank(newIntracomm, &newIntracommRank);
 
     // Excess ranks disappear
     // N.B. "parentComm" (and parentSize) still includes these ranks, so
     // we cannot do MPI *collectives* using parentComm after this point,
-    // although the communicator can still be used for other things.
+    // although the communicator can still be used for other things
+    // (In particular, we use parentComm as the peer communicator when
+    // we set up the IO <--> Compute  inter-communicator.)
     if (isExcess == thisRanksType) {
         MPI_Finalize();
         exit(0);
@@ -1787,33 +2190,40 @@ f1(
     MPI_Comm_size(newIntracomm, &newIntracommSize);
     if (isIO == thisRanksType) {
         ASSERT(newIntracommSize == numIORanks);
+        if (0 == newIntracommRank) {
+            fprintf (stderr, "I/O Rank0:  pid %d on %s\n", getpid(), myHostname);
+        }
     } else {
+        ASSERT(isCompute == thisRanksType);
         ASSERT(newIntracommSize == numComputeRanks);
+        if (0 == newIntracommRank) {
+            fprintf (stderr, "COMPUTE Rank0:  pid %d on %s\n", getpid(), myHostname);
+        }
     }
 
 
     // Create a special intercomm from the i/o and compute parts
+    int remoteLeader;
     if (isIO == thisRanksType) {
         // Set globals
         ioIntracomm = newIntracomm;
         MPI_Comm_rank(ioIntracomm, &ioIntracommRank);
 
-        // Find the lowest computation rank
-        for (i = 0;  i < parentSize;  ++i) {
-            if (!isIORank(i, totalNumNodes, numIONodes)) break;
-        }
-    } else {  // isCompute
+        // Find the parentComm rank id that corresponds to rank-0
+        // of the isCompute intra-communicator.
+        remoteLeader = parentSize - 1;
+    }
+    else {  // isCompute
         // Set globals
         computeIntracomm = newIntracomm;
         MPI_Comm_rank(computeIntracomm, &computeIntracommRank);
 
-        // Find the lowest IO rank
-        for (i = 0;  i < parentSize;  ++i) {
-            if (isIORank(i, totalNumNodes, numIONodes)) break;
-        }
+        // Find the parentComm rank id that corresponds to rank-0
+        // of the isIO intra-communicator.
+        remoteLeader = 0;
     }
-    MPI_Intercomm_create(newIntracomm, 0, parentComm, i, 0, &globalIntercomm);
-
+    MPI_Intercomm_create (newIntracomm, 0, parentComm, remoteLeader, 0,
+                          &globalIntercomm);
 
 
     ///////////////////////////////////////////////////////////////////
@@ -1827,7 +2237,6 @@ f1(
 
         fieldInfoThisEpoch_t *thisEpochStyle = epochStyles[epochStyleIndex];
         int fieldAssignments[numIORanks];
-        int rankAssignments[numComputeRanks + numIORanks];
 
         // Count the number of fields in this epoch style
         for (nF = 0;  thisEpochStyle[nF].dataFieldID != '\0';  ++nF) ;
@@ -1843,19 +2252,19 @@ f1(
             ASSERT((fieldAssignments[i] >= 0) && (fieldAssignments[i] < nF));
         }
 
-        // Embed the i/o rank assignments into an array holding
-        // the assignments for *all* the ranks (i/o and compute).
-        // Rank assignment of "-1" means "compute".
+        // Take the "fieldAssignments" array, which is dense on the i/o ranks,
+        // and expand it to all the ranks in the parentComm, filling in -1
+        // for the non-IO ranks.
+        int ioField[parentSize];
         j = 0;
-        for (i = 0;  i < numComputeRanks + numIORanks;  ++i) {
-            rankAssignments[i] = isIORank(i, totalNumNodes, numIONodes)  ?
-                                 fieldAssignments[j++]  :  -1;
+        for (i = 0;  i < parentSize;  ++i) {
+            ioField[i] = isIORank(i, totalNumNodes, numIONodes) ?  fieldAssignments[j++] : -1;
         }
         // Sanity check.  Check the assignment for this rank.
         if (isIO == thisRanksType) {
-            ASSERT(fieldAssignments[newIntracommRank] == rankAssignments[parentRank]);
+            ASSERT(fieldAssignments[newIntracommRank] == ioField[parentRank]);
         } else {
-            ASSERT(-1 == rankAssignments[parentRank]);
+            ASSERT(-1 == ioField[parentRank]);
         }
         ASSERT(j == numIORanks);
 
@@ -1866,26 +2275,26 @@ f1(
         fflush (stdout);
 
 
-        // Find the lowest rank assigned to computation; use it as
-        // the "root" for the upcoming intercomm creates.
-        for (compRoot = 0; rankAssignments[compRoot] != -1;  ++compRoot);
-        // Sanity check
-        if ((isCompute == thisRanksType) && (0 == newIntracommRank)) ASSERT(compRoot == parentRank);
+        // We number the compute ranks backwards, so compute-rank-0 is the
+        // last rank of parentComm.  We use this as the "root" for the
+        // upcoming intercomm creates.
+        compRoot = parentSize - 1;
 
         // If this is an I/O rank, split the newIntracomm (which, for
         // the i/o ranks, is a communicator among all the i/o ranks)
-        // into the pieces as assigned.
+        // into the pieces assigned to each field.
 
         if (isIO == thisRanksType) {
             MPI_Comm fieldIntracomm;
-            int myField = rankAssignments[parentRank];
+            int myField = ioField[parentRank];
             ASSERT(myField >= 0);
 
             MPI_Comm_split(newIntracomm, myField, parentRank, &fieldIntracomm);
             thisEpochStyle[myField].ioRanksIntracomm = fieldIntracomm;
 
             // Now create an inter-communicator between the computational
-            // ranks, and each of the newly split off field communicators.
+            // rank's intra-communicator, and each of the newly split off
+            // per-field intra-communicators.
             for (i = 0;  i < nF;  ++i) {
 
                 // Do one field at a time to avoid clashes on parentComm
@@ -1925,9 +2334,9 @@ f1(
 
             for (fieldIndex = 0;  fieldIndex < nF;  ++fieldIndex) {
 
-                // Find the remote "root" process for this field
+                // Find the remote (i.e. isIO) "root" process for this field
                 int fieldRoot = -1;
-                while (rankAssignments[++fieldRoot] != fieldIndex);
+                while (ioField[++fieldRoot] != fieldIndex);
 
                 // Create the intercomm for this field for this epoch style
                 MPI_Intercomm_create(newIntracomm, 0, parentComm, fieldRoot,
@@ -1967,9 +2376,15 @@ f1(
 
             printf("\ncpu assignments, epoch style %d\n", epochStyleIndex);
             int whichIONode = -1;
-            for (i = 0; i < numComputeNodes + numIONodes ; ++i) {
+            for (i = 0;  i < numComputeNodes + numIONodes ;  ++i) {
 
-                if (rankAssignments[i*numRanksPerNode] >= 0) {
+                // We allocate whole nodes (to either I/O or compute),
+                // and we require that all the nodes except possibly the
+                // last node all have a full set of ranks.  So we can
+                // tell what type a node is by looking at the type of
+                // the first rank on that node.
+
+                if (ioField[i*numRanksPerNode] >= 0) {
 
                     // i/o node
                     ++whichIONode;
@@ -1980,7 +2395,7 @@ f1(
 
                     for (j = 0; j < numRanksPerNode; ++j) {
 
-                        int assignedField = rankAssignments[i*numRanksPerNode + j];
+                        int assignedField = ioField[i*numRanksPerNode + j];
                         int k, commRank, nChunks, isWriter;
                         nChunks = thisEpochStyle[assignedField].nChunks;
                         commRank = fieldIOCounts[assignedField];
@@ -2001,14 +2416,17 @@ f1(
                 } else {
 
                     // compute node
+                    int excessRankCount = 0,  computeRankCount = 0;
                     for (j = 0; j < numRanksPerNode; ++j) {
-                        if ((i*numRanksPerNode + j) >= (numComputeRanks + numIORanks)) break;
-                        ASSERT(-1 == rankAssignments[i*numRanksPerNode + j]);
+                        int rankIndex = i*numRanksPerNode + j;
+                        if (rankIndex >= parentSize) break;
+                        ASSERT(-1 == ioField[rankIndex]);
+                        if (isExcess == rankType[rankIndex]) ++excessRankCount;
+                        if (isCompute == rankType[rankIndex]) ++computeRankCount;
                     }
-                    printf(" #");
-                    for (; j < numRanksPerNode; ++j) {  // "excess" ranks (if any)
-                        printf("X");
-                    }
+                    printf(" #(%d", computeRankCount);
+                    if (excessRankCount > 0) printf("+%dexcess", excessRankCount);
+                    printf(")");
                 }
                 printf(" ");
             }
@@ -2207,6 +2625,11 @@ f3(char dataFieldID, int tileID, int epochID, void *data)
         for (p = epochStyles[currentEpochStyle]; p->dataFieldID != '\0'; ++p) {
             if (p->dataFieldID == dataFieldID) break;
         }
+if (p->dataIntercomm == MPI_COMM_NULL) {
+fprintf(stderr,"ERROR f3: dataFieldID:%c(%d), style:%d, epoch:%d, priorField:%c(%d), priorEpoch:%d\n",
+dataFieldID, (int)dataFieldID, currentEpochStyle, epochID, priorDataFieldID, (int)priorDataFieldID, priorEpoch);
+sleep(2);  // Give the MPI infrastructute time to forward the message before we abort
+}
         // Make sure we found a valid field
         ASSERT(p->dataIntercomm != MPI_COMM_NULL);
 
