@@ -36,7 +36,7 @@
   cp data_init data
   cp data.pkg_init data.pkg
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 24960 ./mitgcmuv_96x108x23400
+  mpiexec -n 23400 ./mitgcmuv_96x108x23400
 
 # find blank tiles
 grep Empty STDO* > Empty_96x108x23400.txt
