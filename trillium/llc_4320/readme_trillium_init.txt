@@ -31,7 +31,8 @@
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
   ln -sf /project/rrg-peltier-ac/momenika/SPICE/kernels .
-  cp ../../llc_hires/trillium/llc_4320/input/* .
+  find ../../llc_hires/trillium/llc_4320/input/ -type f -exec cp -t . -- {} +
+  cp $MOD/input-sal/* .
   cp data_init data
   cp data.pkg_init data.pkg
   unset I_MPI_PMI_LIBRARY
