@@ -17,7 +17,7 @@
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
-  cp ../../llc_hires/trillium/llc_4320/code/SIZE.h_90x108x24960 SIZE.h
+  cp ../../llc_hires/trillium/llc_4320/code/SIZE.h_96x108x23400 SIZE.h
     ../tools/genmake2 -of \
   /project/rrg-peltier-ac/momenika/linux_amd64_ifort+mpi_trillium -mpi \
   -mods "$MOD/code"
@@ -26,7 +26,7 @@
 
 #### RUN ####
   cd $SCRATCH/MITgcm/run
-  cp ../build/mitgcmuv mitgcmuv_90x108x24960
+  cp ../build/mitgcmuv mitgcmuv_96x108x23400
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
@@ -35,11 +35,11 @@
   cp data_init data
   cp data.pkg_init data.pkg
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 24960 ./mitgcmuv_90x108x24960
+  mpiexec -n 24960 ./mitgcmuv_96x108x23400
 
 # find blank tiles
-grep Empty STDO* > Empty_90x108x24960.txt
+grep Empty STDO* > Empty_96x108x23400.txt
 chmod +x extract_blank.sh
-./extract_blank.sh Empty_90x108x24960.txt
+./extract_blank.sh Empty_96x108x23400.txt
 wc -l blank
 tail blank
