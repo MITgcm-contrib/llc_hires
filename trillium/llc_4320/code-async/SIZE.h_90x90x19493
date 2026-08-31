@@ -72,7 +72,7 @@
 #define __nSy    1
 #define __nPx    29952-10459
 #define __nPy    1
-#define __Nr     173
+#define __Nr     327
 
 #endif
 
