@@ -20,7 +20,7 @@
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
-  cp $MOD/code-async/SIZE.h_96x108x15323 SIZE.h
+  cp $MOD/code-async/SIZE.h_90x90x19493 SIZE.h
   ../tools/genmake2 -of \
   /project/rrg-peltier-ac/momenika/linux_amd64_ifort+mpi_trillium -mpi \
   -mods "$MOD/code-sal $MOD/code-async $MOD/code"
@@ -31,7 +31,7 @@
   cd $SCRATCH/MITgcm/run_4320
 
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
-  cp ../build_4320/mitgcmuv mitgcmuv_96x108x15323
+  cp ../build_4320/mitgcmuv mitgcmuv_90x90x19493
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
@@ -42,7 +42,7 @@
   cp -f data_327l_classic_dy182hr00 data
   cp -f data.seaice_327l_classic_dy182hr00 data.seaice
   cp -f data.kpp_327l_classic data.kpp
-  cp -f data.exch2_96x108x15323 data.exch2
+  cp -f data.exch2_90x90x19493 data.exch2
   
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 21120 ./mitgcmuv_96x108x15323
+  mpiexec -n 21120 ./mitgcmuv_90x90x19493
