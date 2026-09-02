@@ -1,6 +1,7 @@
 ############# run with asyncio #############
-#  salloc --nodes 722 --time=24:00:00
-  salloc --nodes 1040 --time=24:00:00
+#  salloc --nodes  128 --time=24:00:00
+#  salloc --nodes  722 --time=24:00:00
+#  salloc --nodes 1040 --time=24:00:00
 #  salloc --nodes 1211 --time=24:00:00
 
 #### GET CODE ####
@@ -22,7 +23,7 @@
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
   cp $MOD/code-async/SIZE.h_90x90x19493 SIZE.h
   ../tools/genmake2 -of \
-  /project/rrg-peltier-ac/momenika/linux_amd64_ifort+mpi_trillium -mpi \
+  $MOD/code-sal/linux_amd64_ifort+mpi_trillium_shtns_asyncio -mpi \
   -mods "$MOD/code-sal $MOD/code-async $MOD/code"
   make depend
   make -j 64
@@ -46,3 +47,7 @@
   
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 21120 ./mitgcmuv_90x90x19493
+ 
+#  unset I_MPI_PMI_LIBRARY
+#  mpiexec -n 21120 ./mitgcmuv_90x90x19493
+  $MOD/jobfiles/LLC4320_327l_classic_job.sh
