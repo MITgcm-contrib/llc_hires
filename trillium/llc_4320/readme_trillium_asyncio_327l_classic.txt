@@ -12,6 +12,7 @@
   git checkout checkpoint69f
   cd $SCRATCH/MITgcm/pkg
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
+  ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_sal   sal
 
 #### BUILD MODEL ####
   cd $SCRATCH/MITgcm
