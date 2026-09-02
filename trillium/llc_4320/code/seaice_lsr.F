@@ -1043,17 +1043,17 @@ C--   Calculate final residual of the linearised system
         CALL DEBUG_STATS_RL( 1, VICE, msgBuf, myThid )
       ENDIF
 #endif /* ALLOW_DEBUG */
-cdm      IF ( doIterate4u .OR. doIterate4v ) THEN
-cdm        WRITE(msgBuf,'(2A,I10,A,I4,A)') '** WARNING ** SEAICE_LSR ',
-cdm     &    '(it=', myIter, ',', ipass,') did not converge :'
-cdm        CALL PRINT_MESSAGE( msgBuf, errorMessageUnit,
-cdm     &                      SQUEEZE_RIGHT, myThid )
-cdm        WRITE(msgBuf,'(2(A,I6,0PF6.3,1PE14.6))')
-cdm     &      ' nIt,wFU,dU=', ICOUNT1, WFAU, S1,
-cdm     &    ' ; nIt,wFV,dV=', ICOUNT2, WFAV, S2
-cdm        CALL PRINT_MESSAGE( msgBuf, errorMessageUnit,
-cdm     &                      SQUEEZE_RIGHT, myThid )
-cdm      ENDIF
+CDM      IF ( doIterate4u .OR. doIterate4v ) THEN
+CDM        WRITE(msgBuf,'(2A,I10,A,I4,A)') '** WARNING ** SEAICE_LSR ',
+CDM     &    '(it=', myIter, ',', ipass,') did not converge :'
+CDM        CALL PRINT_MESSAGE( msgBuf, errorMessageUnit,
+CDM     &                      SQUEEZE_RIGHT, myThid )
+CDM        WRITE(msgBuf,'(2(A,I6,0PF6.3,1PE14.6))')
+CDM     &      ' nIt,wFU,dU=', ICOUNT1, WFAU, S1,
+CDM     &    ' ; nIt,wFV,dV=', ICOUNT2, WFAV, S2
+CDM        CALL PRINT_MESSAGE( msgBuf, errorMessageUnit,
+CDM     &                      SQUEEZE_RIGHT, myThid )
+CDM      ENDIF
 #endif /* ALLOW_AUTODIFF_TAMC */
 
 C     APPLY MASKS

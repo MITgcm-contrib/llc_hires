@@ -76,7 +76,6 @@ C                         1 for advective and diffusive heat flux (eq22, 26, 31)
 C     fwflxFac         :: only effective for dFac=1, 1 if we expect a melting
 C                         fresh water flux, 0 otherwise
 C     rFWinBL          :: = 1 when realFreshWaterFlux is used with BoundaryLayer
-C     sFac             :: auxillary field to help avoid division by zero
 C     auxiliary variables and abbreviations:
 C     a0, a1, a2, b, c0
 C     eps1, eps2, eps3, eps3a, eps4, eps6, eps7, eps8
