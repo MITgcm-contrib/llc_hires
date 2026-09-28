@@ -20,7 +20,7 @@
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
   ln -s ../../llc_hires/llc_90/tides_exps/pkg_sal   sal
   cd $SCRATCH/MITgcm
-  mkdir build_sal run_LPNB
+  mkdir build_sal run_opt1
   cd $SCRATCH/MITgcm/build_sal
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
@@ -44,7 +44,7 @@
   make -j 64
 
 ####RUN####
-  cd $SCRATCH/MITgcm/run_exp11
+  cd $SCRATCH/MITgcm/run_opt1
   MOD=$SCRATCH/llc_hires/trillium/llc_1080
   cp ../build_sal/mitgcmuv mitgcmuv_30x30x11152
 #  cp ../build_sal/mitgcmuv mitgcmuv_60x72x3510
