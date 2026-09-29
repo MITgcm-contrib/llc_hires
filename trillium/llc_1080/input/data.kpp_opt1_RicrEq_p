@@ -5,7 +5,7 @@
  kpp_dumpFreq    = 0.,
  kpp_tavefreq    = 0.,
  Ricr            = 0.3559,
- RicrEq          = 0.270544,
+ RicrEq          = 0.300544,
  Riinfty         = 0.385290,
  difm0   = 4.9016e-3,
  difs0   = 2.9156e-3,

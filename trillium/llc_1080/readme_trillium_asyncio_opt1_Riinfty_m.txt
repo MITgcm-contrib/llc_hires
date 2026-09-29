@@ -20,7 +20,7 @@
   ln -s $SCRATCH/llc_hires/llc_90/tides_exps/pkg_tides tides
   ln -s ../../llc_hires/llc_90/tides_exps/pkg_sal   sal
   cd $SCRATCH/MITgcm
-  mkdir build_sal run_opt1
+  mkdir build_sal run_opt1_Riinfty_m
   cd $SCRATCH/MITgcm/build_sal
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
@@ -44,7 +44,7 @@
   make -j 64
 
 ####RUN####
-  cd $SCRATCH/MITgcm/run_opt1
+  cd $SCRATCH/MITgcm/run_opt1_Riinfty_m
   MOD=$SCRATCH/llc_hires/trillium/llc_1080
   cp ../build_sal/mitgcmuv mitgcmuv_30x30x11152
 #  cp ../build_sal/mitgcmuv mitgcmuv_60x72x3510
@@ -63,9 +63,9 @@
   find $MOD/input/ -type f -exec cp -t . -- {} +
   cp $MOD/input-sal/* .
 
-  cp -f data_opt1_dy001 data
-  cp -f data.seaice_opt1_dy001 data.seaice
-  cp -f data.kpp_opt1 data.kpp
+  cp -f data_opt1_Riinfty_m_dy001 data
+  cp -f data.seaice_opt1_Riinfty_m_dy001 data.seaice
+  cp -f data.kpp_opt1_Riinfty_m data.kpp
   cp -f data.exch2_30x30x11152 data.exch2
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 11520 ./mitgcmuv_30x30x11152
