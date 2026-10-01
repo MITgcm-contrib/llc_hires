@@ -159,6 +159,7 @@
 
 # Input datasets
  &PARM05
+ checkIniSalt=.FALSE.,
  bathyFile      ='GEBCO2025_on_LLC1080_v13b.bin',
  hydrogThetaFile='../run_1080_opt1_dy001_dy070/Theta.0000100800.data',
  hydrogSaltFile ='../run_1080_opt1_dy001_dy070/Salt.0000100800.data',
