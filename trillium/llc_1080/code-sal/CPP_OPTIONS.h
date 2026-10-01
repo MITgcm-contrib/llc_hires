@@ -40,7 +40,7 @@ C o Include/exclude balancing surface forcing relaxation code
 #undef ALLOW_BALANCE_RELAX
 
 C o Include/exclude checking for negative salinity
-#undef CHECK_SALINITY_FOR_NEGATIVE_VALUES
+#define CHECK_SALINITY_FOR_NEGATIVE_VALUES
 
 C-- Options to discard parts of the main code:
 
