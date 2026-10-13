@@ -75,7 +75,7 @@ int numRanksPerNode = 0;
 // Just an error check; can be zero (if you're confident it's all correct).
 #define  numCheckBits  2
 // This bitMask definition works for 2's complement
-#define  bitMask  ((1 << numCheckBits) - 1)
+#define  checkBitMask  ((1 << numCheckBits) - 1)
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -104,6 +104,24 @@ int numRanksPerNode = 0;
 #define numItemsIn3DField (NUM_X * NUM_Y * NUM_Z)
 #define numItemsInMultDField  (NUM_X * NUM_Y * MULTDIM)
 #define numItemsInOneZLevel  (numItemsIn2DField)
+
+// We process a Z-level of a data field according to its mask(s),
+// accumulating the results into this levelBuf, then writting out
+// the whole processed level in one I/O operation (rather than
+// streaming the results one item at a time).
+int32_t levelBuf[numItemsInOneZLevel];
+
+
+#define oneZLevelMaskSizeInBytes (numItemsInOneZLevel / 8)
+#define twoDMaskSizeInBytes (oneZLevelMaskSizeInBytes)
+#define threeDMaskSizeInBytes (oneZLevelMaskSizeInBytes * NUM_Z)
+// Note that in order for this to work, numItemsInOneZLevel must be
+// divisible by 8.  We check that this is true during initialization.
+
+// A temporary that holds a bitMask of size "one entire Z-level of bits"
+// (as opposed to levelBuf (above) which holds "one entire Z-level of items")
+unsigned char oneZLevelMask[oneZLevelMaskSizeInBytes];
+
 
 // Note that the "sizeInBytes" is the *in-core* size of the data.
 // When we write out a standard time-step epoch, the output is
@@ -172,10 +190,120 @@ dataFieldDepth_t fieldDepths[] = {
 #define numAllFields  (sizeof(fieldDepths)/sizeof(dataFieldDepth_t))
 
 
+/////////////////////////////////////////
+// A "mask" is a file containing a bit-vector that specifies which
+// pieces of data are to be written (a '1' in the mask) and which are
+// to be omitted (a '0' in the mask).  Each data field in an epoch may
+// have up to three masks associated with it.  We strive to use the same
+// machinery as much as possible with the three types of masks, but
+// each mask type is treated slightly differently:
+//   1) The "level-mask" is a 1D bit vector specifying which levels
+//      are to be written.  If a bit is zero, the entire corresponding
+//      level is omitted from the output for that epoch.
+//   2) The "sampling-mask" is a 2D bit array covering one entire
+//      level, and specifying which data items are to be written.
+//      If associated with a 3D data field, the mask is applied to
+//      each level in the field.
+//   3) The "data-mask" is a bit array specifying which data items
+//      in a field are to be written.  If a 2D data-mask is associated
+//      with a 3D data field, the mask is applied to each level (in
+//      the same way as the sampling-mask).  If a 3D data-mask is
+//      associated with a 2D data field, only the top level of the
+//      mask is used.
+// An individual field may have none, any, and/or all of these three types
+// of masks.  If there are multiple masks, a location must be present
+// in all of them in order to be written (i.e. we write according to
+// the bitwise "and" of the masks).  If any mask is not present, that is
+// treated the same as "all bits on".
+//
+// Different fields within an epoch may have different sets of masks
+// associated with them, and an individual field may have different
+// sets of masks in different epochs.  But an individual field in a
+// single epoch may only appear once, with only one set of masks.
+//
+// As of this writting, we only support zero or one mask of each type
+// in an individual field specification.  Potentially this may be
+// generalized in the future to allow for multiple mask(s) of a given
+// type to be applied to a field.  But for now, you would have to
+// combine the multiple masks of the same type together (i.e. bitwise
+// 'and' them together) to create a new mask, and use that (single)
+// new combined mask file in the epoch specification.
+
+
+// Information about masks.  Note that ALL the masks are specified in this
+// one table (we do NOT have three separate tables for the three mask types).
+// The fields other than the maskName are filled in automatically during
+// initialization.
+typedef struct {
+  char *maskName;
+  int64_t maskSizeInBytes;
+  unsigned char *inclusionMask;  // pointer to the mmap'd mask
+} maskInfo_t;
+
+// ---- llc4320v2 / llc1080 production configuration (D. Whitt, Sep 2026) ----
+// Mask files (all in asyncio_maskDir):
+//   hFac{C,S,W}.bits       3-D data masks (Bron); hFacM.bits 2-D
+//   lMask_every5.bits      1-D level mask, 22 B ((173+7)/8): every 5th level plus 2,4,5
+//                          -> 38 levels                                 (make_sampling_masks.m)
+//   sMask_sections5deg.bits 2-D sampling mask: 3-wide bands every ~5 deg PLUS 3x3 patches
+//                          at the mooring targets; full depth, uncompressed (make_sampling_masks.m)
+// Every name listed in maskInfo[] MUST exist in maskDir at startup (initMaskInfo err()s otherwise).
+//
+// Epoch styles (index = third arg of beginNewEpoch in write_state.F / write_pickup.F):
+//   0  FULL     : all 3-D (hFac dMask) + all 2-D uncompressed             -> every 3rd dump
+//   1  REDUCED  : 3-D on the lMask levels (hFac dMask) + 2-D uncompressed -> other dumps
+//   2  SECTIONS : 3-D full depth on sMask_sections5deg, uncompressed       -> every dump
+//   (pickup styles not configured.)
+//
+// Compute side (f3) ABORTS if a field is sent that is not in the current style, so
+// write_state.F must send exactly the field set of the style it opened.
+
+maskInfo_t maskInfo[] = {
+  // Level Masks
+  {"lMask_every5.bits",      0, NULL},
+
+  // Sampling Masks
+  {"sMask_sections5deg.bits", 0, NULL},
+
+  // Data Masks
+  /*   Center */ {"hFacC.bits", 0, NULL},
+  /*    South */ {"hFacS.bits", 0, NULL},
+  /*     West */ {"hFacW.bits", 0, NULL},
+  /* Max of C */ {"hFacM.bits", 0, NULL},
+
+  /* List terminator */
+  {NULL, 0, NULL},
+};
+
+
+
+
 ///////////////////////////////////////////////////////////////////////
 // Info about the various kinds of i/o epochs
-typedef struct epochFieldInfo {
+typedef struct {
+////// This info must be manually supplied inline below, in the record declaration.
     char dataFieldID;
+    char filenameTemplate[1000];
+    char levelMaskName[1000];
+    char samplingMaskName[1000];
+    char dataMaskName[1000];
+
+    // A special case: sometimes we want to write out an (uncompressed)
+    // copy of the top-level of the field, in addition to however we are
+    // handling the underlying complete field.
+    int writeTopLevel;  // A boolean - either one (do write) or zero (don't write)
+
+    // Whether this is a "pickup" dump, which means we should write the
+    // full 8byte data, rather than the smaller 4byte version.
+    int pickup;
+
+    // Offset from the begining of the output file where this field should
+    // be written.  It is usually zero (i.e. the field output is going to
+    // its own file), but can be non-zero, e.g. in a pickup dump (where we
+    // cram all the fields into a single file).
+    long int offset;
+
+////// This info is automatically filled in during initialization
     MPI_Comm registrationIntercomm;
     MPI_Comm dataIntercomm;
     MPI_Comm ioRanksIntracomm;  // i/o ranks for *this* field
@@ -183,80 +311,118 @@ typedef struct epochFieldInfo {
     int zDepth;  // duplicates the fieldDepth entry; filled in automatically
     int *chunkWriters;  // Which rank writes the i'th chunk of z-levels
     int nChunks;  // length of chunkWriters array
-    char filenameTemplate[128];
-    long int offset;
-    int pickup;
+
+    maskInfo_t *levelMaskInfo;
+    maskInfo_t *samplingMaskInfo;
+    maskInfo_t *dataMaskInfo;
+    int64_t  *maskedLevelByteOffset;
 } fieldInfoThisEpoch_t;
 
-// The normal i/o dump - style 0
+// Shorthand static initializer for the part of fieldInfoThisEpoch_t  that
+// runtime initialization fills in
+#define  theRest  MPI_COMM_NULL,MPI_COMM_NULL,MPI_COMM_NULL,0,-1,NULL,0,NULL,NULL,NULL,NULL
+
+
+
+// Define a set of "epoch styles", which specify exactly which data fields
+// are associated with that style, and which mask(s) are associated with each
+// field in each style.
+//
+// Note that if you create/change a "pickup" epoch style, you might also
+// need to update the write_pickup_meta  routine.
+// Style 0 - FULL: 3-D hFac-compressed (as the old .shrunk), 2-D uncompressed (as the old
+// 2-D .data).  writeTopLevel=1 on U,V,S,T reproduces the old asyncio_3DtopLevel behaviour.
 fieldInfoThisEpoch_t fieldsForEpochStyle_0[] = {
-  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "U.%010d.%s", 0, 0 },
-  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "V.%010d.%s", 0, 0 },
-  { 'W', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "W.%010d.%s", 0, 0 },
-  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Salt.%010d.%s", 0, 0 },
-  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Theta.%010d.%s", 0,0 },
-  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "Eta.%010d.%s", 0,0 },
+  // ID, nameTemplate,        lMask, sMask, dMask,         top?, pickup?, offset,  RunTimeInitialized
+  { 'U', "U.%010d.%s",        "",    "",    "hFacW.bits",  1,    0,       0,       theRest },
+  { 'V', "V.%010d.%s",        "",    "",    "hFacS.bits",  1,    0,       0,       theRest },
+  { 'W', "W.%010d.%s",        "",    "",    "hFacC.bits",  0,    0,       0,       theRest },
+  { 'S', "Salt.%010d.%s",     "",    "",    "hFacC.bits",  1,    0,       0,       theRest },
+  { 'T', "Theta.%010d.%s",    "",    "",    "hFacC.bits",  1,    0,       0,       theRest },
+  { 'N', "Eta.%010d.%s",      "",    "",    "",            0,    0,       0,       theRest },
 
-  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIarea.%010d.%s", 0,0 },
-  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIheff.%010d.%s", 0,0 },
-  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIhsnow.%010d.%s", 0,0 },
-  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIuice.%010d.%s", 0,0 },
-  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIvice.%010d.%s", 0,0 },
-  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SIhsalt.%010d.%s", 0,0 },
+  { 'B', "SIarea.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'C', "SIheff.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'D', "SIhsnow.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'E', "SIuice.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'F', "SIvice.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'G', "SIhsalt.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
 
-  { 'I', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUX.%010d.%s", 0,0 },
-  { 'J', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceTAUY.%010d.%s", 0,0 },
-  { 'K', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "KPPhbl.%010d.%s", 0,0 },
-  { 'L', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceSflux.%010d.%s", 0,0 },
+  { 'I', "oceTAUX.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'J', "oceTAUY.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'K', "KPPhbl.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'L', "oceSflux.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
 
-  { 'M', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceFWflx.%010d.%s", 0,0 },
-  { 'O', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQnet.%010d.%s", 0,0 },
-  { 'P', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "PhiBot.%010d.%s", 0,0 },
-  { 'Q', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "oceQsw.%010d.%s", 0,0 },
+  { 'M', "oceFWflx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+  { 'O', "oceQnet.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'P', "PhiBot.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'Q', "oceQsw.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
 
-  { 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SHIhtFlx.%010d.%s", 0,0 },
-  { 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "SHIfwFlx.%010d.%s", 0,0 },
+  { 'H', "SHIhtFlx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+  { 'R', "SHIfwFlx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
 
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0,0 },
+  // ID, nameTemplate,        lMask, sMask, dMask,         top?, pickup?, offset,  RunTimeInitialized
+  {'\0', "",                  "",    "",    "",            0,    0,       0,       theRest },
 };
 
-
-// pickup file dump - style 1
-// NOTE: if this changes, write_pickup_meta will also need to be changed
+// Style 1 - REDUCED: 2-D as in style 0; 3-D hFac-compressed, restricted to the lMask levels.
 fieldInfoThisEpoch_t fieldsForEpochStyle_1[] = {
-  { 'U', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 1},
-  { 'V', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 1},
-  { 'T', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 2 + twoDFieldSizeInBytes * 0, 1},
-  { 'S', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 3 + twoDFieldSizeInBytes * 0, 1},
-  { 'X', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 4 + twoDFieldSizeInBytes * 0, 1},
-  { 'Y', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 5 + twoDFieldSizeInBytes * 0, 1},
-  { 'N', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 0, 1},
-  { 'R', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 1, 1},
-  { 'H', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_%010d.%s", threeDFieldSizeInBytes * 6 + twoDFieldSizeInBytes * 2, 1},
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0 ,1},
+  // ID, nameTemplate,        lMask,              sMask, dMask,         top?, pickup?, offset,  RunTimeInitialized
+  { 'U', "U.%010d.%s",        "lMask_every5.bits", "",    "hFacW.bits",  1,    0,       0,       theRest },
+  { 'V', "V.%010d.%s",        "lMask_every5.bits", "",    "hFacS.bits",  1,    0,       0,       theRest },
+  { 'W', "W.%010d.%s",        "lMask_every5.bits", "",    "hFacC.bits",  0,    0,       0,       theRest },
+  { 'S', "Salt.%010d.%s",     "lMask_every5.bits", "",    "hFacC.bits",  1,    0,       0,       theRest },
+  { 'T', "Theta.%010d.%s",    "lMask_every5.bits", "",    "hFacC.bits",  1,    0,       0,       theRest },
+  { 'N', "Eta.%010d.%s",      "",    "",    "",            0,    0,       0,       theRest },
+
+  { 'B', "SIarea.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'C', "SIheff.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'D', "SIhsnow.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'E', "SIuice.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'F', "SIvice.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'G', "SIhsalt.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+
+  { 'I', "oceTAUX.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'J', "oceTAUY.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'K', "KPPhbl.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'L', "oceSflux.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+
+  { 'M', "oceFWflx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+  { 'O', "oceQnet.%010d.%s",  "",    "",    "",            0,    0,       0,       theRest },
+  { 'P', "PhiBot.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+  { 'Q', "oceQsw.%010d.%s",   "",    "",    "",            0,    0,       0,       theRest },
+
+  { 'H', "SHIhtFlx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+  { 'R', "SHIfwFlx.%010d.%s", "",    "",    "",            0,    0,       0,       theRest },
+
+  // ID, nameTemplate,        lMask, sMask, dMask,         top?, pickup?, offset,  RunTimeInitialized
+  {'\0', "",                  "",    "",    "",            0,    0,       0,       theRest },
 };
 
-
-// seaice pickup dump - style 2
-// NOTE: if this changes, write_pickup_meta will also need to be changed
+// Style 2 - SECTIONS: full-depth 3-D along 3-wide zonal+meridional bands every ~5 deg
+// (240 points on 4320, 60 on 1080) of each tile, UNCOMPRESSED (no dMask: land and
+// sub-bottom points written as zero -> plain [npts x Nr] rectangle).  No 2-D fields.
 fieldInfoThisEpoch_t fieldsForEpochStyle_2[] = {
-  { 'A', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 0 + twoDFieldSizeInBytes * 0, 2},
-  { 'B', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 0, 2},
-  { 'C', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 1, 2},
-  { 'D', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 2, 2},
-  { 'G', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 3, 2},
-  { 'E', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 4, 2},
-  { 'F', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "pickup_seaice_%010d.%s", multDFieldSizeInBytes * 1 + twoDFieldSizeInBytes * 5, 2},
-  {'\0', MPI_COMM_NULL, MPI_COMM_NULL, MPI_COMM_NULL, 0, -1, NULL, 0, "", 0, 0 },
+  // ID, nameTemplate,        lMask, sMask,                   dMask,         top?, pickup?, offset,  RunTimeInitialized
+  { 'U', "U.%010d.%s",        "",    "sMask_sections5deg.bits", "",            0,    0,       0,       theRest },
+  { 'V', "V.%010d.%s",        "",    "sMask_sections5deg.bits", "",            0,    0,       0,       theRest },
+  { 'W', "W.%010d.%s",        "",    "sMask_sections5deg.bits", "",            0,    0,       0,       theRest },
+  { 'S', "Salt.%010d.%s",     "",    "sMask_sections5deg.bits", "",            0,    0,       0,       theRest },
+  { 'T', "Theta.%010d.%s",    "",    "sMask_sections5deg.bits", "",            0,    0,       0,       theRest },
+
+  // ID, nameTemplate,        lMask, sMask,                   dMask,         top?, pickup?, offset,  RunTimeInitialized
+  {'\0', "",                  "",    "",                      "",            0,    0,       0,       theRest },
 };
 
 
 fieldInfoThisEpoch_t *epochStyles[] = {
     fieldsForEpochStyle_0,
-//    fieldsForEpochStyle_1,
-//    fieldsForEpochStyle_2,
+    fieldsForEpochStyle_1,
+    fieldsForEpochStyle_2,
+// Add other fieldsForEpochStyle_#  as they get defined
 };
 int numEpochStyles = (sizeof(epochStyles) / sizeof(fieldInfoThisEpoch_t *));
+
 
 
 typedef enum {
@@ -265,36 +431,6 @@ typedef enum {
     cmd_epochComplete,
     cmd_exit,
 } epochCmd_t;
-
-///////////////////////////////////////////////////////////////////////
-// Info for applying compression to the output
-
-char maskDir[1000] = {'.', '/', '\0', };
-bool output_2Dcompressed = false;
-bool output_3Dcompressed = true;
-bool output_2Duncompressed = true;
-bool output_3Duncompressed = false;
-bool output_3DtopLevel = true;
-
-
-// Specify which mask is associated with which field
-typedef struct {
-  char *maskName;
-  unsigned char *inclusionMask;
-  char *fieldList;
-  int64_t compressedLevelItemOffset[Nr + 1];
-} maskInfo_t;
-
-// We rely on the fields in the fieldList string to be comma separated.
-// Note that "A" is currently not associated with any mask
-maskInfo_t maskInfo[] = {
-  /*   Center */ {"hFacC.bits", NULL, "B,C,D,G,K,L,M,O,Q,S,T,W,X,Y,Z", {0} },
-  /*    South */ {"hFacS.bits", NULL, "V,F,J", {0} },
-  /*     West */ {"hFacW.bits", NULL, "U,E,I", {0} },
-  /* Max of C */ {"hFacM.bits", NULL, "H,N,P,R", {0} },
-  /* List terminator */ {NULL, NULL, NULL, {0} },
-};
-
 
 
 bool
@@ -342,130 +478,185 @@ findFieldDepth (int ID)
 }
 
 
-// Given a comma-separated list of field ID's, return the maximum depth
-// of the specified fields.
-int
-maxFieldDepth (char *list)
+maskInfo_t *
+findMaskInfo (char *thisMaskName)
 {
-  if (NULL == list) return 0;
+  if ((NULL == thisMaskName) || ('\0' == thisMaskName[0])) return NULL;
 
-  int maxDepth = 0;
-  for (; '\0' == *list;  ++list) {
-    while (isspace(*list) || (',' == *list)) ++list;
-    int thisDepth = findFieldDepth (*list);
-    if (thisDepth > maxDepth) maxDepth = thisDepth;
+  // Search the maskInfo array looking for a matching name
+  maskInfo_t *ptr = &(maskInfo[0]);
+  while ((ptr->maskName != NULL) && (strcmp (ptr->maskName, thisMaskName) != 0)) ++ptr;
+
+  // Return the matching entry.  If we didn't find a match, return NULL
+  return  (NULL == ptr->maskName)  ?  NULL  :  ptr;
+}
+
+
+// Given an (initialized) fieldInfoThisEpoch_t and a level index,
+// compute thisZLevelMask.
+void
+makeLevelMask (
+  fieldInfoThisEpoch_t *whichField,
+  int thisZ,
+  unsigned char *thisZLevelMask)
+{
+  if ( (whichField->levelMaskInfo != NULL) &&
+       (!isSet(thisZ, whichField->levelMaskInfo->inclusionMask)) )
+  {
+    // The levelMask excludes this entire level
+    memset (thisZLevelMask, 0, twoDMaskSizeInBytes);   /* DBW: was twoDFieldSizeInBytes */
+    return;
   }
-  return maxDepth;
+
+
+  // Point at the samplingMask (if any)
+  int hasSamplingMask = (whichField->samplingMaskInfo != NULL);
+  unsigned char *samplingMask = NULL;
+  if (hasSamplingMask) samplingMask = whichField->samplingMaskInfo->inclusionMask;
+
+  // Point at the dataMask (if any)
+  int hasDataMask = (whichField->dataMaskInfo != NULL);
+  unsigned char *dataMask = NULL;
+  if (hasDataMask)
+  {
+    // offset to the start of the appropriate level of the dataMask for thisZ
+    int64_t maskOffset = (threeDMaskSizeInBytes == whichField->dataMaskInfo->maskSizeInBytes) ?
+                         thisZ * twoDMaskSizeInBytes  :  0;
+    dataMask = whichField->dataMaskInfo->inclusionMask + maskOffset;
+  }
+
+
+  // We do or don't have a samplingMask, and do or don't have a dataMask.
+  // Deal with each of the four possible cases:
+
+  if ((!hasSamplingMask) && (!hasDataMask))
+  {
+    // Nothing masked out
+    memset (thisZLevelMask, 0xFF, twoDMaskSizeInBytes);
+  }
+
+  else if ((!hasSamplingMask) && (hasDataMask))
+  {
+    // thisZLevelMask gets a copy of the appropriate level from the dataMask
+    memcpy (thisZLevelMask, dataMask, twoDMaskSizeInBytes);
+  }
+
+  else if ((hasSamplingMask) && (!hasDataMask))
+  {
+    // thisZLevelMask gets a copy of the samplingMask
+    memcpy (thisZLevelMask, samplingMask, twoDMaskSizeInBytes);
+  }
+
+  else
+  {
+    assert (hasSamplingMask && hasDataMask);
+    // thisZLevelMask gets the bitwise "and" of the samplingMask with
+    // the appropriate level from the dataMask
+    int64_t ii;
+    for (ii = 0;  ii < twoDMaskSizeInBytes; ++ii)
+    {
+      thisZLevelMask[ii] = samplingMask[ii] & dataMask[ii];
+    }
+  }
+
+  return;
 }
 
 
 void 
-initCompressionInfo (void)
+initMaskInfo (void)
 {
-  {
-    // Get the compression settings from the Fortran side
-    extern void get_asyncio_settings_ (int *, int *, int *, int *, int *, int *);
-    int do2Dcomp, do3Dcomp, do2Duncomp, do3Duncomp, doTop;
-    int maskDirAsInts[1000];
-    size_t ii = 0;
-    get_asyncio_settings_ (&do2Dcomp, &do3Dcomp, &do2Duncomp, &do3Duncomp, &doTop, maskDirAsInts);
-    output_2Dcompressed = (1 == do2Dcomp);
-    output_3Dcompressed = (1 == do3Dcomp);
-    output_2Duncompressed = (1 == do2Duncomp);
-    output_3Duncompressed = (1 == do3Duncomp);
-    output_3DtopLevel = (1 == doTop);
-    do { maskDir[ii] = maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
-    assert (ii < sizeof(maskDir));
-  }
-  fprintf (stderr, "initCompressionInfo: %d %d %d %d %d '%s'\n",
-           (int)output_2Dcompressed, (int)output_3Dcompressed, (int)output_2Duncompressed,
-           (int)output_3Duncompressed, (int)output_3DtopLevel, maskDir);
+  char maskDir[1000] = {'.', '/', '\0', };
 
-  char filename[strlen(maskDir) + 100];
-
-  // Sanity check: make sure that the bitmask for a single level occupies
-  // an integral number of bytes (i.e. the number of items on one level
+  // Sanity check: make sure that a bitmask for a single level occupies
+  // an integral number of bytes (i.e. the number of items on one Z-level
   // is a multiple of 8).
-  int64_t numMaskBytesPerLevel = numItemsInOneZLevel / 8;
-  if ((numMaskBytesPerLevel * 8) != numItemsInOneZLevel)
+  if ((oneZLevelMaskSizeInBytes * 8) != numItemsInOneZLevel)
       err (1, "ERROR: numItemsInOneZLevel (%ld) is not a multiple of 8",
-           numItemsInOneZLevel);
+	   numItemsInOneZLevel);
 
-  int maskIndex = -1;
-  while (maskInfo[++maskIndex].maskName != NULL)
+  // Get "maskDir", i.e. the name of the directory where the mask files reside.
+  // The input config files are read by the Fortran side of the house,
+  // so we call a Fortran routine to retrieve the information.
   {
-    // Initialize the inclusionMask mapping, if not already done.
-    if (NULL ==  maskInfo[maskIndex].inclusionMask)
+    extern void get_asyncio_maskdir_ (int *);
+    int maskDirAsInts[1000];
+    get_asyncio_maskdir_ (maskDirAsInts);
+
+    int ii = 0;
+    do { maskDir[ii] = maskDirAsInts[ii]; } while (0 != maskDir[ii++]);
+  }
+
+  // mmap all of the mask files
+  int maskIndex;
+  for (maskIndex = 0;  maskInfo[maskIndex].maskName != NULL;  ++maskIndex)
+  {
+    char fileName[strlen(maskDir) + 100];
+    sprintf (fileName, "%s/%s", maskDir, maskInfo[maskIndex].maskName);
+
+    // Open and stat the mask file
+    int fd = open (fileName, O_RDONLY);
+    if (fd < 0) err (1, "Can't open mask file: '%s'\n", fileName);
+    struct stat statBuf;
+    if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", fileName);
+
+    // Sanity check: check that the mask file is a plausible size. 
+    int64_t oneDMaskSizeInBytes = (NUM_Z + 7) / 8;
+    if ( (statBuf.st_size != oneDMaskSizeInBytes) &&
+	 (statBuf.st_size != twoDMaskSizeInBytes) &&
+	 (statBuf.st_size != threeDMaskSizeInBytes) )
     {
-      strcat(strcat(strcpy(filename,  maskDir),"/"),maskInfo[maskIndex].maskName);
+      err (1, "Mask file '%s' has an implausible size (%ld)", fileName, statBuf.st_size);
+    }
 
-      // Open and stat the mask file
-      int fd = open (filename, O_RDONLY);
-      if (fd < 0) err (1, "Can't open mask file: '%s'\n", filename);
-      struct stat statBuf;
-      if (fstat (fd, &statBuf) < 0) err (1, "Can't fstat mask file: '%s'\n", filename);
+    // mmap the mask file, and fill in the maskInfo struct
+    void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
+    if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", fileName);
+    maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
+    maskInfo[maskIndex].maskSizeInBytes = statBuf.st_size;
+    close (fd);
+  }
 
-      // Check that the mask file is a plausible size.  It should be an
-      // integral number of levels (i.e. the file size is a multiple of
-      // numMaskBytesPerLevel), and have at least as many levels as the deepest
-      // field that is using the mask (it is ok if the mask has more).
-      int64_t numMaskLevels = statBuf.st_size / numMaskBytesPerLevel;
-      if (numMaskLevels > Nr) 
-        err (1, "Mask file '%s' has %ld Z-levels, but there are only %ld levels\n",
-                filename, numMaskLevels, (int64_t)Nr);
-      if ((numMaskLevels * numMaskBytesPerLevel) != statBuf.st_size)
-        err (1, "Mask file '%s' is size %ld, but should be a multiple of %ld\n",
-                filename, statBuf.st_size, numMaskBytesPerLevel);
-      int64_t deepest = maxFieldDepth (maskInfo[maskIndex].fieldList);
-      if (deepest > numMaskLevels) 
-        err (1, "Mask file '%s' has only %ld Z-levels, but is assigned field(s) with %ld levels\n",
-                filename, numMaskLevels, deepest);
+  // We now need to compute the offset within an output file where each
+  // level of a data field will start.  (This is needed to allow multiple
+  // writers to simultaneously write different pieces of the the file.)
+  // Since we allow different fields to have different sets of masks in
+  // different epochs, we go through each one individually.
+  int epochStyleIndex;
+  for (epochStyleIndex = 0;  epochStyleIndex < numEpochStyles;  ++epochStyleIndex) {
+    fieldInfoThisEpoch_t *thisEpochStyle = epochStyles[epochStyleIndex];
 
+    int curFieldIndex = 0;
+    fieldInfoThisEpoch_t *thisField = NULL;
+    for ( thisField = &(thisEpochStyle[0]);
+	  thisField->dataFieldID != '\0';
+	  thisField = &(thisEpochStyle[++curFieldIndex]) )
+    {
+      int zLev, nLevs;
 
-      // mmap the mask file
-      void *pp = mmap (NULL, statBuf.st_size, PROT_READ, MAP_SHARED|MAP_POPULATE, fd, 0);
-      if (NULL == pp) err (1, "Can't mmap mask file: '%s'\n", filename);
-      maskInfo[maskIndex].inclusionMask = (unsigned char *) pp;
-      close (fd);
+      // Fill in the MaskInfo pointers
+      thisField->levelMaskInfo = findMaskInfo (thisField->levelMaskName);
+      thisField->samplingMaskInfo = findMaskInfo (thisField->samplingMaskName);
+      thisField->dataMaskInfo = findMaskInfo (thisField->dataMaskName);
 
-      // Pre-compute the compressed size of each level, i.e. the number
-      // of Items from the begining of the (compressed) output file where
-      // a (compressed) level will start.  Clearly we could do this
-      // statically and store the info in the same directory as the mask
-      // file, but it doesn't take all that long to compute, and by doing
-      // it here we don't need to depend on some additional external file
-      // (i.e.  one fewer thing to go wrong).
-      int64_t itemOffset = 0;
-      unsigned char *qq = maskInfo[maskIndex].inclusionMask;
-      int levelIndex;
-      for (levelIndex = 0;  levelIndex < numMaskLevels;  ++levelIndex) {
-        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
-        itemOffset += popCount (qq, numItemsInOneZLevel/8);
-        qq += numItemsInOneZLevel / 8;
+      // Get the number of levels for this data field
+      nLevs = findFieldDepth (thisField->dataFieldID);
+      thisField->zDepth = nLevs;
+
+      // Allocate the array to hold the level offsets, plus one extra entry
+      thisField->maskedLevelByteOffset = (int64_t*) malloc ((nLevs + 1) * sizeof(int64_t));
+
+      int64_t curOffset = 0;
+      for (zLev = 0;  zLev < nLevs;  ++zLev)
+      {
+	thisField->maskedLevelByteOffset[zLev] = curOffset;
+	makeLevelMask (thisField, zLev, oneZLevelMask);
+	curOffset += popCount (oneZLevelMask, oneZLevelMaskSizeInBytes);
       }
-      // Store the final offset into any remaining entries of ItemOffset,
-      // including an extra "Nr'th" one.  This lets us compute the size of
-      // a level "j" by just (levelOffset[j+1] - levelOffset[j])
-      // without special-casing the last level.
-      for (; levelIndex <= Nr;  ++levelIndex) {
-        maskInfo[maskIndex].compressedLevelItemOffset[levelIndex] = itemOffset;
-      }
+      thisField->maskedLevelByteOffset[nLevs] = curOffset;
     }
   }
-}
 
-
-int
-findMaskIndexForField (int fieldID)
-{
-    int maskIndex = -1;
-    while (maskInfo[++maskIndex].maskName != NULL)
-    {
-        // If we find the fieldID in a mask's fieldList, return that mask
-        if (index (maskInfo[maskIndex].fieldList, fieldID) != NULL) return maskIndex;
-    }
-    // Didn't find the fieldID
-    return -1;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -707,6 +898,7 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNum
   // (in the case of a standard timestep epoch).
 
   char fileName[1024];
+  int ii, jj;
   int64_t offset, nbytes;
   int64_t myTotalNumItems = numItemsInOneZLevel * myNumZ;
 
@@ -734,104 +926,77 @@ do_write(int io_epoch, fieldInfoThisEpoch_t *whichField, int myFirstZ, int myNum
   }
   else {
     // Non-pickup
+    // outBuf contains 4byte reals
 
-    bool is2DField = (1 == whichField->zDepth);
-    bool is3DField = (NUM_Z == whichField->zDepth);
-    bool isMultDField = (MULTDIM == whichField->zDepth);
-
-    // Figure out which mask (if any) is associated with the current field.
-    int maskIndex = findMaskIndexForField (whichField->dataFieldID);
-
-    void *buf = (void*) &outBuf[0];
-    int64_t badCount = 0;
-
-    // Convert the data from (native) little-endian, to big-endian
-    int64_t ii;
-    for (ii = 0;  ii < myTotalNumItems;  ++ii)
+    // Special case: if the writeTopLevel flag is set, write out an
+    // un-masked copy of the top Z-level.
+    if ((whichField->writeTopLevel != 0) && (0 == myFirstZ))
     {
-      float value = ((float*)buf)[ii];
-
-      // Check for a bad value (NaN or Inf)
-      if (!isfinite(value)) badCount += 1;
-
-      // Sanitize the output data a little bit: replace -0.0 with +0.0,
-      // and ensure that data items not included by the mask are set to
-      // zero (not garbage).
-      bool isNegativeZero =  ((0.0 == value) && (signbit(value) != 0));
-      bool isIncluded =  (maskIndex < 0)  ?  true  :
-               isSet (ii + myFirstZ * numItemsInOneZLevel,
-                      maskInfo[maskIndex].inclusionMask);
-      if (isNegativeZero || !isIncluded) ((float*)buf)[ii] = 0.0;
-
-      // Convert to big-endian
-      ((int*)buf)[ii] = __builtin_bswap32(((int*)buf)[ii]);
-    }
-
-    if (badCount > 0) fprintf (stderr,
-            "WARNING :: %ld bad data items (NaN or INF) in field %c\n"
-            "WARNING :: at time-step %d, levels %d through %d\n",
-            badCount, whichField->dataFieldID, gcmIter, myFirstZ, myFirstZ + myNumZ - 1);
-
-    if ((is2DField && output_2Duncompressed) || (is3DField && output_3Duncompressed))
-    {
-      sprintf (fileName, whichField->filenameTemplate, gcmIter, "data");
-      offset = whichField->offset + (myFirstZ * numItemsInOneZLevel * sizeof(float));
-      nbytes = myTotalNumItems * sizeof(float);
-      writeToFile (fileName, offset, outBuf, nbytes);
-    }
-
-    if (is3DField && output_3DtopLevel && (myFirstZ == 0))
-    {
-      sprintf (fileName, whichField->filenameTemplate, gcmIter, "level1");
-      offset = 0;
-      nbytes = numItemsInOneZLevel * sizeof(float);
-      writeToFile (fileName, offset, outBuf, nbytes);
-    }
-
-    if ((is2DField && output_2Dcompressed) || (is3DField && output_3Dcompressed))
-    {
-      if (maskIndex < 0)
+      for (ii = 0;  ii < numItemsInOneZLevel;  ++ii)
       {
-        fprintf (stderr,
-            "WARNING :: Trying to write compressed output for field %c\n"
-            "WARNING :: but no mask file is defined.\n",  whichField->dataFieldID);
+        levelBuf[ii] = __builtin_bswap32(((int32_t*)outBuf)[ii]);
       }
-      else {
-
-        // Do this right away so fileName is available for error massages.
-        sprintf (fileName, whichField->filenameTemplate, gcmIter, "shrunk");
-
-        // Apply the compression mask
-        int64_t bufIndex, compressedItemCount = 0;
-        int64_t startIndex = myFirstZ * numItemsInOneZLevel;
-        unsigned char *inclusionMask = maskInfo[maskIndex].inclusionMask;
-        for (bufIndex = 0;  bufIndex < myTotalNumItems;  ++bufIndex) {
-          if (isSet(bufIndex + startIndex, inclusionMask)) {
-            ((int*)buf)[compressedItemCount++] = ((int*)buf)[bufIndex];
-          }
-        }
-        // Sanity check: the actual (compressed) count is the expected count.
-        int64_t expectedCount = 
-            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ + myNumZ] -
-            maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ];
-        if (compressedItemCount != expectedCount)
-          err (1, "ERROR: Compression failure for '%s'.\n"
-                  "Is %ld items, but expected %ld (levels %d to %d)\n",
-                  fileName, compressedItemCount, expectedCount, myFirstZ, myFirstZ + myNumZ - 1);
-
-        // Note that we pre-computed the offset to the begining of a level
-        // within a compressed file.  (Currently, whichField->offset is
-        // typically zero, but one can imagine that might not always be true.)
-        offset = whichField->offset +
-                 (maskInfo[maskIndex].compressedLevelItemOffset[myFirstZ] * sizeof(float));
-        nbytes = compressedItemCount * sizeof(float);
-        writeToFile (fileName, offset, outBuf, nbytes);
-      }
+      char level1FileName[1000];
+      sprintf (level1FileName, whichField->filenameTemplate, gcmIter, "level1");
+      writeToFile (level1FileName, 0, &(levelBuf[0]), numItemsInOneZLevel * sizeof(int32_t));
     }
-  }
+
+    // Construct the fileName.
+    char suffix[1000];
+    char *lMaskName = (NULL == whichField->levelMaskInfo) ? "none" : whichField->levelMaskInfo->maskName;
+    char *sMaskName = (NULL == whichField->samplingMaskInfo) ? "none" : whichField->samplingMaskInfo->maskName;
+    char *dMaskName = (NULL == whichField->dataMaskInfo) ? "none" : whichField->dataMaskInfo->maskName;
+    sprintf (suffix, "lMask=%s::sMask=%s::dMask=%s", lMaskName, sMaskName, dMaskName);
+    sprintf (fileName, whichField->filenameTemplate, gcmIter, suffix);
+
+    // Write out one Z-level at a time
+    int thisZ;
+    offset = whichField->offset + whichField->maskedLevelByteOffset[myFirstZ] * sizeof(int32_t);   /* DBW: was whichField->offset */
+    for (thisZ = myFirstZ;  thisZ < myFirstZ + myNumZ;  ++thisZ)
+    {
+      // Skip this Z-level if the levelMask says to do so.
+      if ( (whichField->levelMaskInfo != NULL) &&
+           (!isSet (thisZ, whichField->levelMaskInfo->inclusionMask)) ) continue;
+
+      // Produce the final combined mask for the current Z-level
+      makeLevelMask (whichField, thisZ, oneZLevelMask);
+
+      // Convert the raw data in outBuf into processed data in levelBuf.
+      int itemIndex = 0;
+      int itemCount = 0;
+      int badCount = 0;
+      float *rawData = ((float*) outBuf) + ((int64_t)(thisZ - myFirstZ)) * numItemsInOneZLevel;   /* DBW: was (float*) outBuf */
+      for (itemIndex = 0;  itemIndex < numItemsInOneZLevel;  ++itemIndex)
+      {
+        // Skip omitted items
+        if (! isSet (itemIndex, oneZLevelMask)) continue;
+
+        float value = rawData[itemIndex];
+
+        // Check for a bad value (NaN or Inf)
+        if (!isfinite(value)) badCount += 1;
+
+        // Sanitize the output data a little bit: replace -0.0 with +0.0,
+        if ((0.0 == value) && (signbit(value) != 0)) value = 0.0;
+
+        // Convert to big-endian, and store in levelBuf
+        levelBuf[itemCount++] = __builtin_bswap32(*((int32_t*)&(value)));
+      }
+
+      if (badCount > 0) fprintf (stderr,
+            "WARNING :: %ld bad data item(s) (NaN or INF) in field %c\n"
+            "WARNING :: at time-step %d, level %d\n",
+            badCount, whichField->dataFieldID, gcmIter, thisZ);
+
+      int64_t nbytes = itemCount * sizeof(int32_t);
+      writeToFile (fileName, offset, levelBuf, nbytes);
+      offset += nbytes;
+
+    }  // end - write one Z-level
+
+  } // end - write non-pickup
 
 }
-
 
 
 typedef struct {
@@ -982,7 +1147,7 @@ tryToReceiveDataTile(
     // [Note that the API for MPI_Get_count requires that "count" be an int.]
     MPI_Get_count(&mpiStatus, MPI_BYTE, &count);
     ASSERT((size_t)count == expectedMsgSize);
-    ASSERT((mpiStatus.MPI_TAG & bitMask) == (epochID & bitMask));
+    ASSERT((mpiStatus.MPI_TAG & checkBitMask) == (epochID & checkBitMask));
 
     // Recieve the data we saw in the iprobe
     MPI_Recv(bufHdr->payload, expectedMsgSize, MPI_BYTE,
@@ -1396,12 +1561,9 @@ ioRankMain (void)
     countBufs(numTileBufs);
 
 
-    // Act on the settings from the input config file regarding what things
-    // to compress, what mask files to use, etc.
-    // (Note that all the resultant settings are held globals. Mostly
-    // the "output_*" flags and the maskInfo array.)
-    initCompressionInfo ();
-
+    // Set up the output-masking info.  This provides fine-grained control
+    // for sub-setting what data are written to the output files.
+    initMaskInfo ();
 
 
     ////////////////////////////////////////////////////////////////////
@@ -2437,7 +2599,7 @@ f1(
 
     } // epoch style loop
 
-    // Note: only non-null in rank 0, but it's ok to "free" NULL
+    // Note: "allHostNames" is only non-null in rank 0, but it's ok to "free" NULL
     free(allHostnames);
 
 
@@ -2642,7 +2804,7 @@ sleep(2);  // Give the MPI infrastructute time to forward the message before we 
     ASSERT(p->dataFieldID == dataFieldID);
 
     receiver = (computeIntracommRank + p->tileCount) % remoteCommSize;
-    tag = (tileID << numCheckBits) | (epochID & bitMask);
+    tag = (tileID << numCheckBits) | (epochID & checkBitMask);
 
     FPRINTF(stderr,"Rank %d sends field '%c', tile %d, to i/o task %d with tag %d(%d)\n",
                    computeIntracommRank, dataFieldID, tileID, receiver, tag, tag >> numCheckBits);
@@ -2743,5 +2905,4 @@ bron_f4(int *ptr_epochID)
 {
     f4(*ptr_epochID);
 }
-
 

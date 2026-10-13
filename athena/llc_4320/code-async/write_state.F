@@ -85,6 +85,10 @@ C     myTime - Current time of simulation ( s )
 C     !LOCAL VARIABLES:
       CHARACTER*(MAX_LEN_MBUF) suff
       INTEGER iRec
+C     asyncio epoch-style cadence (in units of dumpFreq dumps)
+      INTEGER nDump, fullEvery
+      LOGICAL doFull, doReduced
+      PARAMETER ( fullEvery = 3 )
 #ifdef ALLOW_MNC
       CHARACTER*(1) pf
 #endif
@@ -157,36 +161,39 @@ C         easier to transfer analyse a particular snap-shots
 #else
 
         call timer_start('asyncio   ',myThid)
+
+C--     Epoch styles (must match epochStyles[] in recvTask.c):
+C--       0 FULL, 1 REDUCED (lMask levels), 2 SECTIONS+MOORINGS.
+C--     f3() aborts if a field is sent that is not in the open style,
+C--     so each style sends exactly its own field set.
+        nDump     = iRec - 1
+        doFull    = ( MOD(nDump, fullEvery) .EQ. 0 )
+        doReduced = .NOT. doFull
+
+C--     Epoch A: FULL (every fullEvery-th dump) or REDUCED (3-D on lMask levels)
+C--              plus all 2-D fields
         ICOUNTER = ICOUNTER+1
-        CALL beginNewEpoch(icounter,myIter,0)
-        CALL ASYNCIO_WRITE_FLD_XYZ_RL('U',suff,uVel,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XYZ_RL('V',suff,vVel,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XYZ_RL('W',suff,wVel,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XYZ_RL('S',suff,salt,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XYZ_RL('T',suff,theta,iCounter,myThid)
+        IF ( doFull ) THEN
+          CALL beginNewEpoch(icounter,myIter,0)
+        ELSE
+          CALL beginNewEpoch(icounter,myIter,1)
+        ENDIF
+        CALL ASYNCIO_WRITE_3D_SET( suff, iCounter, myThid )
+        CALL ASYNCIO_WRITE_2D_SET( suff, iCounter, myThid )
 
-        CALL ASYNCIO_WRITE_FLD_XY_RL('N',suff,etaN,iCounter,myThid)
+C--     Optional: REDUCED as well at FULL dumps (uniform series); off by default
+        IF ( doFull .AND. doReduced ) THEN
+          ICOUNTER = ICOUNTER+1
+          CALL beginNewEpoch(icounter,myIter,1)
+          CALL ASYNCIO_WRITE_3D_SET( suff, iCounter, myThid )
+          CALL ASYNCIO_WRITE_2D_SET( suff, iCounter, myThid )
+        ENDIF
 
-        CALL ASYNCIO_WRITE_FLD_XY_RL('B',suff,AREA,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('C',suff,HEFF,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('D',suff,HSNOW,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('E',suff,UICE,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('F',suff,VICE,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('G',suff,HSALT,iCounter,myThid)
+C--     Epoch B: SECTIONS (3-D only, full depth on sMask_sections5deg), every dump
+        ICOUNTER = ICOUNTER+1
+        CALL beginNewEpoch(icounter,myIter,2)
+        CALL ASYNCIO_WRITE_3D_SET( suff, iCounter, myThid )
 
-        CALL ASYNCIO_WRITE_FLD_XY_RL('I',suff,fu,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('J',suff,fv,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('K',suff,KPPhbl,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('L',suff,saltFlux,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('M',suff,EmPmR,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('O',suff,Qnet,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('P',suff,phiHydLow,iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('Q',suff,Qsw,iCounter,myThid)
-        
-        CALL ASYNCIO_WRITE_FLD_XY_RL('H',suff,shelficeHeatFlux,
-     &                               iCounter,myThid)
-        CALL ASYNCIO_WRITE_FLD_XY_RL('R',suff,shelficeFreshWaterFlux,
-     &                               iCounter,myThid)
         call timer_stop('asyncio   ',myThid)
 
 ch        call timer_start('as usual i/o',myThid)
@@ -272,5 +279,71 @@ C         CALL MNC_CW_RL_W_S('D','state',0,0,'model_time',myTime,myThid)
 
       ENDIF
 
+      RETURN
+      END
+
+CBOP
+C     !ROUTINE: ASYNCIO_WRITE_3D_SET
+C     Send the 3-D state fields for the currently open asyncio epoch.
+C     Keep in sync with the 3-D rows of every epoch style in recvTask.c.
+      SUBROUTINE ASYNCIO_WRITE_3D_SET( suff, iCounter, myThid )
+      IMPLICIT NONE
+#include "SIZE.h"
+#include "EEPARAMS.h"
+#include "PARAMS.h"
+#include "DYNVARS.h"
+      CHARACTER*(*) suff
+      INTEGER iCounter, myThid
+CEOP
+      CALL ASYNCIO_WRITE_FLD_XYZ_RL('U',suff,uVel, iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XYZ_RL('V',suff,vVel, iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XYZ_RL('W',suff,wVel, iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XYZ_RL('S',suff,salt, iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XYZ_RL('T',suff,theta,iCounter,myThid)
+      RETURN
+      END
+
+CBOP
+C     !ROUTINE: ASYNCIO_WRITE_2D_SET
+C     Send the 2-D fields for the currently open asyncio epoch.
+C     Keep in sync with the 2-D rows of styles 0 and 1 in recvTask.c.
+      SUBROUTINE ASYNCIO_WRITE_2D_SET( suff, iCounter, myThid )
+      IMPLICIT NONE
+#include "SIZE.h"
+#include "EEPARAMS.h"
+#include "PARAMS.h"
+#include "DYNVARS.h"
+#include "FFIELDS.h"
+#include "KPP.h"
+! same temp hack as in WRITE_STATE above (HSALT needs it)
+#define SEAICE_VARIABLE_SALINITY
+#include "SEAICE_SIZE.h"
+#include "SEAICE.h"
+#include "SHELFICE.h"
+      CHARACTER*(*) suff
+      INTEGER iCounter, myThid
+CEOP
+      CALL ASYNCIO_WRITE_FLD_XY_RL('N',suff,etaN,iCounter,myThid)
+
+      CALL ASYNCIO_WRITE_FLD_XY_RL('B',suff,AREA,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('C',suff,HEFF,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('D',suff,HSNOW,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('E',suff,UICE,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('F',suff,VICE,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('G',suff,HSALT,iCounter,myThid)
+
+      CALL ASYNCIO_WRITE_FLD_XY_RL('I',suff,fu,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('J',suff,fv,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('K',suff,KPPhbl,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('L',suff,saltFlux,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('M',suff,EmPmR,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('O',suff,Qnet,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('P',suff,phiHydLow,iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('Q',suff,Qsw,iCounter,myThid)
+
+      CALL ASYNCIO_WRITE_FLD_XY_RL('H',suff,shelficeHeatFlux,
+     &                               iCounter,myThid)
+      CALL ASYNCIO_WRITE_FLD_XY_RL('R',suff,shelficeFreshWaterFlux,
+     &                               iCounter,myThid)
       RETURN
       END

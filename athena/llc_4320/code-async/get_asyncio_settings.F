@@ -56,10 +56,40 @@
       enddo
       maskDir(length+1) = 0;
 
+      print *, 'Compression settings: ', asyncio_2Dcompressed,
+     .   asyncio_3Dcompressed, asyncio_2Duncompressed,
+     .   asyncio_3Duncompressed, asyncio_3DtopLevel,
+     .   asyncio_maskDir
+
       return
       end
 
 
+!! As above, but only return the maskDir, not the (obsolete) compression
+!! flags
+      SUBROUTINE GET_ASYNCIO_MASKDIR  ( maskDir )
+      IMPLICIT NONE
+#include "SIZE.h"
+#include "CPP_EEMACROS.h"
+#include "EEPARAMS.h"
+#include "PARAMS.h"
+
+      INTEGER maskDir(*)
+
+      character*(MAX_LEN_FNAM) tmpMaskDir
+      INTEGER ii, length
+
+      tmpMaskDir = adjustl (asyncio_maskDir)
+      length = len (trim (tmpMaskDir))
+      do ii = 1, length
+          maskDir(ii) = ICHAR(tmpMaskDir(ii:ii))
+      enddo
+      maskDir(length+1) = 0;
+
+      print *, 'Mask directory: ', asyncio_maskDir
+
+      return
+      end
 
 #if 0
 !! local hack for testing only - do not use in production!
