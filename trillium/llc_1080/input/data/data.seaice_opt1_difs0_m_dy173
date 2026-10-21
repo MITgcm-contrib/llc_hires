@@ -31,10 +31,10 @@
  SEAICEwriteState      = .TRUE.,
  SEAICE_dumpfreq       = 0.0,
 #
- AreaFile              = '../run_1080_opt1_difs0_m_dy001_dy087/SIarea.0000125280.data',
- HsnowFile             = '../run_1080_opt1_difs0_m_dy001_dy087/SIhsnow.0000125280.data',
- HeffFile              = '../run_1080_opt1_difs0_m_dy001_dy087/SIheff.0000125280.data',
- HsaltFile             = '../run_1080_opt1_difs0_m_dy001_dy087/SIhsalt.0000125280.data',
- UiceFile              = '../run_1080_opt1_difs0_m_dy001_dy087/SIuice.0000125280.data',
- ViceFile              = '../run_1080_opt1_difs0_m_dy001_dy087/SIvice.0000125280.data',
+ AreaFile              = '../run_1080_opt1_difs0_m_dy087_dy173/SIarea.0000249120.data',
+ HsnowFile             = '../run_1080_opt1_difs0_m_dy087_dy173/SIhsnow.0000249120.data',
+ HeffFile              = '../run_1080_opt1_difs0_m_dy087_dy173/SIheff.0000249120.data',
+ HsaltFile             = '../run_1080_opt1_difs0_m_dy087_dy173/SIhsalt.0000249120.data',
+ UiceFile              = '../run_1080_opt1_difs0_m_dy087_dy173/SIuice.0000249120.data',
+ ViceFile              = '../run_1080_opt1_difs0_m_dy087_dy173/SIvice.0000249120.data',
  &
