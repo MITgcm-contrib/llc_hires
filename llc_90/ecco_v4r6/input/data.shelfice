@@ -1,0 +1,18 @@
+# ===================================
+# | Parameters for SHELFICE package |
+# ===================================
+ &SHELFICE_PARM01
+ SHELFICETransCoeffTFile = 'eccov4_r5_shiTransCoeffT.data',
+ SHELFICEadvDiffHeatFlux = .TRUE.,
+ SHELFICEboundaryLayer = .FALSE.,
+ SHELFICEtopoFile='ICE_DRAFT_ICE_SHELF_CAVITY_PLUS_ICE_FRONT_LLC_0090.bin',
+ SHELFICEloadAnomalyFile = 'ploadanom.bin',
+ SHELFICEuseGammaFrict = .FALSE.,
+ SHELFICEconserve = .true.,
+ SHELFICEheatTransCoeff=2.e-5, 
+ ICEFRONTdepthFile = 'ICE_DRAFT_ICE_SHELF_CAVITY_PLUS_ICE_FRONT_LLC_0090.bin',
+ SHELFICEkappa = 0.,
+ useISOMIPTD = .FALSE.,
+ no_slip_shelfice = .false.,
+ SHELFICEwriteState = .TRUE.,
+ / 

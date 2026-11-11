@@ -1,0 +1,126 @@
+# Diagnostic Package Choices
+#-----------------
+# for each output-stream:
+#  filename(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  frequency(n):< 0 : write snap-shot output every multiple of |frequency| (iter)
+#               > 0 : write time-average output every multiple of frequency (iter)
+#  levels(:,n) : list of levels to write to file (Notes: declared as REAL)
+#                 when this entry is missing, select all common levels of this list
+#  fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics" file 
+#                 for the list of all available diag. in this particular config)
+#--------------------------------------------------------------------
+#
+ &diagnostics_list
+#
+  dumpatlast = .TRUE.,
+#--- 
+  frequency(3) = 604800.,
+   fields(1,3) = 'THETA   ',
+   levels(1,3) = 1.,
+   filename(3) = 'SST',
+
+#---     
+#    84 |oceFWflx|  1 |       |SM      U1|kg/m^2/s        |net surface Fresh-Water flux into the ocean (+=down), >0 decreases salinity
+  frequency(5) = 604800.,
+   fields(1,5) = 'oceFWflx',
+   filename(5) = 'oceFWflx',
+#---     
+#    85 |oceSflux|  1 |       |SM      U1|g/m^2/s         |net surface Salt flux into the ocean (+=down), >0 increases salinity
+  frequency(6) = 604800.,
+   fields(1,6) = 'oceSflux',
+   filename(6) = 'oceSflux',
+#---     
+#    86 |oceQnet |  1 |       |SM      U1|W/m^2           |net surface heat flux into the ocean (+=down), >0 increases theta
+  frequency(7) = 604800.,
+   fields(1,7) = 'oceQnet ',
+   filename(7) = 'oceQnet',
+#---     
+#   201 |EXFempmr|  1 |       |SM      U1|m/s             |net upward freshwater flux, > 0 increases salinity
+  frequency(8) = 604800.,
+   fields(1,8) = 'EXFempmr',
+   filename(8) = 'EXFempmr',
+
+#---
+#   233 |SIarea  |  1 |       |SM      M1|m^2/m^2         |SEAICE fractional ice-covered area [0 to 1]
+   frequency(10) = 604800.,
+   fields(1,10) = 'SIarea  ',
+   filename(10) = 'SIarea',
+#---
+#   234 |SIareaPR|  1 |       |SM      M1|m^2/m^2         |SIarea preceeding ridging process
+   frequency(11) = 604800.,
+   fields(1,11) = 'SIareaPR',
+   filename(11) = 'SIareaPR',
+#---
+#   235 |SIareaPT|  1 |       |SM      M1|m^2/m^2         |SIarea preceeding thermodynamic growth/melt
+   frequency(12) = 604800.,
+   fields(1,12) = 'SIareaPT',
+   filename(12) = 'SIareaPT',
+#---
+#   236 |SIheff  |  1 |       |SM      M1|m               |SEAICE effective ice thickness
+   frequency(13) = 604800.,
+   fields(1,13) = 'SIheff  ',
+   filename(13) = 'SIheff',
+#---
+#   237 |SIheffPT|  1 |       |SM      M1|m               |SIheff preceeeding thermodynamic growth/melt
+   frequency(14) = 604800.,
+   fields(1,14) = 'SIheffPT',
+   filename(14) = 'SIheffPT',
+#---
+#   238 |SIhsnow |  1 |       |SM      M1|m               |SEAICE effective snow thickness
+   frequency(15) = 604800.,
+   fields(1,15) = 'SIhsnow ',
+   filename(15) = 'SIhsnow',
+#---
+#   239 |SIhsnoPT|  1 |       |SM      M1|m               |SIhsnow preceeeding thermodynamic growth/melt
+   frequency(16) = 604800.,
+   fields(1,16) = 'SIhsnoPT',
+   filename(16) = 'SIhsnoPT',
+#---
+#   240 |SIhsalt |  1 |       |SM      M1|g/m^2           |SEAICE effective salinity
+   frequency(17) = 604800.,
+   fields(1,17) = 'SIhsalt ',
+   filename(17) = 'SIhsalt',
+#---
+#   264 |SIempmr |  1 |       |SM      U1|kg/m^2/s        |Ocean surface freshwater flux, > 0 increases salt
+   frequency(18) = 604800.,
+   fields(1,18) = 'SIempmr ',
+   filename(18) = 'SIempmr',
+#---
+#   265 |SIatmFW |  1 |       |SM      U1|kg/m^2/s        |Net freshwater flux from atmosphere & land (+=down)
+   frequency(19) = 604800.,
+   fields(1,19) = 'SIatmFW ',
+   filename(19) = 'SIatmFW',
+#---
+#   266 |SIsnPrcp|  1 |       |SM      U1|kg/m^2/s        |Snow precip. (+=dw) over Sea-Ice (area weighted)
+   frequency(20) = 604800.,
+   fields(1,20) = 'SIsnPrcp',
+   filename(20) = 'SIsnPrcp',
+#---
+#   267 |SIfwSubl|  1 |       |SM      U1|kg/m^2/s        |Potential sublimation freshwater flux, >0 decr. ice
+   frequency(21) = 604800.,
+   fields(1,21) = 'SIfwSubl',
+   filename(21) = 'SIfwSubl',
+
+#---
+#    27 |SALT    | 15 |       |SMR     MR|g/kg            |Salinity
+   frequency(30) = 604800.,
+   fields(1,30) = 'SALT    ',
+   levels(1,30) = 1.,
+   filename(30) = 'SALT',
+
+ /
+
+# Parameter for Diagnostics of per level statistics:
+#-----------------
+# for each output-stream:
+#  stat_fname(n) : prefix of the output file name (only 8.c long) for outp.stream n
+#  stat_freq(n):< 0 : write snap-shot output every |stat_freq| seconds
+#               > 0 : write time-average output every stat_freq seconds
+#  stat_phase(n)    : write at time = stat_phase + multiple of |stat_freq|
+#  stat_region(:,n) : list of "regions" (default: 1 region only=global)
+#  stat_fields(:,n) : list of diagnostics fields (8.c) (see "available_diagnostics.log"
+#                 file for the list of all available diag. in this particular config)
+#-----------------
+ &DIAG_STATIS_PARMS
+
+ /
