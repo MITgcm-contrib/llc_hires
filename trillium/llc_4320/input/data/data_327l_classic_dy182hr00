@@ -176,8 +176,8 @@
  &PARM04
  usingCurvilinearGrid=.TRUE.,
  pCellMix_select = 22,
- pCellMix_viscAr = 327*4.e-4,
- pCellMix_diffKr = 327*2.e-4,
+ pCellMix_viscAr = 327*1.0,
+ pCellMix_diffKr = 327*0.1,
  delR = 	3.63110,  3.63110, 3.63110, 3.63110, 3.63110, 3.63110,
 		3.63110,  3.63110, 3.63110, 3.63110, 3.63110, 3.63110, 
 		3.63110,  3.63110, 3.63110, 3.63110, 3.63110, 3.63110,
@@ -237,7 +237,7 @@
 
 # Input datasets
  &PARM05
- bathyFile      ='GEBCO2025_on_LLC4320_v14.bin',
+ bathyFile      ='GEBCO2025_on_LLC4320_v16b.bin',
  hydrogThetaFile='/project/rrg-peltier-ac/momenika/llc4320_327l_initial_conditions/Theta.0000262080_interpolated_to_llc4320.data',
  hydrogSaltFile ='/project/rrg-peltier-ac/momenika/llc4320_327l_initial_conditions/Salt.0000262080_interpolated_to_llc4320.data',
  uVelInitFile   ='/project/rrg-peltier-ac/momenika/llc4320_327l_initial_conditions/U.0000262080_interpolated_to_llc4320.data',
