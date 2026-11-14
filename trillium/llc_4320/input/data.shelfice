@@ -7,5 +7,6 @@
  no_slip_shelfice = .false.,
  SHELFICEwriteState = .TRUE.,
  SHELFICEuseGammaFrict = .TRUE.,
+ shiCdrag = 0.0005,
  SHELFICE_dumpFreq = 0.0,
 /
