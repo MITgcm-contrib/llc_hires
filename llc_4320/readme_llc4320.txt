@@ -82,8 +82,10 @@ AngleSN.data :: sine(alpha) relative to geographic direction at grid cell center
                 To rotate velocity from geographical to model coordinates:
                       uVelc = AngleSN * vVelc + AngleCS * uVelc
                       vVelc = AngleCS * vVelc - AngleSN * uVelc
-                where (uVelc,vVelc) is model velocity vector at grid cell center
-                  and (uVelE,vVelN) is velocity vector vs geographical East/North                
+                where (uVelc,vVelc) is model velocity vector at grid cell center:
+                      uVelc(i,j) = ( u(i,j) + u(i+1,j) ) / 2;
+                      vVelc(i,j) = ( v(i,j) + u(i,j+1) ) / 2;
+                and (uVelE,vVelN) is velocity vector vs geographical East/North.
 U2zonDir.data:: cosine of grid orientation angle at U point location
 V2zonDir.data:: minus sine of  orientation angle at V point location
 
@@ -139,6 +141,15 @@ Please note that U, V, oceTAUX, oceTAUY, SIuice, and SIvice are aligned
 relative to model grid, not geographical coordinates, and that they are
 specified at the SouthWest C-grid velocity points.  All other scalar fields
 are specified at the tracer point, i.e., the center of each grid box.
+
+Note that sea ice presses down on Eta. To convert from Eta to sea surface
+height (SSH) in sea-ice covered regions, the equations are:
+	SSH = Eta + sIceLoad / rhoConst
+	sIceLoad = SIheff * SEAICE_rhoIce + SIhsnow * SEAICE_rhoSnow
+	SEAICE_rhoIce = 910
+	SEAICE_rhoSnow = 330
+	rhoConst = 1027.5
+	gravity = 9.81
 
 ============
 Integration starts from llc2160_10sep2011 snapshot
