@@ -41,8 +41,8 @@
   find ../../llc_hires/trillium/llc_4320/input/ -type f -exec cp -t . -- {} +
   cp $MOD/input-sal/* .
 
-  cp -f data_327l_classic_dy184hr21 data
-  cp -f data.seaice_327l_classic_dy184hr21 data.seaice
+  cp -f data_327l_classic_dy186hr15 data
+  cp -f data.seaice_327l_classic_dy186hr15 data.seaice
   cp -f data.kpp_327l_classic data.kpp
   cp -f data.exch2_90x90x19493 data.exch2
   
