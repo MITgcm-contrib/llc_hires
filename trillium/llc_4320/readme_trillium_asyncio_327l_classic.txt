@@ -16,13 +16,16 @@
 
 #### BUILD MODEL ####
   cd $SCRATCH/MITgcm
-  mkdir build_4320 run_4320
-  cd $SCRATCH/MITgcm/build_4320
+  mkdir build_4320_285nodes run_327l_classic
+  cd $SCRATCH/MITgcm/build_4320_285nodes
   module purge
   module load StdEnv/2023 intel/2023.2.1 intelmpi/2021.9.0
   export MPI_HOME=$I_MPI_ROOT
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
-  cp $MOD/code-async/SIZE.h_90x90x19493 SIZE.h
+
+# cp $MOD/code-async/SIZE.h_90x90x19493 SIZE.h
+  cp $MOD/code-async/SIZE.h_54x54x52771 SIZE.h
+
   ../tools/genmake2 -of \
   $MOD/code-sal/linux_amd64_ifort+mpi_trillium_shtns_asyncio -mpi \
   -mods "$MOD/code-sal $MOD/code-async $MOD/code"
@@ -30,10 +33,11 @@
   make -j 64
 
 #### RUN MODEL ####
-  cd $SCRATCH/MITgcm/run_4320
+  cd $SCRATCH/MITgcm/run_327l_classic
 
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
-  cp ../build_4320/mitgcmuv mitgcmuv_90x90x19493
+# cp ../build_4320/mitgcmuv mitgcmuv_90x90x19493
+  cp ../build_4320_285nodes/mitgcmuv mitgcmuv_54x54x52771
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
@@ -44,11 +48,8 @@
   cp -f data_327l_classic_dy186hr15 data
   cp -f data.seaice_327l_classic_dy186hr15 data.seaice
   cp -f data.kpp_327l_classic data.kpp
-  cp -f data.exch2_90x90x19493 data.exch2
+# cp -f data.exch2_90x90x19493 data.exch2
+  cp -f data.exch2_54x54x52771 data.exch2
   
   unset I_MPI_PMI_LIBRARY
-  mpiexec -n 21120 ./mitgcmuv_90x90x19493
- 
-#  unset I_MPI_PMI_LIBRARY
-#  mpiexec -n 21120 ./mitgcmuv_90x90x19493
-  $MOD/jobfiles/LLC4320_327l_classic_job.sh
+  mpiexec -n 54720 ./mitgcmuv_54x54x52771
