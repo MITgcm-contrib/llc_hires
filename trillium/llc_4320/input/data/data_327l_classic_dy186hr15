@@ -237,10 +237,10 @@
 # Input datasets
  &PARM05
  bathyFile      ='GEBCO2025_on_LLC4320_v16b.bin',
- hydrogThetaFile='../run_4320_327l_classic_dy184hr21_dy186hr15/Theta.0001612440.data',
- hydrogSaltFile ='../run_4320_327l_classic_dy184hr21_dy186hr15/Salt.0001612440.data',
- uVelInitFile   ='../run_4320_327l_classic_dy184hr21_dy186hr15/U.0001612440.data',
- vVelInitFile   ='../run_4320_327l_classic_dy184hr21_dy186hr15/V.0001612440.data',
- pSurfInitFile  ='../run_4320_327l_classic_dy184hr21_dy186hr15/Eta.0001612440.data',
+ hydrogThetaFile='../run_4320_327l_classic_dy184hr21_dy186hr15_DT10/Theta.0001612440.data',
+ hydrogSaltFile ='../run_4320_327l_classic_dy184hr21_dy186hr15_DT10/Salt.0001612440.data',
+ uVelInitFile   ='../run_4320_327l_classic_dy184hr21_dy186hr15_DT10/U.0001612440.data',
+ vVelInitFile   ='../run_4320_327l_classic_dy184hr21_dy186hr15_DT10/V.0001612440.data',
+ pSurfInitFile  ='../run_4320_327l_classic_dy184hr21_dy186hr15_DT10/Eta.0001612440.data',
  checkIniSalt=.FALSE.,
 /
