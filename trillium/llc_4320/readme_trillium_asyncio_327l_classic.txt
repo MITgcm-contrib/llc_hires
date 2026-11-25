@@ -37,8 +37,8 @@
 
   MOD=$SCRATCH/llc_hires/trillium/llc_4320
 # cp ../build_4320/mitgcmuv mitgcmuv_90x90x19493
-  cp ../build_4320_285nodes/mitgcmuv mitgcmuv_54x54x52771
-# cp ../build_4320_360nodes/mitgcmuv mitgcmuv_48x48x66469
+# cp ../build_4320_285nodes/mitgcmuv mitgcmuv_54x54x52771
+  cp ../build_4320_360nodes/mitgcmuv mitgcmuv_48x48x66469
   ln -sf /project/rrg-peltier-ac/momenika/era5 .
   ln -sf /project/rrg-peltier-ac/momenika/discharge/* .
   ln -sf /project/rrg-peltier-ac/momenika/llc4320_template/* .
@@ -46,12 +46,12 @@
   find ../../llc_hires/trillium/llc_4320/input/ -type f -exec cp -t . -- {} +
   cp $MOD/input-sal/* .
 
-  cp -f data_327l_classic_dy195hr20 data
-  cp -f data.seaice_327l_classic_dy195hr20 data.seaice
+  cp -f data_327l_classic_dy196hr03 data
+  cp -f data.seaice_327l_classic_dy196hr03 data.seaice
   cp -f data.kpp_327l_classic data.kpp
 # cp -f data.exch2_90x90x19493 data.exch2
-  cp -f data.exch2_54x54x52771 data.exch2
-# cp -f data.exch2_48x48x66469 data.exch2
+# cp -f data.exch2_54x54x52771 data.exch2
+  cp -f data.exch2_48x48x66469 data.exch2
   
   unset I_MPI_PMI_LIBRARY
   mpiexec -n 54720 ./mitgcmuv_54x54x52771
